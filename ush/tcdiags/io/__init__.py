@@ -63,7 +63,7 @@ from tcdiags.atmos.heights import height_from_pressure
 from tcdiags.atmos.pressures import pressure_from_thickness
 from metpy.units import units
 import numpy
-from exceptions import TCDiagsError
+from exceptions import TCDiagsIOError
 from ioapps import netcdf4_interface
 from tools import parser_interface
 from utils.logger_interface import Logger
@@ -125,7 +125,7 @@ class TCDiagsIO:
     Raises
     ------
 
-    TCDiagsError:
+    TCDiagsIOError:
 
         * raised if the attribute `inputs` can not be determined from
           the experiment configuration file.
@@ -153,7 +153,7 @@ class TCDiagsIO:
                 "The attribute `inputs` could not be determined from the experiment "
                 "configuration file. Aborting!!!"
             )
-            raise TCDiagsError(msg=msg)
+            raise TCDiagsIOError(msg=msg)
 
         self.variable_range_msg = "Variable %s range values: (%s, %s) %s."
 
@@ -186,7 +186,7 @@ class TCDiagsIO:
         Raises
         ------
 
-        TCDiagsError:
+        TCDiagsIOError:
 
             * raised if the pressure variable attributes cannot be
               determined from the experiment configuration or are not
@@ -215,7 +215,7 @@ class TCDiagsIO:
             msg = ("The pressure variable attributes could not be determined from "
                    "the experiment configuration. Aborting!!!"
                    )
-            raise TCDiagsError(msg=msg)
+            raise TCDiagsIOError(msg=msg)
 
         method = parser_interface.dict_key_value(
             dict_in=var_dict, key="method", force=True)
@@ -223,14 +223,14 @@ class TCDiagsIO:
             msg = ("The attribute `method` could not be determined for variable "
                    "`pressure` in the experiment configuration. Aborting!!!"
                    )
-            raise TCDiagsError(msg=msg)
+            raise TCDiagsIOError(msg=msg)
 
         # Compute the pressure profile accordingly.
         app = parser_interface.dict_key_value(
             dict_in=PRES_PROF_COMP_METHODS_DICT, key=method, force=True)
         if app is None:
             msg = f"The pressure profile method {method} is not defined. Aborting!!!"
-            raise TCDiagsError(msg=msg)
+            raise TCDiagsIOError(msg=msg)
 
         inputs_obj = app(inputs_obj=inputs_obj)
 
@@ -260,7 +260,7 @@ class TCDiagsIO:
         Raises
         ------
 
-        TCDiagsError:
+        TCDiagsIOError:
 
             * raised if a mandatory input variable has not been
               specified in the YAML-formatted file containing the
@@ -283,7 +283,7 @@ class TCDiagsIO:
                 "The following mandatory input variables could not be found in the "
                 f"experiment configuration: {missing_vars}. Aborting!!!"
             )
-            raise TCDiagsError(msg=msg)
+            raise TCDiagsIOError(msg=msg)
 
         # Build the input variables object; proceed accordingly.
         inputs_obj = parser_interface.object_define()
@@ -314,7 +314,7 @@ class TCDiagsIO:
                         "could not be determined from the experiment configuration. "
                         "Aborting!!!"
                     )
-                    raise TCDiagsError(msg=msg)
+                    raise TCDiagsIOError(msg=msg)
 
                 varin_obj = parser_interface.object_setattr(
                     object_in=varin_obj, key=varin_attr, value=value
