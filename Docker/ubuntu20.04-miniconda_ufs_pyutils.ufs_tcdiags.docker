@@ -63,8 +63,6 @@
 
 #    ufs_pyutils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
-#    ufs_tcdiags; https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags
-
 # Latest Container Image Downloads
 # --------------------------------
 
@@ -83,7 +81,6 @@ ENV TZ=Etc/UTC
 RUN apt-get update -y && \
     apt-get install -y --no-install-recommends && \
     apt-get install -y gfortran && \
-    apt-get install -y git && \
     rm -rf /var/lib/apt/lists/*
 
 # ----
@@ -93,10 +90,6 @@ RUN /miniconda/bin/pip install jupyterlab && \
     /miniconda/bin/pip install wrf-python==1.3.4.1 && \
     /miniconda/bin/pip install pyspharm==1.0.9 && \
     /miniconda/bin/pip install metpy==1.4.0
-
-# ----
-
-RUN git clone https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags.git /ufs_tcdiags
 
 # ----
 
