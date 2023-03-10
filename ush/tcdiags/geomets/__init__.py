@@ -28,7 +28,7 @@ from math import asin, cos, radians, sin, sqrt
 from typing import Tuple
 
 from astropy.constants import R_earth
-from exceptions import TCDiagsError
+from exceptions import GeoMetsError
 from utils.logger_interface import Logger
 
 # ----

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from tcdiags.atmos import winds
 
-from exceptions import TCDiagsError
+from exceptions import FilterVortexError
 from tools import parser_interface
 
 
@@ -39,7 +39,7 @@ class FilterVortex:
                        "could not be determined from the input variable "
                        "attributes object `inputs_obj`. Aborting!!!"
                        )
-                raise TCDiagsError(msg=msg)
+                raise FilterVortexError(msg=msg)
 
             self.winds_obj = parser_interface.object_setattr(
                 object_in=self.winds_obj, key=wind_comp, value=value)

@@ -97,7 +97,7 @@ from typing import Tuple, Union
 
 import numpy
 import spharm
-from exceptions import TCDiagsError
+from exceptions import AtmosWindsError
 from metpy.units import units
 from pint import Quantity
 from tools import parser_interface
@@ -203,7 +203,7 @@ def _get_lev_uv(inputs_obj: object, lev: int) -> Tuple[Quantity, Quantity]:
             "The wind vector components could not be parsed and/or "
             "the level attribute is invalid. Aborting!!!"
         )
-        raise TCDiagsError(msg=msg)
+        raise AtmosWindsError(msg=msg)
 
     return (xuwnd, xvwnd)
 

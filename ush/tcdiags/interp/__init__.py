@@ -72,7 +72,7 @@ History
 from typing import List
 
 import numpy
-from exceptions import TCDiagsError
+from exceptions import InterpError
 from tcdiags.geomets import haversine
 from tools import parser_interface
 from utils.logger_interface import Logger
@@ -186,10 +186,12 @@ def interp_ll2ra(
         [haversine(fix, (lats[idx], lons[idx])) for idx in range(len(lats))]
     )
 
-    xx = numpy.array([haversine(fix, (lat_0, lons[idx])) for idx in range(len(lats))])
+    xx = numpy.array([haversine(fix, (lat_0, lons[idx]))
+                      for idx in range(len(lats))])
     xx = numpy.where(lons < lon_0, -1.0 * xx, xx)
 
-    yy = numpy.array([haversine(fix, (lats[idx], lon_0)) for idx in range(len(lats))])
+    yy = numpy.array([haversine(fix, (lats[idx], lon_0))
+                      for idx in range(len(lats))])
     yy = numpy.where(lats < lat_0, -1.0 * yy, yy)
 
     phi = numpy.arctan2(yy, xx)
@@ -315,7 +317,7 @@ def interp_vertical(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.
     Raises
     ------
 
-    TCDiagsError:
+    InterpError:
 
         * raised if an exception is encountered during the vertical
           interpolation.
@@ -329,6 +331,6 @@ def interp_vertical(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.
 
     except Exception as errmsg:
         msg = f"The vertical interpolation failed with error {errmsg}. Aborting!!!"
-        raise TCDiagsError(msg=msg) from errmsg
+        raise InterpError(msg=msg) from errmsg
 
     return varout
