@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/metrics/tcmpi.py
+# Module: ush/tcdiags/atmos/moisture.py
 
 # Author: Henry R. Winterbottom
 
@@ -24,19 +24,24 @@
 
 # ----
 
-from dataclasses import dataclass
-
-import numpy
-
-
-from metpy.calc import mixing_ratio_from_specific_humidity as mrfsh
-from metpy.units import units
-
-from tcpyPI import pi
 
 # ----
 
-#logger = Logger()
+from exceptions import AtmosMoistureError
+from metpy.calc import mixing_ratio_from_specific_humidity as mxrt_from_spfh
+from metpy.units import units
+from pint import Quantity
+from tools import parser_interface
+from utils.logger_interface import Logger
+
+# ----
+
+# Define all available functions.
+__all__ = ["sphmd_to_mxrt"]
+
+# ----
+
+logger = Logger()
 
 # ----
 
@@ -47,12 +52,20 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 
-# def tcmpi(inputs_obj: object) -> object:
-#    """ """
+def spfh_to_mxrt(inputs_obj: object) -> object:
+    """
 
-#    # Initialize the local variables and objects.
-#    tcmpi_obj = parser_interface.object_define()
+    """
 
-#    # Compute the input variables.
+    # Compute the mixing ratio profile from the specific humidity
+    # profile.
+    mxrt = mxrt_from_spfh(specific_humidity=inputs_obj.spfh)
 
-#    print(pslp)
+    # Correct units and update the input variable object.
+    mxrt = units.Quantity(mxrt, "kilogram / kilogram")
+
+    inputs_obj = parser_interface.object_setattr(
+        object_in=inputs_obj, key="mxrt", value=mxrt
+    )
+
+    return inputs_obj

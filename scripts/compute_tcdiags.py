@@ -117,7 +117,8 @@ EVAL_SCHEMA = True
 
 # Define the schema attributes.
 CLS_SCHEMA = {"yaml_file": str,
-              Optional("tcfilt", default=False): bool
+              Optional("tcfilt", default=False): bool,
+              Optional("tcmpi", default=False): bool
               }
 
 # ----

@@ -27,6 +27,9 @@
 
 # ----
 
+from gc import collect
+
+
 from dataclasses import dataclass
 
 from confs.yaml_interface import YAML
@@ -35,6 +38,8 @@ from tcdiags.io import TCDiagsIO
 
 from exceptions import TCDiagsError
 
+
+from tcdiags.metrics.tropcycmpi import TropCycMPI
 from tcdiags.tc import FilterVortex
 
 from tools import parser_interface
@@ -68,7 +73,8 @@ class TCDiags:
 
         # Define the available application options.
         self.apps_dict = {
-            "tcfilt": FilterVortex}
+            "tcfilt": FilterVortex,
+            "tcmpi": TropCycMPI}
 
     def run(self) -> None:
         """
@@ -93,3 +99,7 @@ class TCDiags:
                         dict_in=self.apps_dict, key=app, no_split=True)
 
                     app_class(inputs_obj=inputs_obj).run()
+
+        # Clean up and deallocate memory accordingly.
+        del inputs_obj
+        collect()
