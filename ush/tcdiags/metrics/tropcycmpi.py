@@ -39,6 +39,8 @@ from tools import parser_interface
 
 from utils.logger_interface import Logger
 
+from typing import Dict
+
 # ----
 
 __author__ = "Henry R. Winterbottom"
@@ -54,7 +56,7 @@ class TropCycMPI:
 
     """
 
-    def __init__(self, inputs_obj: object):
+    def __init__(self, yaml_dict: Dict, inputs_obj: object):
         """
         Description
         -----------
@@ -66,8 +68,87 @@ class TropCycMPI:
         # Define the base-class attributes.
         self.logger = Logger()
         self.inputs_obj = inputs_obj
+        self.yaml_dict = yaml_dict
+
         self.tcmpi_obj = parser_interface.object_define()
         self.tcmpi_var_list = ["mslp", "pout", "tout", "vmax"]
+
+        self.tcmpi_var_dict = {"mslp_max": 2000.0,
+                               "zmax": 10.0
+                               }
+
+        (self.nx, self.ny) = [
+            self.inputs_obj.lat.shape[1], self.inputs_obj.lat.shape[0]]
+        self.ndim = (self.nx*self.ny)
+
+        # Initialize the local variables.
+        (self.mslp, self.vmax, self.tout, self.pout) = [
+            numpy.empty(self.ndim) for idx in range(4)]
+
+        # Compute the input variables.
+        self.compute_inputs()
+
+        # Define the local variables.
+        self.define_locals()
+
+        # Define the configuration variables.
+        self.init_config()
+
+    def define_locals(self) -> None:
+        """
+        Description
+        -----------
+
+        This method defines the input variables for the tropical
+        cyclone maximum potential intensity calculations.
+
+        """
+
+        # Initialize the input variable arrays for the tropical
+        # cyclone maximum potential intensity calculation.
+        self.sstc = numpy.array(self.inputs_obj.temp)[0, :, :].ravel()
+        self.slp = numpy.array(self.tcmpi_obj.pslp).ravel()
+        self.mxrt = numpy.reshape(numpy.array(self.tcmpi_obj.mxrt),
+                                  (self.tcmpi_obj.mxrt.shape[0], self.ndim))
+        self.pres = numpy.reshape(numpy.array(self.tcmpi_obj.pres),
+                                  (self.tcmpi_obj.pres.shape[0], self.ndim))
+        self.temp = numpy.reshape(numpy.array(self.tcmpi_obj.temp),
+                                  (self.tcmpi_obj.temp.shape[0], self.ndim))
+        self.zsfc = numpy.array(self.inputs_obj.zsfc).ravel()
+
+    def init_config(self) -> None:
+        """
+        Description
+        -----------
+
+        This method defines the base-class attribute values collected
+        from the experiment configuration variables.
+
+        """
+
+        for tcmpi_var in self.tcmpi_var_dict:
+            value = parser_interface.dict_key_value(
+                dict_in=self.yaml_dict, key=tcmpi_var, force=True,
+                no_split=True)
+
+            if value is None:
+                value = parser_interface.dict_key_value(
+                    dict_in=self.tcmpi_var_dict, key=tcmpi_var, force=True,
+                    no_split=None)
+
+                if value is None:
+                    msg = (f"The attribute variable {tcmpi_var} could not be determined. "
+                           "Aborting!!!"
+                           )
+                    raise TCDiagsError(msg=msg)
+
+                msg = (f"Setting configuration variable {tcmpi_var} to default value "
+                       f"{value}."
+                       )
+                self.logger.warn(msg=msg)
+
+            self = parser_interface.object_setattr(
+                object_in=self, key=tcmpi_var, value=value)
 
     def compute_inputs(self) -> None:
         """ """
@@ -87,67 +168,59 @@ class TropCycMPI:
     def compute_tcmpi(self) -> None:
         """ """
 
-        # Initialize/define the local variables.
-        (nx, ny) = [self.inputs_obj.lat.shape[1], self.inputs_obj.lat.shape[0]]
-        ndim = (nx*ny)
+        # Compute the tropical cyclone maximum potential intensity
+        # attributes.
+        [self.tcpi(idx=idx) for idx in range(self.ndim)]
 
-        (mslp, vmax, tout, pout) = [numpy.empty(ndim) for idx in range(4)]
+        # Update tropical cyclone maximum potential intensity
+        # attributes accordingly.
+        self.mslp = numpy.where(
+            self.mslp > self.mslp_max, numpy.nan, self.mslp)
+        self.pout = numpy.where(self.mslp == numpy.nan,
+                                numpy.nan, self.pout)
+        self.tout = numpy.where(self.mslp == numpy.nan,
+                                numpy.nan, self.tout)
+        self.vmax = numpy.where(self.mslp == numpy.nan, numpy.nan, self.vmax)
 
-        sstc = numpy.array(self.tcmpi_obj.temp)[0, :, :].ravel()
-        slp = numpy.array(self.tcmpi_obj.pslp).ravel()
-        mxrt = numpy.reshape(numpy.array(self.tcmpi_obj.mxrt),
-                             (self.tcmpi_obj.mxrt.shape[0], ndim))
-        pres = numpy.reshape(numpy.array(self.tcmpi_obj.pres),
-                             (self.tcmpi_obj.pres.shape[0], ndim))
-        temp = numpy.reshape(numpy.array(self.tcmpi_obj.temp),
-                             (self.tcmpi_obj.temp.shape[0], ndim))
-        zsfc = numpy.array(self.inputs_obj.zsfc).ravel()
+        self.mslp = units.Quantity(self.mslp, "hPa")
+        self.pout = units.Quantity(self.pout, "hPa")
+        self.tout = units.Quantity(self.tout, "celsius")
+        self.vmax = units.Quantity(self.vmax, "m / s")
 
-        # Compute the tropical cyclone maximum potential intensity and
-        # associated diagnostics; proceed accordingly.
-        for idx in range(ndim):
-
-            # Compute only for (near) ocean points.
-            if zsfc[idx] <= 10.0:
-
-                try:
-                    (vmax[idx], mslp[idx], _, tout[idx], pout[idx]) = \
-                        pi(SSTC=sstc[idx], MSL=slp[idx],
-                           P=pres[:, idx], TC=temp[:, idx], R=mxrt[:, idx])
-
-                except Exception as errmsg:
-                    msg = (f"The maxmimum potential intensity computation failed at index "
-                           f"{idx} with error {errmsg}. Aborting!!!"
-                           )
-                    raise TropCycMPIError(msg=msg)
-
-        # Update the values accordingly.
-        mslp = numpy.where(mslp > 2000.0, numpy.nan, mslp)*100.0
-        pout = numpy.where(mslp == numpy.nan, numpy.nan, pout)*100.0
-        tout = numpy.where(mslp == numpy.nan, numpy.nan, tout) + 273.15
-        vmax = numpy.where(mslp == numpy.nan, numpy.nan, vmax)
-
-        mslp = units.Quantity(numpy.reshape(mslp, (ny, nx)), "pascal")
-        pout = units.Quantity(numpy.reshape(pout, (ny, nx)), "pascal")
-        tout = units.Quantity(numpy.reshape(tout, (ny, nx)), "kelvin")
-        vmax = units.Quantity(numpy.reshape(vmax, (ny, nx)), "m / s")
+        # Define the base-class attribute values.
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="mslp", value=self.mslp)
+        self.tcmpi_obj.mslp = units.Quantity(self.tcmpi_obj.mslp, "Pa")
 
         self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="mslp", value=mslp)
+            object_in=self.tcmpi_obj, key="pout", value=self.pout)
+        self.tcmpi_obj.pout = units.Quantity(self.tcmpi_obj.pout, "Pa")
+
         self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="pout", value=pout)
+            object_in=self.tcmpi_obj, key="tout", value=self.tout)
+        self.tcmpi_obj.tout = units.Quantity(self.tcmpi_obj.tout, "kelvin")
+
         self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="tout", value=tout)
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="vmax", value=vmax)
+            object_in=self.tcmpi_obj, key="vmax", value=self.vmax)
+
+    def tcpi(self, idx: int) -> None:
+        """ """
+
+        if self.zsfc[idx] <= self.zmax:
+
+            (self.vmax[idx], self.mslp[idx], _, self.tout[idx], self.pout[idx]) = \
+                pi(SSTC=self.sstc[idx], MSL=self.slp[idx], P=self.pres[:, idx],
+                   TC=self.temp[:, idx], R=self.mxrt[:, idx])
+
+        else:
+
+            (self.vmax[idx], self.mslp[idx], self.tout[idx],
+             self.pout[idx]) = [numpy.nan for count in range(4)]
 
     def run(self) -> None:
         """
 
         """
-
-        # Define/compute the input variables.
-        self.compute_inputs()
 
         # Compute the tropical cyclone maximaum potential intensity.
         self.compute_tcmpi()
