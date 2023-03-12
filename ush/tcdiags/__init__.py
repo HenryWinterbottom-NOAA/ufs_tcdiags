@@ -63,7 +63,7 @@ from exceptions import TCDiagsError
 from tools import parser_interface
 from utils.logger_interface import Logger
 
-from tcdiags.io import TCDiagsIO
+from tcdiags.io.inputs import TCDiagsInputsIO
 from tcdiags.metrics.tropcycmpi import TropCycMPI
 from tcdiags.tc import FilterVortex
 
@@ -103,7 +103,7 @@ class TCDiags:
         self.logger = Logger()
         self.yaml_file = self.options_obj.yaml_file
         self.yaml_dict = YAML().read_yaml(yaml_file=self.yaml_file)
-        self.tcdiags_io = TCDiagsIO(yaml_dict=self.yaml_dict)
+        self.tcdiags_io = TCDiagsInputsIO(yaml_dict=self.yaml_dict)
 
         # Define the available application options.
         self.apps_dict = {"tcfilt": FilterVortex, "tcmpi": TropCycMPI}
