@@ -67,62 +67,31 @@ class TropCycMPI:
         self.logger = Logger()
         self.inputs_obj = inputs_obj
         self.tcmpi_obj = parser_interface.object_define()
+        self.tcmpi_var_list = ["mslp", "pout", "tout", "vmax"]
 
     def compute_inputs(self) -> None:
         """ """
 
-        # Append the geographical coordinate grids to the base-class
-        # object; proceed accordingly.
-        for coord in ["lat", "lon"]:
-
-            value = parser_interface.object_getattr(
-                object_in=self.inputs_obj, key=coord, force=True)
-
-            if value is None:
-                msg = (f"The geographic coordinate variable {coord} cannot be "
-                       "NoneType. Aborting!!!"
-                       )
-                raise TropCycMPIError(msg=msg)
-
-            self.tcmpi_obj = parser_interface.object_setattr(
-                object_in=self.tcmpi_obj, key=coord, value=value)
-
-        # Append the variable arrays to the base-class object; proceed
-        # accordingly.
-        for var in ["pres", "psfc", "spfh", "temp", "zsfc"]:
-
-            value = parser_interface.object_getattr(
-                object_in=self.inputs_obj, key=var, force=True)
-
-            if value is None:
-                msg = f"The variable {var} cannot be NoneType. Aborting!!!"
-                raise TropCycMPIError(msg=msg)
-
-            self.tcmpi_obj = parser_interface.object_setattr(
-                object_in=self.tcmpi_obj, key=var, value=value)
-
         # Compute the input variables.
-        self.tcmpi_obj = moisture.spfh_to_mxrt(inputs_obj=self.tcmpi_obj)
+        self.tcmpi_obj = moisture.spfh_to_mxrt(inputs_obj=self.inputs_obj)
         self.tcmpi_obj = pressures.pressure_to_sealevel(
-            inputs_obj=self.tcmpi_obj)
+            inputs_obj=self.inputs_obj)
 
         # Update variable array units.
         self.tcmpi_obj.mxrt = units.Quantity(self.tcmpi_obj.mxrt, "g / kg")
-        self.tcmpi_obj.pres = units.Quantity(self.tcmpi_obj.pres, "hPa")
+        self.tcmpi_obj.pres = units.Quantity(self.inputs_obj.pres, "hPa")
         self.tcmpi_obj.pslp = units.Quantity(self.tcmpi_obj.pslp, "hPa")
-        self.tcmpi_obj.temp = units.Quantity(self.tcmpi_obj.temp, "celsius")
-
-        # Initialize the output variables.
-#        for (var, units) in {"mslp": "pascal", "pout": "pascal", "tout": "kelvin", "vmax": "m/s"}.items():
-
-#            self.tcmpi_obj = parser_interface.
+        self.tcmpi_obj.temp = units.Quantity(
+            self.inputs_obj.temp, "celsius")
 
     def compute_tcmpi(self) -> None:
         """ """
 
         # Initialize/define the local variables.
-        (nx, ny) = [self.tcmpi_obj.lat.shape[1], self.tcmpi_obj.lat.shape[0]]
+        (nx, ny) = [self.inputs_obj.lat.shape[1], self.inputs_obj.lat.shape[0]]
         ndim = (nx*ny)
+
+        (mslp, vmax, tout, pout) = [numpy.empty(ndim) for idx in range(4)]
 
         sstc = numpy.array(self.tcmpi_obj.temp)[0, :, :].ravel()
         slp = numpy.array(self.tcmpi_obj.pslp).ravel()
@@ -132,10 +101,7 @@ class TropCycMPI:
                              (self.tcmpi_obj.pres.shape[0], ndim))
         temp = numpy.reshape(numpy.array(self.tcmpi_obj.temp),
                              (self.tcmpi_obj.temp.shape[0], ndim))
-        zsfc = numpy.array(self.tcmpi_obj.zsfc).ravel()
-
-        # Initialize the local variables.
-        (mslp, vmax, tout, pout) = [numpy.empty(ndim) for idx in range(4)]
+        zsfc = numpy.array(self.inputs_obj.zsfc).ravel()
 
         # Compute the tropical cyclone maximum potential intensity and
         # associated diagnostics; proceed accordingly.
@@ -150,7 +116,7 @@ class TropCycMPI:
                            P=pres[:, idx], TC=temp[:, idx], R=mxrt[:, idx])
 
                 except Exception as errmsg:
-                    msg = (f"The TC maxmimum potential intensity computation failed at index "
+                    msg = (f"The maxmimum potential intensity computation failed at index "
                            f"{idx} with error {errmsg}. Aborting!!!"
                            )
                     raise TropCycMPIError(msg=msg)
@@ -161,10 +127,19 @@ class TropCycMPI:
         tout = numpy.where(mslp == numpy.nan, numpy.nan, tout) + 273.15
         vmax = numpy.where(mslp == numpy.nan, numpy.nan, vmax)
 
-        mslp = numpy.reshape(mslp, (ny, nx))
-        pout = numpy.reshape(pout, (ny, nx))
-        tout = numpy.reshape(tout, (ny, nx))
-        vmax = numpy.reshape(vmax, (ny, nx))
+        mslp = units.Quantity(numpy.reshape(mslp, (ny, nx)), "pascal")
+        pout = units.Quantity(numpy.reshape(pout, (ny, nx)), "pascal")
+        tout = units.Quantity(numpy.reshape(tout, (ny, nx)), "kelvin")
+        vmax = units.Quantity(numpy.reshape(vmax, (ny, nx)), "m / s")
+
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="mslp", value=mslp)
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="pout", value=pout)
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="tout", value=tout)
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="vmax", value=vmax)
 
     def run(self) -> None:
         """
