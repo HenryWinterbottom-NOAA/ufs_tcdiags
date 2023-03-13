@@ -26,14 +26,14 @@ Module
 Description
 -----------
 
-    This module contains the base-class object for all
-    netCDF-formatted file and respective variable(s) reading and
-    writing.
+    This module contains the base-class object for all file and
+    reading and respective variable(s) mandatory variable
+    computations.
 
 Classes
 -------
 
-    TCDiagsInputsIO(yaml_dict)
+    TCDiagsInputsNetCDFIO(yaml_dict)
 
         This is the base-class object for all netCDF-formatted file
         and respective variable(s) reading.
@@ -109,7 +109,7 @@ PRES_PROF_COMP_METHODS_DICT = {1: pressure_from_thickness}
 
 
 @dataclass
-class TCDiagsInputsIO:
+class TCDiagsInputsNetCDFIO:
     """
     Description
     -----------
@@ -120,7 +120,7 @@ class TCDiagsInputsIO:
     Parameters
     ----------
 
-    inputs_dict: dict
+    yaml_dict: dict
 
         A Python dictionary containing the input attributes as defined
         by the `inputs_yaml` attribute within the experiment
@@ -141,7 +141,7 @@ class TCDiagsInputsIO:
         Description
         -----------
 
-        Creates a new TCDiagsInputsIO object.
+        Creates a new TCDiagsInputsNetCDFIO object.
 
         """
 
