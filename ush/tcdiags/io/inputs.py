@@ -57,14 +57,19 @@ History
 
 # ----
 
+# pylint: disable=consider-using-dict-items
+
+# ----
+
+from dataclasses import dataclass
 from typing import Dict
 
-from tcdiags.atmos.heights import height_from_pressure
-from tcdiags.atmos.pressures import pressure_from_thickness
-from metpy.units import units
 import numpy
 from exceptions import TCDiagsIOError
 from ioapps import netcdf4_interface
+from metpy.units import units
+from tcdiags.atmos.heights import height_from_pressure
+from tcdiags.atmos.pressures import pressure_from_thickness
 from tools import parser_interface
 from utils.logger_interface import Logger
 
@@ -98,13 +103,12 @@ VARIN_ATTRS_DICT = {
 }
 
 # Pressure profile computation methods.
-PRES_PROF_COMP_METHODS_DICT = {
-    1: pressure_from_thickness
-}
+PRES_PROF_COMP_METHODS_DICT = {1: pressure_from_thickness}
 
 # ----
 
 
+@dataclass
 class TCDiagsInputsIO:
     """
     Description
@@ -209,34 +213,42 @@ class TCDiagsInputsIO:
         # Define the method to be used for the pressure profile
         # computation; proceed accordingly.
         var_dict = parser_interface.dict_key_value(
-            dict_in=self.inputs_dict, key="pressure", force=True, no_split=True)
+            dict_in=self.inputs_dict, key="pressure", force=True, no_split=True
+        )
 
         if var_dict is None:
-            msg = ("The pressure variable attributes could not be determined from "
-                   "the experiment configuration. Aborting!!!"
-                   )
+            msg = (
+                "The pressure variable attributes could not be determined from "
+                "the experiment configuration. Aborting!!!"
+            )
             raise TCDiagsIOError(msg=msg)
 
         method = parser_interface.dict_key_value(
-            dict_in=var_dict, key="method", force=True)
+            dict_in=var_dict, key="method", force=True
+        )
         if method is None:
-            msg = ("The attribute `method` could not be determined for variable "
-                   "`pressure` in the experiment configuration. Aborting!!!"
-                   )
+            msg = (
+                "The attribute `method` could not be determined for variable "
+                "`pressure` in the experiment configuration. Aborting!!!"
+            )
             raise TCDiagsIOError(msg=msg)
 
         # Compute the pressure profile accordingly.
         app = parser_interface.dict_key_value(
-            dict_in=PRES_PROF_COMP_METHODS_DICT, key=method, force=True)
+            dict_in=PRES_PROF_COMP_METHODS_DICT, key=method, force=True
+        )
         if app is None:
             msg = f"The pressure profile method {method} is not defined. Aborting!!!"
             raise TCDiagsIOError(msg=msg)
 
         inputs_obj = app(inputs_obj=inputs_obj)
 
-        msg = (self.variable_range_msg % ("pressure", numpy.array(inputs_obj.pres).min(),
-                                          numpy.array(inputs_obj.pres).max(),
-                                          inputs_obj.pres.units))
+        msg = self.variable_range_msg % (
+            "pressure",
+            numpy.array(inputs_obj.pres).min(),
+            numpy.array(inputs_obj.pres).max(),
+            inputs_obj.pres.units,
+        )
         self.logger.debug(msg=msg)
 
         return inputs_obj
@@ -349,15 +361,24 @@ class TCDiagsInputsIO:
             values = varin_obj.scale_mult * (values) + varin_obj.scale_add
 
             # Define the variable object accordingly.
-            (var_name, var_units) = [parser_interface.dict_key_value(
-                dict_in=INPUTS_DICT[yaml_key], key=key, no_split=True) for key in ["name", "units"]]
+            (var_name, var_units) = [
+                parser_interface.dict_key_value(
+                    dict_in=INPUTS_DICT[yaml_key], key=key, no_split=True
+                )
+                for key in ["name", "units"]
+            ]
 
             values = units.Quantity(values, var_units)
             inputs_obj = parser_interface.object_setattr(
-                object_in=inputs_obj, key=var_name, value=values)
+                object_in=inputs_obj, key=var_name, value=values
+            )
 
-            msg = (self.variable_range_msg % (yaml_key, numpy.array(values.min()),
-                                              numpy.array(values.max()), values.units))
+            msg = self.variable_range_msg % (
+                yaml_key,
+                numpy.array(values.min()),
+                numpy.array(values.max()),
+                values.units,
+            )
             self.logger.debug(msg=msg)
 
         # Compute/define the remaining diagnostic variables.
@@ -365,8 +386,12 @@ class TCDiagsInputsIO:
         inputs_obj = height_from_pressure(inputs_obj=inputs_obj)
 
         values = inputs_obj.hght
-        msg = (self.variable_range_msg % ("height", numpy.array(values.min()),
-                                          numpy.array(values.max()), values.units))
+        msg = self.variable_range_msg % (
+            "height",
+            numpy.array(values.min()),
+            numpy.array(values.max()),
+            values.units,
+        )
         self.logger.debug(msg=msg)
 
         return inputs_obj
