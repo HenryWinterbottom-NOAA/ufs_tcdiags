@@ -1,4 +1,16 @@
-zmax: 10.0
+# Define the maximum allowable surface elevation for tropical cyclone
+# (TC) maximum potential intensity (MPI) metric computations; units
+# are meters; if not specified this value defaults to 10.0 meters.
+zmax: 0.0
+
+# Define the minimum sea-level pressure above which all values will be
+# set to NaN; units are hectoPascals; if not specified this value
+# defaults to 2000.0 hectoPascals.
 mslp_max: 2000.0
+
+# Define the path to the netCDF-formatted output file containing the
+# TC MPI metrics and diagnostics variables; if not specified, this
+# value defaults to /work/tcmpi.nc.
+output_file: /work/tcmpi.nc
 
      
