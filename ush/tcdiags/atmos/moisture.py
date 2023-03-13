@@ -18,26 +18,55 @@
 # =========================================================================
 
 """
+Module
+------
 
+    heights.py
+
+Description
+-----------
+
+    This module contains various moisture variable computation
+    methods.
+
+Functions
+---------
+
+    spfh_to_mxrt(inputs_obj)
+
+        This function computes the mixing ratio from the specific
+        humidity.
+
+Requirements
+------------
+
+- metpy; https://unidata.github.io/MetPy/latest/index.html
+
+- ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
+
+Author(s)
+---------
+
+    Henry R. Winterbottom; 09 March 2023
+
+History
+-------
+
+    2023-03-09: Henry Winterbottom -- Initial implementation.
 
 """
 
 # ----
 
-
-# ----
-
-from exceptions import AtmosMoistureError
 from metpy.calc import mixing_ratio_from_specific_humidity as mxrt_from_spfh
 from metpy.units import units
-from pint import Quantity
 from tools import parser_interface
 from utils.logger_interface import Logger
 
 # ----
 
 # Define all available functions.
-__all__ = ["sphmd_to_mxrt"]
+__all__ = ["spfh_to_mxrt"]
 
 # ----
 
@@ -54,16 +83,39 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 def spfh_to_mxrt(inputs_obj: object) -> object:
     """
+    Description
+    -----------
+
+    This function computes the mixing ratio from the specific
+    humidity.
+
+    Parameters
+    ----------
+
+    inputs_obj: object
+
+        A Python object containing, at minimum, the specific humidity
+        profile from which the mixing ratio will be computed.
+
+    Returns
+    -------
+
+    inputs_obj: object
+
+        A Python object updated to contain the mixing ratio profile.
 
     """
 
     # Compute the mixing ratio profile from the specific humidity
     # profile.
-    mxrt = mxrt_from_spfh(specific_humidity=inputs_obj.spfh)
+    msg = "Computing the mixing ratio array of dimension " f"{inputs_obj.spfh.shape}."
+    logger.info(msg=msg)
 
-    # Correct units and update the input variable object.
-    mxrt = units.Quantity(mxrt, "kilogram / kilogram")
+    mxrt = units.Quantity(
+        mxrt_from_spfh(specific_humidity=inputs_obj.spfh), "kilogram / kilogram"
+    )
 
+    # Update the input variable object.
     inputs_obj = parser_interface.object_setattr(
         object_in=inputs_obj, key="mxrt", value=mxrt
     )
