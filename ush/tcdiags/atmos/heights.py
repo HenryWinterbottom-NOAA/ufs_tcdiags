@@ -96,8 +96,7 @@ def height_from_pressure(inputs_obj: object) -> object:
         A Python object containing, at minimum, the pressure profile
         from which the geometric heights will be computed.
 
-    Returns
-    -------
+    Returns -------
 
     inputs_obj: object
 
@@ -112,7 +111,8 @@ def height_from_pressure(inputs_obj: object) -> object:
     )
     logger.info(msg=msg)
 
-    hght = units.Quantity(pressure_to_height_std(pressure=inputs_obj.pres), "meter")
+    hght = units.Quantity(pressure_to_height_std(
+        pressure=inputs_obj.pres), "meter")
 
     # Update the input variable object.
     inputs_obj = parser_interface.object_setattr(
