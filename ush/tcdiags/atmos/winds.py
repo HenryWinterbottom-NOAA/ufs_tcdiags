@@ -294,7 +294,7 @@ def global_divg(inputs_obj: object) -> object:
         xdivg[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
 
     # Define the correct units with respect to the input variable.
-    xdivg = units.Quantity(xdivg, "1 / second")
+    xdivg = units.Quantity(xdivg, "1/second")
 
     inputs_obj = parser_interface.object_setattr(
         object_in=inputs_obj, key="divg", value=xdivg
@@ -357,7 +357,7 @@ def global_vort(inputs_obj: object) -> object:
         xvort[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
 
     # Define the correct units with respect to the input variable.
-    xvort = units.Quantity(xvort, "1 / second")
+    xvort = units.Quantity(xvort, "1/second")
 
     inputs_obj = parser_interface.object_setattr(
         object_in=inputs_obj, key="vort", value=xvort

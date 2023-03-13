@@ -80,8 +80,8 @@ INPUTS_DICT = {
     "surface_height": {"name": "zsfc", "units": "gpm"},
     "surface_pressure": {"name": "psfc", "units": "Pa"},
     "temperature": {"name": "temp", "units": "K"},
-    "uwind": {"name": "uwnd", "units": "m/s"},
-    "vwind": {"name": "vwnd", "units": "m/s"},
+    "uwind": {"name": "uwnd", "units": "mps"},
+    "vwind": {"name": "vwnd", "units": "mps"},
 }
 
 # Define the variable attributes.
@@ -137,7 +137,7 @@ class TCDiagsInputsIO:
         Description
         -----------
 
-        Creates a new TCDiagsIO object.
+        Creates a new TCDiagsInputsIO object.
 
         """
 
@@ -339,12 +339,12 @@ class TCDiagsInputsIO:
                     if varin_obj.flip_lat:
                         values = numpy.flip(values[:, :, :], axis=1)
 
-                else:
-                    if varin_obj.flip_lat:
-                        try:
-                            values = numpy.flip(values[:, :], axis=0)
-                        except IndexError:
-                            pass
+            else:
+                if varin_obj.flip_lat:
+                    try:
+                        values = numpy.flip(values[:, :], axis=0)
+                    except IndexError:
+                        pass
 
             values = varin_obj.scale_mult * (values) + varin_obj.scale_add
 
