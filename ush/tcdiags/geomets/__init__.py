@@ -18,9 +18,45 @@
 # =========================================================================
 
 """
+Module
+------
 
+    __init__.py
+
+Description
+-----------
+
+    This module contains various method for compute attributes on a
+    sphere.
+
+Functions
+---------
+
+    haversine(loc1, loc2, radius=R_earth.value)
+
+        This function computes and returns the great-circle (i.e.,
+        haversine) between two locations.
+
+Requirements
+------------
+
+- ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
+
+Author(s)
+---------
+
+    Henry R. Winterbottom; 13March 2023
+
+History
+-------
+
+    2023-03-13: Henry Winterbottom -- Initial implementation.
 
 """
+
+# ----
+
+# pylint: disable=no-name-in-module
 
 # ----
 
@@ -30,6 +66,11 @@ from typing import Tuple
 from astropy.constants import R_earth
 from exceptions import GeoMetsError
 from utils.logger_interface import Logger
+
+# ----
+
+# Define all available functions.
+__all__ = ["haversine"]
 
 # ----
 
@@ -95,7 +136,7 @@ def haversine(loc1: Tuple, loc2: Tuple, radius=R_earth.value) -> float:
     dlat = lat2 - lat1
     dlon = lon2 - lon1
 
-    dist = sin(dlat/2.0)**2.0 + cos(lat1)*cos(lat2)*sin(dlon/2.0)**2.0
-    hvsine = 2.0*radius*asin(sqrt(dist))
+    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * cos(lat2) * sin(dlon / 2.0) ** 2.0
+    hvsine = 2.0 * radius * asin(sqrt(dist))
 
     return hvsine

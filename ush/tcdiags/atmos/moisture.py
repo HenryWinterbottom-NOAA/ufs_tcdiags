@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/atmos/heights.py
+# Module: ush/tcdiags/atmos/moisture.py
 
 # Author: Henry R. Winterbottom
 
@@ -26,15 +26,16 @@ Module
 Description
 -----------
 
-    This module contains various height profile computational methods.
+    This module contains various moisture variable computation
+    methods.
 
 Functions
 ---------
 
-    height_from_pressure(inputs_obj)
+    spfh_to_mxrt(inputs_obj)
 
-        This function computes the geometric height profile from the
-        pressure profile array.
+        This function computes the mixing ratio from the specific
+        humidity.
 
 Requirements
 ------------
@@ -57,7 +58,7 @@ History
 
 # ----
 
-from metpy.calc import pressure_to_height_std
+from metpy.calc import mixing_ratio_from_specific_humidity as mxrt_from_spfh
 from metpy.units import units
 from tools import parser_interface
 from utils.logger_interface import Logger
@@ -65,7 +66,7 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["height_from_pressure"]
+__all__ = ["spfh_to_mxrt"]
 
 # ----
 
@@ -80,43 +81,43 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 
-def height_from_pressure(inputs_obj: object) -> object:
+def spfh_to_mxrt(inputs_obj: object) -> object:
     """
     Description
     -----------
 
-    This function computes the geometric height profile from the
-    pressure profile array.
+    This function computes the mixing ratio from the specific
+    humidity.
 
     Parameters
     ----------
 
     inputs_obj: object
 
-        A Python object containing, at minimum, the pressure profile
-        from which the geometric heights will be computed.
+        A Python object containing, at minimum, the specific humidity
+        profile from which the mixing ratio will be computed.
 
-    Returns -------
+    Returns
+    -------
 
     inputs_obj: object
 
-        A Python object updated to contain the geometric heights
-        profile.
+        A Python object updated to contain the mixing ratio profile.
 
     """
 
-    # Compute the geometric height profile using the pressure profile.
-    msg = (
-        "Computing the geometric height array of dimension " f"{inputs_obj.pres.shape}."
-    )
+    # Compute the mixing ratio profile from the specific humidity
+    # profile.
+    msg = "Computing the mixing ratio array of dimension " f"{inputs_obj.spfh.shape}."
     logger.info(msg=msg)
 
-    hght = units.Quantity(pressure_to_height_std(
-        pressure=inputs_obj.pres), "meter")
+    mxrt = units.Quantity(
+        mxrt_from_spfh(specific_humidity=inputs_obj.spfh), "kilogram / kilogram"
+    )
 
     # Update the input variable object.
     inputs_obj = parser_interface.object_setattr(
-        object_in=inputs_obj, key="hght", value=hght
+        object_in=inputs_obj, key="mxrt", value=mxrt
     )
 
     return inputs_obj

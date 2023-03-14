@@ -31,6 +31,11 @@ Description
 Classes
 -------
 
+    AtmosMoistureError()
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/atmos/moisture module; it is a sub-class of Error.
+
     AtmosWindsError()
 
         This is the base-class for exceptions encountered within the
@@ -62,6 +67,12 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/io module; it is a sub-class of Error.
 
+    TropCycMPIError()
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of
+        Error.
+
 Requirements
 ------------
 
@@ -86,8 +97,8 @@ from utils.error_interface import Error
 # ----
 
 # Define all available attributes.
-__all__ = ["AtmosWindsError", "FilterVortexError", "GeoMetsError",
-           "InterpError", "TCDiagsError", "TCDiagsIOError"]
+__all__ = ["AtmosMoistureError", "AtmosWindsError", "FilterVortexError", "GeoMetsError",
+           "InterpError", "TCDiagsError", "TCDiagsIOError", "TropCycMPIError"]
 
 # ----
 
@@ -95,6 +106,18 @@ __author__ = "Henry R. Winterbottom"
 __maintainer__ = "Henry R. Winterbottom"
 __email__ = "henry.winterbottom@noaa.gov"
 
+# ----
+
+
+class AtmosMoistureError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/atmos/moisture module; it is a sub-class of Error.
+
+    """
 
 # ----
 
@@ -108,6 +131,8 @@ class AtmosWindsError(Error):
     ush/tcdiags/atmos/winds module; it is a sub-class of Error.
 
     """
+
+# ----
 
 
 class FilterVortexError(Error):
@@ -170,5 +195,18 @@ class TCDiagsIOError(Error):
 
     This is the base-class for exceptions encountered within the
     ush/tcdiags/io module; it is a sub-class of Error.
+
+    """
+
+# ----
+
+
+class TropCycMPIError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of Error.
 
     """
