@@ -73,6 +73,12 @@ Classes
         ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of
         Error.
 
+    TropCycWNMSIError()
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/metrics/tropcycwnmsi module; it is a sub-class of
+        Error.
+
 Requirements
 ------------
 
@@ -98,7 +104,8 @@ from utils.error_interface import Error
 
 # Define all available attributes.
 __all__ = ["AtmosMoistureError", "AtmosWindsError", "FilterVortexError", "GeoMetsError",
-           "InterpError", "TCDiagsError", "TCDiagsIOError", "TropCycMPIError"]
+           "InterpError", "TCDiagsError", "TCDiagsIOError", "TropCycMPIError",
+           "TropCycWNMSIError"]
 
 # ----
 
@@ -208,5 +215,19 @@ class TropCycMPIError(Error):
 
     This is the base-class for exceptions encountered within the
     ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of Error.
+
+    """
+
+# ----
+
+
+class TropCycWNMSIError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/metrics/tropcycwnmsi module; it is a sub-class of
+    Error.
 
     """
