@@ -169,8 +169,6 @@ class TropCycMPI:
         # Define the configuration variables.
         self.init_config()
 
-
-<< << << < HEAD
         # Build the dimensional and CF compliant dimensions.
         self.coords_2d = OrderedDict(
             {
@@ -187,7 +185,6 @@ class TropCycMPI:
             }
         )
 
-<< << << < HEAD
         # Define the output variables list.
         self.output_varlist = [
             "mslp",
@@ -421,21 +418,6 @@ class TropCycMPI:
             coords_2d=self.coords_2d,
             attrs_list=["units"],
         )
-=======
-        mslp = units.Quantity(numpy.reshape(mslp, (ny, nx)), "pascal")
-        pout = units.Quantity(numpy.reshape(pout, (ny, nx)), "pascal")
-        tout = units.Quantity(numpy.reshape(tout, (ny, nx)), "kelvin")
-        vmax = units.Quantity(numpy.reshape(vmax, (ny, nx)), "m / s")
-
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="mslp", value=mslp)
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="pout", value=pout)
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="tout", value=tout)
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="vmax", value=vmax)
->>>>>>> 98b061f (Updates.)
 
     def run(self) -> None:
         """
