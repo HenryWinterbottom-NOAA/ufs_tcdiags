@@ -41,6 +41,11 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/atmos/winds module; it is a sub-class of Error.
 
+    FFTError()
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/analysis/fft module; it is a sub-class of Error.
+
     FilterVortexError()
 
         This is the base-class for exceptions encountered within the
@@ -103,9 +108,10 @@ from utils.error_interface import Error
 # ----
 
 # Define all available attributes.
-__all__ = ["AtmosMoistureError", "AtmosWindsError", "FilterVortexError", "GeoMetsError",
-           "InterpError", "TCDiagsError", "TCDiagsIOError", "TropCycMPIError",
-           "TropCycWNMSIError"]
+__all__ = ["AtmosMoistureError", "AtmosWindsError", "FFTError", "FilterVortexError",
+           "GeoMetsError", "InterpError", "TCDiagsError", "TCDiagsIOError",
+           "TropCycMPIError", "TropCycWNMSIError"
+           ]
 
 # ----
 
@@ -138,6 +144,20 @@ class AtmosWindsError(Error):
     ush/tcdiags/atmos/winds module; it is a sub-class of Error.
 
     """
+
+# ----
+
+
+class FFTError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/analysis/fft module; it is a sub-class of Error.
+
+    """
+
 
 # ----
 

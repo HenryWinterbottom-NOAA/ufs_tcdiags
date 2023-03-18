@@ -1,0 +1,16 @@
+# Define the radial interval for transforming the 10-meter wind
+# analysis to polar coordinates; units are meters.
+drho: 50000.0
+
+# Define the azimuthal interval for transforming the 10-meter wind
+# analysis to polar coordinates; units are degrees.
+dphi: 45.0
+
+# Define the maximum radial distance across which to transform the
+# 10-meter wind analysis to polar coordinates; units are meters.
+max_radius: 1200000.0
+
+# Define the maximum wave-number to be retained; this value will be
+# overridden by the number of allowable wave-numbers as per the polar
+# coordinate transformation.
+max_wn: 50

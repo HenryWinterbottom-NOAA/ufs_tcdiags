@@ -78,8 +78,8 @@ from utils.logger_interface import Logger
 # Check that the input file contains all of the mandatory
 # variables.
 INPUTS_DICT = {
-    "latitude": {"name": "lat", "units": "degree"},
-    "longitude": {"name": "lon", "units": "degree"},
+    "latitude": {"name": "lat", "units": None},  # "degree"},
+    "longitude": {"name": "lon", "units": None},  # "degree"},
     "pressure": {"name": "pres", "units": "pascals"},
     "specific_humidity": {"name": "spfh", "units": "kg/kg"},
     "surface_height": {"name": "zsfc", "units": "gpm"},
@@ -104,6 +104,9 @@ VARIN_ATTRS_DICT = {
 
 # Pressure profile computation methods.
 PRES_PROF_COMP_METHODS_DICT = {1: pressure_from_thickness}
+
+# Global variable range string.
+VARRANGE_STRING = "Variable %s range values: (%s, %s) %s."
 
 # ----
 
@@ -159,7 +162,7 @@ class TCDiagsInputsNetCDFIO:
             )
             raise TCDiagsIOError(msg=msg)
 
-        self.variable_range_msg = "Variable %s range values: (%s, %s) %s."
+        self.variable_range_msg = VARRANGE_STRING
 
     def _get_pressure(self, inputs_obj: object) -> object:
         """
@@ -249,7 +252,7 @@ class TCDiagsInputsNetCDFIO:
             numpy.array(inputs_obj.pres).max(),
             inputs_obj.pres.units,
         )
-        self.logger.debug(msg=msg)
+        self.logger.info(msg=msg)
 
         return inputs_obj
 
@@ -368,18 +371,37 @@ class TCDiagsInputsNetCDFIO:
                 for key in ["name", "units"]
             ]
 
-            values = units.Quantity(values, var_units)
+            if var_units is not None:
+                values = units.Quantity(values, var_units)
             inputs_obj = parser_interface.object_setattr(
                 object_in=inputs_obj, key=var_name, value=values
             )
 
-            msg = self.variable_range_msg % (
-                yaml_key,
-                numpy.array(values.min()),
-                numpy.array(values.max()),
-                values.units,
-            )
-            self.logger.debug(msg=msg)
+            if var_units is not None:
+                msg = self.variable_range_msg % (
+                    yaml_key,
+                    numpy.array(values.min()),
+                    numpy.array(values.max()),
+                    values.units,
+                )
+                self.logger.info(msg=msg)
+
+        # Check that the geographical coordinate arrays are correct;
+        # proceed accordingly.
+        if (len(numpy.array(inputs_obj.lat).shape) <= 1) and \
+           (len(numpy.array(inputs_obj.lon).shape) <= 1):
+
+            msg = ("The geographical coordinate arrays for latitude and longitude "
+                   "are 1-dimensional; converting to gridded values."
+                   )
+            self.logger.warn(msg=msg)
+
+            (x, y) = numpy.meshgrid(inputs_obj.lon, inputs_obj.lat)
+
+            inputs_obj = parser_interface.object_setattr(
+                object_in=inputs_obj, key="lat", value=y)
+            inputs_obj = parser_interface.object_setattr(
+                object_in=inputs_obj, key="lon", value=x)
 
         # Compute/define the remaining diagnostic variables.
         inputs_obj = self._get_pressure(inputs_obj=inputs_obj)
@@ -392,6 +414,6 @@ class TCDiagsInputsNetCDFIO:
             numpy.array(values.max()),
             values.units,
         )
-        self.logger.debug(msg=msg)
+        self.logger.info(msg=msg)
 
         return inputs_obj

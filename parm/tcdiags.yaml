@@ -2,3 +2,6 @@ inputs_yaml: !INC /ufs_tcdiags/parm/inputs.yaml
 
 tcmpi: !INC /ufs_tcdiags/parm/tcmpi.yaml 
 
+tcwnmsi: !INC /ufs_tcdiags/parm/tcwnmsi.yaml
+
+tcvitals: !INC /ufs_tcdiags/parm/tcvitals.yaml

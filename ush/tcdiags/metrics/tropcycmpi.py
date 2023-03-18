@@ -144,7 +144,7 @@ class TropCycMPI:
             "mslp_max": 2000.0,
             "output_file": "tcmpi.nc",
             "zmax": 10.0
-        }
+        }  # NEED TO UPDAT THIS USING DEFAULT DICTIONARY
 
         # Define the array dimension attributes.
         (self.nx, self.ny) = [
@@ -197,72 +197,6 @@ class TropCycMPI:
             "vmax",
             "zsfc",
         ]
-
-    def define_locals(self) -> None:
-        """
-        Description
-        -----------
-
-        This method defines the input variables for the tropical
-        cyclone maximum potential intensity calculations.
-
-        """
-
-        # Initialize the input variable arrays for the tropical
-        # cyclone maximum potential intensity calculation.
-        self.sstc = numpy.array(self.inputs_obj.temp)[0, :, :].ravel()
-        self.slp = numpy.array(self.tcmpi_obj.pslp).ravel()
-        self.mxrt = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.mxrt), (self.tcmpi_obj.mxrt.shape[0], self.ndim)
-        )
-        self.pres = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.pres), (self.tcmpi_obj.pres.shape[0], self.ndim)
-        )
-        self.temp = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.temp), (self.tcmpi_obj.temp.shape[0], self.ndim)
-        )
-        self.zsfc = numpy.array(self.inputs_obj.zsfc).ravel()
-
-    def init_config(self) -> None:
-        """
-        Description
-        -----------
-
-        This method defines the base-class attribute values collected
-        from the experiment configuration variables.
-
-        """
-
-        # Check the configuration file for the respective
-        # configuration variables; proceed accordingly.
-        for tcmpi_var in self.tcmpi_var_dict:
-
-            value = parser_interface.dict_key_value(
-                dict_in=self.yaml_dict, key=tcmpi_var, force=True, no_split=True
-            )
-
-            # Use the default value assigned in the constructor.
-            if value is None:
-                value = parser_interface.dict_key_value(
-                    dict_in=self.tcmpi_var_dict,
-                    key=tcmpi_var,
-                    force=True,
-                    no_split=None,
-                )
-
-                msg = (
-                    f"Setting configuration variable {tcmpi_var} to default value "
-                    f"{value}."
-                )
-                self.logger.warn(msg=msg)
-
-            # Update the base-class object.
-            self.tcmpi_obj = parser_interface.object_setattr(
-                object_in=self.tcmpi_obj, key=tcmpi_var, value=value
-            )
 
     def compute_inputs(self) -> None:
         """
@@ -354,7 +288,73 @@ class TropCycMPI:
                    f"({numpy.nanmin(numpy.array(value))}, {numpy.nanmax(numpy.array(value))}) "
                    f"{value.units}."
                    )
-            self.logger.debug(msg=msg)
+            self.logger.info(msg=msg)
+
+    def define_locals(self) -> None:
+        """
+        Description
+        -----------
+
+        This method defines the input variables for the tropical
+        cyclone maximum potential intensity calculations.
+
+        """
+
+        # Initialize the input variable arrays for the tropical
+        # cyclone maximum potential intensity calculation.
+        self.sstc = numpy.array(self.inputs_obj.temp)[0, :, :].ravel()
+        self.slp = numpy.array(self.tcmpi_obj.pslp).ravel()
+        self.mxrt = numpy.reshape(
+            numpy.array(
+                self.tcmpi_obj.mxrt), (self.tcmpi_obj.mxrt.shape[0], self.ndim)
+        )
+        self.pres = numpy.reshape(
+            numpy.array(
+                self.tcmpi_obj.pres), (self.tcmpi_obj.pres.shape[0], self.ndim)
+        )
+        self.temp = numpy.reshape(
+            numpy.array(
+                self.tcmpi_obj.temp), (self.tcmpi_obj.temp.shape[0], self.ndim)
+        )
+        self.zsfc = numpy.array(self.inputs_obj.zsfc).ravel()
+
+    def init_config(self) -> None:
+        """
+        Description
+        -----------
+
+        This method defines the base-class attribute values collected
+        from the experiment configuration variables.
+
+        """
+
+        # Check the configuration file for the respective
+        # configuration variables; proceed accordingly.
+        for tcmpi_var in self.tcmpi_var_dict:
+
+            value = parser_interface.dict_key_value(
+                dict_in=self.yaml_dict, key=tcmpi_var, force=True, no_split=True
+            )
+
+            # Use the default value assigned in the constructor.
+            if value is None:
+                value = parser_interface.dict_key_value(
+                    dict_in=self.tcmpi_var_dict,
+                    key=tcmpi_var,
+                    force=True,
+                    no_split=None,
+                )
+
+                msg = (
+                    f"Setting configuration variable {tcmpi_var} to default value "
+                    f"{value}."
+                )
+                self.logger.warn(msg=msg)
+
+            # Update the base-class object.
+            self.tcmpi_obj = parser_interface.object_setattr(
+                object_in=self.tcmpi_obj, key=tcmpi_var, value=value
+            )
 
     def tcpi(self, idx: int) -> None:
         """
