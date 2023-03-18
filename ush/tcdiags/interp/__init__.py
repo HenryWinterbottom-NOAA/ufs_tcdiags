@@ -199,11 +199,11 @@ def interp_ll2ra(
     # Interpolate the Cartesian grid to the defined polar coordinate
     # grid.
     radial = numpy.arange(0.0, (max_radius + drho), drho)
-    azimuth = numpy.arange(-1.0 * numpy.pi, (numpy.pi + dphi), dphi)
+    azimuth = numpy.arange((-1.0*numpy.pi), (numpy.pi + dphi), dphi)
 
     msg = (
         f"Defining polar projection grid of resolution {drho} meters "
-        f"and {dphi} degrees centered at longitude coordinate {lon_0} "
+        f"and {dphi} radians centered at longitude coordinate {lon_0} "
         f"and latitude coordinate location {lat_0}."
     )
     logger.info(msg=msg)
@@ -327,7 +327,8 @@ def interp_vertical(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.
     # Interpolate the 3-dimensional variable specified upon input to
     # the specified vertical-type levels.
     try:
-        varout = interplevel(varin, zarr, levs)
+
+        varout = interplevel(varin.T, zarr.T, levs)
 
     except Exception as errmsg:
         msg = f"The vertical interpolation failed with error {errmsg}. Aborting!!!"

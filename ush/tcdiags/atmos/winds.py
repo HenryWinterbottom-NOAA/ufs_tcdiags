@@ -64,6 +64,10 @@ Functions
         using spherical harmonic transforms; the methodology follows
         from Lynch [1988].
 
+    wndmag(inputs_obj)
+
+        This function computes the magnitude of the vector wind field.
+
 Requirements
 ------------
 
@@ -106,7 +110,7 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["global_divg", "global_vort", "global_wind_part"]
+__all__ = ["global_divg", "global_vort", "global_wind_part", "wndmag"]
 
 # ----
 
@@ -304,7 +308,7 @@ def global_divg(inputs_obj: object) -> object:
         f"Global divergence values range({numpy.array(xdivg).min()}, "
         f"{numpy.array(xdivg).max()}) {xdivg.units}."
     )
-    logger.debug(msg=msg)
+    logger.info(msg=msg)
 
     # Deallocate memory for the spherical harmonic transform object.
     _cleanup(xspharm=xspharm)
@@ -367,7 +371,7 @@ def global_vort(inputs_obj: object) -> object:
         f"Global vorticity values range({numpy.array(xvort).min()}, "
         f"{numpy.array(xvort).max()}) {xvort.units}."
     )
-    logger.debug(msg=msg)
+    logger.info(msg=msg)
 
     # Deallocate memory for the spherical harmonic transform object.
     _cleanup(xspharm=xspharm)
@@ -471,5 +475,56 @@ def global_wind_part(inputs_obj: object) -> object:
 
     # Deallocate memory for the spherical harmonic transform object.
     _cleanup(xspharm=xspharm)
+
+    return inputs_obj
+
+# ----
+
+
+def wndmag(inputs_obj: object) -> object:
+    """
+    Description
+    -----------
+
+    This function computes the magnitude of the vector wind field.
+
+    Parameters
+    ----------
+
+    inputs_obj: object
+
+        A Python object containing, at minimum, the zonal and
+        meridional wind components; units are meters per second.
+
+    Returns
+    -------
+
+    inputs_obj: object
+
+        A Python object updated to now contain the total wind speed
+        magnitude field `wndmag`.
+
+    """
+
+    # Initialize the local variable array.
+    wndmag = numpy.zeros(inputs_obj.uwnd.shape)
+
+    # Compute the magnitude of the vector wind field.
+    xwndmag = numpy.sqrt(inputs_obj.uwnd*inputs_obj.uwnd +
+                         inputs_obj.vwnd*inputs_obj.vwnd
+                         )
+
+    # Define the correct units with respect to the input variable.
+    xwndmag = units.Quantity(xwndmag, "mps")
+
+    inputs_obj = parser_interface.object_setattr(
+        object_in=inputs_obj, key="wndmag", value=xwndmag
+    )
+
+    msg = (
+        f"Wind speed magnitude range values ({numpy.array(xwndmag).min()}, "
+        f"{numpy.array(xwndmag).max()}) {xwndmag.units}."
+    )
+    logger.info(msg=msg)
 
     return inputs_obj

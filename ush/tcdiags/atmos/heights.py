@@ -96,7 +96,8 @@ def height_from_pressure(inputs_obj: object) -> object:
         A Python object containing, at minimum, the pressure profile
         from which the geometric heights will be computed.
 
-    Returns -------
+    Returns 
+    -------
 
     inputs_obj: object
 

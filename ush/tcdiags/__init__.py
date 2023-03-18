@@ -66,6 +66,7 @@ from utils.logger_interface import Logger
 from tcdiags.io.inputs import TCDiagsInputsNetCDFIO
 from tcdiags.metrics.tropcycmpi import TropCycMPI
 from tcdiags.tc import FilterVortex
+from tcdiags.tc.wnmsi import WNMSI
 
 # ----
 
@@ -106,7 +107,8 @@ class TCDiags:
         self.tcdiags_io = TCDiagsInputsNetCDFIO(yaml_dict=self.yaml_dict)
 
         # Define the available application options.
-        self.apps_dict = {"tcfilt": FilterVortex, "tcmpi": TropCycMPI}
+        self.apps_dict = {"tcfilt": FilterVortex, "tcmpi": TropCycMPI,
+                          "tcwnmsi": WNMSI}
 
     def run(self) -> None:
         """
@@ -161,6 +163,17 @@ class TCDiags:
                         self.logger.warn(msg=msg)
 
                         yaml_app_dict = {}
+
+                    try:
+                        yaml_app_dict = parser_interface.dict_merge(dict1=yaml_app_dict,
+                                                                    dict2=self.yaml_dict["tcvitals"]
+                                                                    )
+                    except KeyError:
+                        msg = ("A YAML-formatted file containing the TC attributes could not be "
+                               f"determined from the experiment configuration file {self.yaml_file} "
+                               "and may cause some applications to fail."
+                               )
+                        self.logger.warn(msg=msg)
 
                     # Launch the respective application.
                     app_class(yaml_dict=yaml_app_dict,
