@@ -50,7 +50,7 @@ References
 
     Bister, M., and Emanuel, K. A., Low frequency variability of
     tropical cyclone potential intensity, 1, Interannual to
-    interdecadal variability, J. Geophys. Res., 107( D24), 4801,
+    interdecadal variability, J. Geophys. Res., 107 (D24), 4801,
     doi:10.1029/2001JD000776, 2002.
 
 Author(s)

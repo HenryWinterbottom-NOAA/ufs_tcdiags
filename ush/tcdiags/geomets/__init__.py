@@ -32,6 +32,12 @@ Description
 Functions
 ---------
 
+    bearing_geoloc(loc1, dist, heading)
+
+        This function returns the geographical coordinate location
+        compute from a reference geographical location and the
+        distance and bearing for the destination location.
+
     haversine(loc1, loc2, radius=R_earth.value)
 
         This function computes and returns the great-circle (i.e.,
@@ -39,6 +45,8 @@ Functions
 
 Requirements
 ------------
+
+- geopy; https://github.com/geopy/geopy
 
 - ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
@@ -67,10 +75,13 @@ from astropy.constants import R_earth
 from exceptions import GeoMetsError
 from utils.logger_interface import Logger
 
+import geopy
+from geopy.distance import geodesic
+
 # ----
 
 # Define all available functions.
-__all__ = ["haversine"]
+__all__ = ["bearing_geoloc", "haversine"]
 
 # ----
 
@@ -85,7 +96,58 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 
-def haversine(loc1: Tuple, loc2: Tuple, radius=R_earth.value) -> float:
+def bearing_geoloc(loc1: Tuple, dist: float, heading: float) -> Tuple[float, float]:
+    """
+    Description
+    -----------
+
+    This function returns the geographical coordinate location compute
+    from a reference geographical location and the distance and
+    bearing for the destination location.
+
+    Parameters
+    ----------
+
+    loc1: tuple
+
+        A Python tuple containing the geographical coordinates of
+        location 1; format is (lat, lon); units are degrees.
+
+    dist: float
+
+        A Python float value specifying the distance from the
+        reference geographical location to the destination location;
+        units are meters.
+
+    heading: float
+
+        A Python float value specifying the heading from the reference
+        geographical location to the destination location; units are
+        degrees.
+
+    Returns
+    -------
+
+    loc2: tuple
+
+        A Python tuple containing the geographical coordinates of
+        destination location; format is (lat, lon); units are degrees.
+
+    """
+
+    # Define the origin location attributes.
+    origin = geopy.Point(loc1)
+
+    # Compute the destination location.
+    dest = geodesic(meters=dist).destination(origin, heading)
+    loc2 = [dest.latitude, dest.longitude]
+
+    return loc2
+
+# ----
+
+
+def haversine(loc1: Tuple, loc2: Tuple, radius: float = R_earth.value) -> float:
     """
     Description
     -----------
@@ -136,7 +198,8 @@ def haversine(loc1: Tuple, loc2: Tuple, radius=R_earth.value) -> float:
     dlat = lat2 - lat1
     dlon = lon2 - lon1
 
-    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * cos(lat2) * sin(dlon / 2.0) ** 2.0
+    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * \
+        cos(lat2) * sin(dlon / 2.0) ** 2.0
     hvsine = 2.0 * radius * asin(sqrt(dist))
 
     return hvsine
