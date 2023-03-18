@@ -186,12 +186,10 @@ def interp_ll2ra(
         [haversine(fix, (lats[idx], lons[idx])) for idx in range(len(lats))]
     )
 
-    xx = numpy.array([haversine(fix, (lat_0, lons[idx]))
-                      for idx in range(len(lats))])
+    xx = numpy.array([haversine(fix, (lat_0, lons[idx])) for idx in range(len(lats))])
     xx = numpy.where(lons < lon_0, -1.0 * xx, xx)
 
-    yy = numpy.array([haversine(fix, (lats[idx], lon_0))
-                      for idx in range(len(lats))])
+    yy = numpy.array([haversine(fix, (lats[idx], lon_0)) for idx in range(len(lats))])
     yy = numpy.where(lats < lat_0, -1.0 * yy, yy)
 
     phi = numpy.arctan2(yy, xx)
@@ -199,7 +197,7 @@ def interp_ll2ra(
     # Interpolate the Cartesian grid to the defined polar coordinate
     # grid.
     radial = numpy.arange(0.0, (max_radius + drho), drho)
-    azimuth = numpy.arange((-1.0*numpy.pi), (numpy.pi + dphi), dphi)
+    azimuth = numpy.arange((-1.0 * numpy.pi), (numpy.pi + dphi), dphi)
 
     msg = (
         f"Defining polar projection grid of resolution {drho} meters "
