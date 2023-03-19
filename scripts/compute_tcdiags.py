@@ -72,7 +72,7 @@ Keywords
         configuration; if not specified the attribute defaults to
         NoneType.
 
-        --tcdiags True
+        --tcfilt True
 
 Requirements
 ------------
@@ -119,6 +119,7 @@ CLS_SCHEMA = {
     "yaml_file": str,
     Optional("tcfilt", default=False): bool,
     Optional("tcmpi", default=False): bool,
+    Optional("tcwnmsi", default=False): bool
 }
 
 # ----

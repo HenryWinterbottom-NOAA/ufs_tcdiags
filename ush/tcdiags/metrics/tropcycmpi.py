@@ -50,7 +50,7 @@ References
 
     Bister, M., and Emanuel, K. A., Low frequency variability of
     tropical cyclone potential intensity, 1, Interannual to
-    interdecadal variability, J. Geophys. Res., 107( D24), 4801,
+    interdecadal variability, J. Geophys. Res., 107 (D24), 4801,
     doi:10.1029/2001JD000776, 2002.
 
 Author(s)
@@ -143,8 +143,8 @@ class TropCycMPI:
         self.tcmpi_var_dict = {
             "mslp_max": 2000.0,
             "output_file": "tcmpi.nc",
-            "zmax": 10.0
-        }
+            "zmax": 10.0,
+        }  # NEED TO UPDAT THIS USING DEFAULT DICTIONARY
 
         # Define the array dimension attributes.
         (self.nx, self.ny) = [
@@ -198,6 +198,91 @@ class TropCycMPI:
             "zsfc",
         ]
 
+    def compute_inputs(self) -> None:
+        """
+        Description
+        -----------
+
+        This method computes, updates the units in accordance with the
+        TC MPI application, and updates the base-class object
+        `tcmpi_obj` accordingly.
+
+        """
+
+        # Compute the input variables.
+        self.tcmpi_obj = moisture.spfh_to_mxrt(inputs_obj=self.inputs_obj)
+        self.tcmpi_obj = pressures.pressure_to_sealevel(inputs_obj=self.inputs_obj)
+
+        # Update the input variable units accordingly.
+        self.tcmpi_obj.pslp = units.Quantity(self.inputs_obj.pslp, "hectopascal")
+        self.tcmpi_obj.pres = units.Quantity(self.inputs_obj.pres, "hectopascal")
+        self.tcmpi_obj.temp = units.Quantity(self.inputs_obj.temp, "celsius")
+
+    def compute_tcmpi(self) -> None:
+        """
+        Description
+        -----------
+
+        This function computes the TC MPI in accordance with Bister
+        and Emanuel [2002] and the Python package described in
+        Gifford, D. M., [2020]; the TC MPI variables are scaled
+        accordingly and the base-class object attributes are updated
+        and assigned the appropriate units accordingly.
+
+        """
+
+        # Compute the tropical cyclone maximum potential intensity
+        # attributes.
+        msg = "Computing the tropical cyclone maximum potential intensity " "metrics."
+        self.logger.info(msg=msg)
+        [self.tcpi(idx=idx) for idx in range(self.ndim)]
+
+        # Define the units for the respective varaiables.
+        self.mslp = units.Quantity(self.mslp, "hectopascal")
+        self.pout = units.Quantity(self.pout, "hectopascal")
+        self.tout = units.Quantity(self.tout, "celsius")
+        self.vmax = units.Quantity(self.vmax, "mps")
+
+        # Define the base-class attribute values.
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="mslp", value=self.mslp
+        )
+        self.tcmpi_obj.mslp = numpy.reshape(self.tcmpi_obj.mslp, (self.ny, self.nx))
+        self.tcmpi_obj.mslp = units.Quantity(self.tcmpi_obj.mslp, "pascal")
+
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="pout", value=self.pout
+        )
+        self.tcmpi_obj.pout = numpy.reshape(self.tcmpi_obj.pout, (self.ny, self.nx))
+        self.tcmpi_obj.pout = units.Quantity(self.tcmpi_obj.pout, "pascal")
+
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="tout", value=self.tout
+        )
+        self.tcmpi_obj.tout = numpy.reshape(self.tcmpi_obj.tout, (self.ny, self.nx))
+        self.tcmpi_obj.tout = units.Quantity(self.tcmpi_obj.tout, "kelvin")
+
+        self.tcmpi_obj = parser_interface.object_setattr(
+            object_in=self.tcmpi_obj, key="vmax", value=self.vmax
+        )
+        self.tcmpi_obj.vmax = numpy.reshape(self.tcmpi_obj.vmax, (self.ny, self.nx))
+
+        # Correct the units for output.
+        self.tcmpi_obj.pres = units.Quantity(self.tcmpi_obj.pres, "pascal")
+        self.tcmpi_obj.temp = units.Quantity(self.tcmpi_obj.temp, "kelvin")
+
+        for tcmpi_var in self.tcmpi_var_list:
+            value = parser_interface.object_getattr(
+                object_in=self.tcmpi_obj, key=tcmpi_var
+            )
+
+            msg = (
+                f"The tropical cyclone metric {tcmpi_var} range values: "
+                f"({numpy.nanmin(numpy.array(value))}, {numpy.nanmax(numpy.array(value))}) "
+                f"{value.units}."
+            )
+            self.logger.info(msg=msg)
+
     def define_locals(self) -> None:
         """
         Description
@@ -213,16 +298,13 @@ class TropCycMPI:
         self.sstc = numpy.array(self.inputs_obj.temp)[0, :, :].ravel()
         self.slp = numpy.array(self.tcmpi_obj.pslp).ravel()
         self.mxrt = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.mxrt), (self.tcmpi_obj.mxrt.shape[0], self.ndim)
+            numpy.array(self.tcmpi_obj.mxrt), (self.tcmpi_obj.mxrt.shape[0], self.ndim)
         )
         self.pres = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.pres), (self.tcmpi_obj.pres.shape[0], self.ndim)
+            numpy.array(self.tcmpi_obj.pres), (self.tcmpi_obj.pres.shape[0], self.ndim)
         )
         self.temp = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.temp), (self.tcmpi_obj.temp.shape[0], self.ndim)
+            numpy.array(self.tcmpi_obj.temp), (self.tcmpi_obj.temp.shape[0], self.ndim)
         )
         self.zsfc = numpy.array(self.inputs_obj.zsfc).ravel()
 
@@ -263,98 +345,6 @@ class TropCycMPI:
             self.tcmpi_obj = parser_interface.object_setattr(
                 object_in=self.tcmpi_obj, key=tcmpi_var, value=value
             )
-
-    def compute_inputs(self) -> None:
-        """
-        Description
-        -----------
-
-        This method computes, updates the units in accordance with the
-        TC MPI application, and updates the base-class object
-        `tcmpi_obj` accordingly.
-
-        """
-
-        # Compute the input variables.
-        self.tcmpi_obj = moisture.spfh_to_mxrt(inputs_obj=self.inputs_obj)
-        self.tcmpi_obj = pressures.pressure_to_sealevel(
-            inputs_obj=self.inputs_obj)
-
-        # Update the input variable units accordingly.
-        self.tcmpi_obj.pslp = units.Quantity(
-            self.inputs_obj.pslp, "hectopascal")
-        self.tcmpi_obj.pres = units.Quantity(
-            self.inputs_obj.pres, "hectopascal")
-        self.tcmpi_obj.temp = units.Quantity(self.inputs_obj.temp, "celsius")
-
-    def compute_tcmpi(self) -> None:
-        """
-        Description
-        -----------
-
-        This function computes the TC MPI in accordance with Bister
-        and Emanuel [2002] and the Python package described in
-        Gifford, D. M., [2020]; the TC MPI variables are scaled
-        accordingly and the base-class object attributes are updated
-        and assigned the appropriate units accordingly.
-
-        """
-
-        # Compute the tropical cyclone maximum potential intensity
-        # attributes.
-        msg = ("Computing the tropical cyclone maximum potential intensity "
-               "metrics."
-               )
-        self.logger.info(msg=msg)
-        [self.tcpi(idx=idx) for idx in range(self.ndim)]
-
-        # Define the units for the respective varaiables.
-        self.mslp = units.Quantity(self.mslp, "hectopascal")
-        self.pout = units.Quantity(self.pout, "hectopascal")
-        self.tout = units.Quantity(self.tout, "celsius")
-        self.vmax = units.Quantity(self.vmax, "mps")
-
-        # Define the base-class attribute values.
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="mslp", value=self.mslp
-        )
-        self.tcmpi_obj.mslp = numpy.reshape(
-            self.tcmpi_obj.mslp, (self.ny, self.nx))
-        self.tcmpi_obj.mslp = units.Quantity(self.tcmpi_obj.mslp, "pascal")
-
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="pout", value=self.pout
-        )
-        self.tcmpi_obj.pout = numpy.reshape(
-            self.tcmpi_obj.pout, (self.ny, self.nx))
-        self.tcmpi_obj.pout = units.Quantity(self.tcmpi_obj.pout, "pascal")
-
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="tout", value=self.tout
-        )
-        self.tcmpi_obj.tout = numpy.reshape(
-            self.tcmpi_obj.tout, (self.ny, self.nx))
-        self.tcmpi_obj.tout = units.Quantity(self.tcmpi_obj.tout, "kelvin")
-
-        self.tcmpi_obj = parser_interface.object_setattr(
-            object_in=self.tcmpi_obj, key="vmax", value=self.vmax
-        )
-        self.tcmpi_obj.vmax = numpy.reshape(
-            self.tcmpi_obj.vmax, (self.ny, self.nx))
-
-        # Correct the units for output.
-        self.tcmpi_obj.pres = units.Quantity(self.tcmpi_obj.pres, "pascal")
-        self.tcmpi_obj.temp = units.Quantity(self.tcmpi_obj.temp, "kelvin")
-
-        for tcmpi_var in self.tcmpi_var_list:
-            value = parser_interface.object_getattr(
-                object_in=self.tcmpi_obj, key=tcmpi_var)
-
-            msg = (f"The tropical cyclone metric {tcmpi_var} range values: "
-                   f"({numpy.nanmin(numpy.array(value))}, {numpy.nanmax(numpy.array(value))}) "
-                   f"{value.units}."
-                   )
-            self.logger.debug(msg=msg)
 
     def tcpi(self, idx: int) -> None:
         """
@@ -408,8 +398,7 @@ class TropCycMPI:
 
         # Write the netCDF-formatted file path containing the TC MPI
         # attributes.
-        tcdiags_out = TCDiagsOutputsNetCDFIO(
-            output_file=self.tcmpi_obj.output_file)
+        tcdiags_out = TCDiagsOutputsNetCDFIO(output_file=self.tcmpi_obj.output_file)
 
         tcdiags_out.write(
             var_obj=self.tcmpi_obj,

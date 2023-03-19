@@ -41,6 +41,11 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/atmos/winds module; it is a sub-class of Error.
 
+    FFTError()
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/analysis/fft module; it is a sub-class of Error.
+
     FilterVortexError()
 
         This is the base-class for exceptions encountered within the
@@ -73,6 +78,12 @@ Classes
         ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of
         Error.
 
+    TropCycWNMSIError()
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/metrics/tropcycwnmsi module; it is a sub-class of
+        Error.
+
 Requirements
 ------------
 
@@ -97,8 +108,10 @@ from utils.error_interface import Error
 # ----
 
 # Define all available attributes.
-__all__ = ["AtmosMoistureError", "AtmosWindsError", "FilterVortexError", "GeoMetsError",
-           "InterpError", "TCDiagsError", "TCDiagsIOError", "TropCycMPIError"]
+__all__ = ["AtmosMoistureError", "AtmosWindsError", "FFTError", "FilterVortexError",
+           "GeoMetsError", "InterpError", "TCDiagsError", "TCDiagsIOError",
+           "TropCycMPIError", "TropCycWNMSIError"
+           ]
 
 # ----
 
@@ -131,6 +144,20 @@ class AtmosWindsError(Error):
     ush/tcdiags/atmos/winds module; it is a sub-class of Error.
 
     """
+
+# ----
+
+
+class FFTError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/analysis/fft module; it is a sub-class of Error.
+
+    """
+
 
 # ----
 
@@ -208,5 +235,19 @@ class TropCycMPIError(Error):
 
     This is the base-class for exceptions encountered within the
     ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of Error.
+
+    """
+
+# ----
+
+
+class TropCycWNMSIError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/metrics/tropcycwnmsi module; it is a sub-class of
+    Error.
 
     """
