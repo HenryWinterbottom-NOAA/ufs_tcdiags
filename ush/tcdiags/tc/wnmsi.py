@@ -26,10 +26,17 @@ Module
 Description
 -----------
 
+    This module contains the base-class object for tropical cyclone
+    (TC) multi-scale intensity (MSI) application.
 
 Classes
 -------
 
+    TCWNMSI(yaml_dict, inputs_obj)
+
+        This is the base-class object for computing the tropical
+        cyclone (TC) multi-scale intensity (MSI) attributes described
+        in Vukicevic et al., [2014].
 
 Requirements
 ------------
@@ -60,27 +67,22 @@ History
 
 # ----
 
-
-# ----
+from collections import OrderedDict
+from dataclasses import dataclass
+from typing import Dict, List
 
 import numpy
 from exceptions import TropCycWNMSIError
-
-import gc
-from tcdiags.io.inputs import VARRANGE_STRING
+from metpy.units import units
+from tabulate import tabulate
 from tcdiags.analysis.fft import forward_fft2d, inverse_fft2d
 from tcdiags.atmos import winds
-from tcdiags.interp import interp_ll2ra, interp_vertical
 from tcdiags.geomets import bearing_geoloc
-
-from dataclasses import dataclass
-from typing import Dict, List, Union
-
+from tcdiags.interp import interp_ll2ra, interp_vertical
+from tcdiags.io.inputs import VARRANGE_STRING
+from tcdiags.io.outputs import TCDiagsOutputsNetCDFIO
 from tools import parser_interface
-
 from utils.logger_interface import Logger
-
-from tabulate import tabulate
 
 # ----
 
@@ -97,12 +99,33 @@ class WNMSI:
     Description
     -----------
 
+    This is the base-class object for computing the tropical cyclone
+    (TC) multi-scale intensity (MSI) attributes described in Vukicevic
+    et al., [2014].
+
     Parameters
     ----------
+
+    yaml_dict: dict
+
+        A Python dictionary containing the attributes from the
+        experiment configuration file; the TC MSI application
+        configuration values are contained in the YAML-formatted file
+        path denoted by the `tcwnmsi` attribute in the experiment
+        configuration.
+
+    inputs_obj: object
+
+        A Python object containing the mandatory input variables.
 
     Raises
     ------
 
+    TropCycWNMSIError:
+
+        * raised if the TC attributes cannot be determined from the
+          `tcvitals` attributes or the attribute has not been
+          specified.
 
     """
 
@@ -123,37 +146,50 @@ class WNMSI:
         self.tcv_dict = {}
 
         # Define the experiment configuration variables.
-        tcwnmsi_default_var_dict = {"dphi": 45.0, "drho": 100000.0,
-                                    "max_radius": 1000000.0, "max_wn": 3
-                                    }
+        tcwnmsi_default_var_dict = {
+            "dphi": 45.0,
+            "drho": 100000.0,
+            "max_radius": 1000000.0,
+            "max_wn": 3,
+            "output_file": "%s.TCMSI.nc",
+        }
 
         tcwnmsi_var_dict = parser_interface.update_dict(
-            default_dict=tcwnmsi_default_var_dict, base_dict=self.yaml_dict)
+            default_dict=tcwnmsi_default_var_dict, base_dict=self.yaml_dict
+        )
 
         for tcwnmsi_var in tcwnmsi_var_dict:
             value = parser_interface.dict_key_value(
-                dict_in=tcwnmsi_var_dict, key=tcwnmsi_var, no_split=True)
+                dict_in=tcwnmsi_var_dict, key=tcwnmsi_var, no_split=True
+            )
 
             self.tcwnmsi_obj = parser_interface.object_setattr(
-                object_in=self.tcwnmsi_obj, key=tcwnmsi_var, value=value)
+                object_in=self.tcwnmsi_obj, key=tcwnmsi_var, value=value
+            )
 
         # Collect the TC attributes from the experiment configuration;
         # proceed accordingly.
-        tcid_list = [key for key in self.yaml_dict.keys()
-                     if key not in tcwnmsi_default_var_dict.keys()]
+        tcid_list = [
+            key
+            for key in self.yaml_dict.keys()
+            if key not in tcwnmsi_default_var_dict.keys()
+        ]
 
-        msg = ("The TC maximum intensity index will be computed for the following "
-               f"TC events: {[tcid for tcid in tcid_list]}.")
+        msg = (
+            "The TC maximum intensity index will be computed for the following "
+            f"TC events: {[tcid for tcid in tcid_list]}."
+        )
         self.logger.info(msg=msg)
 
         for tcid in tcid_list:
             self.tcv_dict[tcid] = self.yaml_dict[tcid]
 
         if len(self.tcv_dict) <= 0:
-            msg = ("The TC attributes have not been specified within "
-                   "the experiment configuration file attribute `tcvitals` or could "
-                   "not be determined. Aborting!!!"
-                   )
+            msg = (
+                "The TC attributes have not been specified within "
+                "the experiment configuration file attribute `tcvitals` or could "
+                "not be determined. Aborting!!!"
+            )
             raise TropCycWNMSIError(msg=msg)
 
         # Define the array dimension attributes.
@@ -163,8 +199,24 @@ class WNMSI:
         ]
         self.ndim = self.nx * self.ny
 
-        # Compute the input variables.
-        self.compute_inputs()
+        # Define the output variables and attributes. list.
+        self.output_varlist = [
+            "total_wind",
+        ]
+
+        self.output_attrslist = [
+            "dist_rmw_m",
+            "epsi_msi_mps",
+            "heading_rmw_deg",
+            "lat_0_deg",
+            "lon_0_deg",
+            "lat_rmw_deg",
+            "lon_rmw_deg",
+            "vmax_mps",
+            "wn0_msi_mps",
+            "wn1_msi_mps",
+            "wn0p1_msi_mps",
+        ]
 
     def compute_inputs(self) -> None:
         """
@@ -181,30 +233,33 @@ class WNMSI:
         # geometric elevation of 10-meters.
         for wnd in ["uwnd", "vwnd"]:
             self.tcwnmsi_obj = parser_interface.object_setattr(
-                object_in=self.tcwnmsi_obj, key=wnd,
+                object_in=self.tcwnmsi_obj,
+                key=wnd,
                 value=parser_interface.object_getattr(
-                    object_in=self.inputs_obj, key=wnd)
+                    object_in=self.inputs_obj, key=wnd
+                ),
             )
 
         self.tcwnmsi_obj = winds.wndmag(inputs_obj=self.tcwnmsi_obj)
 
-        wndmag10m = interp_vertical(varin=self.tcwnmsi_obj.wndmag,
-                                    zarr=(self.inputs_obj.hght),
-                                    levs=numpy.array(10.0))
+        wndmag10m = interp_vertical(
+            varin=self.tcwnmsi_obj.wndmag,
+            zarr=(self.inputs_obj.hght),
+            levs=numpy.array(10.0),
+        )
 
         wndmag10m = self.tcwnmsi_obj.wndmag[0, :, :]
 
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="wndmag10m",
-            value=wndmag10m)
+            object_in=self.tcwnmsi_obj, key="wndmag10m", value=wndmag10m
+        )
 
-        msg = VARRANGE_STRING % ("10-meter wind speed",
-                                 numpy.nanmin(numpy.array(
-                                     self.tcwnmsi_obj.wndmag10m)),
-                                 numpy.nanmax(numpy.array(
-                                     self.tcwnmsi_obj.wndmag10m)),
-                                 self.tcwnmsi_obj.wndmag.units
-                                 )
+        msg = VARRANGE_STRING % (
+            "10-meter wind speed",
+            numpy.nanmin(numpy.array(self.tcwnmsi_obj.wndmag10m)),
+            numpy.nanmax(numpy.array(self.tcwnmsi_obj.wndmag10m)),
+            self.tcwnmsi_obj.wndmag.units,
+        )
         self.logger.info(msg=msg)
 
     def compute_tcmsi(self) -> None:
@@ -219,36 +274,44 @@ class WNMSI:
 
         # Define the wave-number components of the total wind field.
         wnd_wavenum = parser_interface.object_getattr(
-            object_in=self.tcwnmsi_obj, key="wavenumbers")
+            object_in=self.tcwnmsi_obj, key="wavenumbers"
+        )
 
         # Define the maximum wind speed from the total wind field.
         total_wind = parser_interface.object_getattr(
-            object_in=self.tcwnmsi_obj, key="total_wind")
-        vmax = numpy.nanmax(total_wind)
+            object_in=self.tcwnmsi_obj, key="total_wind"
+        )
+        vmax = units.Quantity(numpy.nanmax(total_wind), "mps")
 
         if vmax is None:
-            msg = ("The maximum wind speed could not be determined from "
-                   "the total wind field; computing from the sum of the "
-                   "wavenumber spectra."
-                   )
+            msg = (
+                "The maximum wind speed could not be determined from "
+                "the total wind field; computing from the sum of the "
+                "wavenumber spectra."
+            )
             self.logger.warn(msg=msg)
 
-            vmax = sum(numpy.nanmax(wnd_wavenum[idx]) for idx in
-                       range(0, len(wnd_wavenum)))
+            vmax = sum(
+                numpy.nanmax(wnd_wavenum[idx]) for idx in range(0, len(wnd_wavenum))
+            )
 
         # Compute the TC MSI attributes.
-        tcmsi_dict = {"vmax": vmax, "wn0": numpy.nanmax(wnd_wavenum[0]),
-                      "wn1": numpy.nanmax(wnd_wavenum[1]),
-                      "wn0p1": (numpy.nanmax(wnd_wavenum[0] + wnd_wavenum[1])),
-                      "epsi": (vmax - (numpy.nanmax(wnd_wavenum[0] + wnd_wavenum[1])))
-                      }
+        tcmsi_dict = {
+            "vmax_mps": vmax,
+            "wn0_msi_mps": numpy.nanmax(wnd_wavenum[0]),
+            "wn1_msi_mps": numpy.nanmax(wnd_wavenum[1]),
+            "wn0p1_msi_mps": (numpy.nanmax(wnd_wavenum[0] + wnd_wavenum[1])),
+            "epsi_msi_mps": (vmax - (numpy.nanmax(wnd_wavenum[0] + wnd_wavenum[1]))),
+        }
 
         # Update the base-class object.
         for item in tcmsi_dict:
             value = parser_interface.dict_key_value(
-                dict_in=tcmsi_dict, key=item, no_split=True)
+                dict_in=tcmsi_dict, key=item, no_split=True
+            )
             self.tcwnmsi_obj = parser_interface.object_setattr(
-                object_in=self.tcwnmsi_obj, key=item, value=value)
+                object_in=self.tcwnmsi_obj, key=item, value=value
+            )
 
     def compute_tcmsigeo(self) -> None:
         """
@@ -265,29 +328,55 @@ class WNMSI:
         # Compute the 10-meter wind speed using the wavenumber 0 and 1
         # components of the total wind field.
         wnd_wavenum = parser_interface.object_getattr(
-            object_in=self.tcwnmsi_obj, key="wavenumbers")
+            object_in=self.tcwnmsi_obj, key="wavenumbers"
+        )
         wind = numpy.absolute(wnd_wavenum[0] + wnd_wavenum[1])
 
         # Compute the geographical location of the 10-meter wind
         # maximum location.
-        (hidx, didx) = numpy.where(wind == self.tcwnmsi_obj.wn0p1)
+        (didx, hidx) = numpy.where(wind == self.tcwnmsi_obj.wn0p1_msi_mps)
         (heading, dist) = (
             numpy.degrees(self.tcwnmsi_obj.azimuth[hidx]),
-            self.tcwnmsi_obj.radial[didx])
+            numpy.array(self.tcwnmsi_obj.radial[didx]),
+        )
 
-        (lat_rmw, lon_rmw) = bearing_geoloc(loc1=(self.tcwnmsi_obj.lat_0,
-                                                  self.tcwnmsi_obj.lon_0),
-                                            heading=heading, dist=dist)
+        (lat_rmw, lon_rmw) = bearing_geoloc(
+            loc1=(self.tcwnmsi_obj.lat_0_deg, self.tcwnmsi_obj.lon_0_deg),
+            heading=heading,
+            dist=dist,
+        )
+
+        msg = f"Maximum wind location {lat_rmw}N, {lon_rmw}E."
+        self.logger.info(msg=msg)
 
         # Update the base-class object.
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="dist_rmw", value=dist)
+            object_in=self.tcwnmsi_obj, key="dist_rmw_m", value=dist[0]
+        )
+        self.tcwnmsi_obj.dist_rmw_m = units.Quantity(
+            self.tcwnmsi_obj.dist_rmw_m, "meters"
+        )
+
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="heading_rmw", value=heading)
+            object_in=self.tcwnmsi_obj, key="heading_rmw_deg", value=heading[0]
+        )
+        self.tcwnmsi_obj.heading_rmw_deg = units.Quantity(
+            self.tcwnmsi_obj.heading_rmw_deg, "degrees"
+        )
+
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="lat_rmw", value=lat_rmw)
+            object_in=self.tcwnmsi_obj, key="lat_rmw_deg", value=lat_rmw
+        )
+        self.tcwnmsi_obj.lat_rmw_deg = units.Quantity(
+            self.tcwnmsi_obj.lat_rmw_deg, "degrees"
+        )
+
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="lon_rmw", value=lon_rmw)
+            object_in=self.tcwnmsi_obj, key="lon_rmw_deg", value=lon_rmw
+        )
+        self.tcwnmsi_obj.lon_rmw_deg = units.Quantity(
+            self.tcwnmsi_obj.lon_rmw_deg, "degrees"
+        )
 
     def wndcmp(self, lat_0: float, lon_0: float) -> None:
         """
@@ -327,29 +416,49 @@ class WNMSI:
         msg = "Transforming the 10-meter wind field to polar coordinates."
         self.logger.info(msg=msg)
 
-        wnd10mpolar_obj = interp_ll2ra(varin=self.tcwnmsi_obj.wndmag10m.magnitude,
-                                       lats=numpy.array(self.inputs_obj.lat),
-                                       lons=numpy.array(self.inputs_obj.lon),
-                                       lon_0=lon_0, lat_0=lat_0,
-                                       max_radius=self.tcwnmsi_obj.max_radius,
-                                       drho=self.tcwnmsi_obj.drho,
-                                       dphi=self.tcwnmsi_obj.dphi)
+        wnd10mpolar_obj = interp_ll2ra(
+            varin=self.tcwnmsi_obj.wndmag10m.magnitude,
+            lats=numpy.array(self.inputs_obj.lat),
+            lons=numpy.array(self.inputs_obj.lon),
+            lon_0=lon_0,
+            lat_0=lat_0,
+            max_radius=self.tcwnmsi_obj.max_radius,
+            drho=self.tcwnmsi_obj.drho,
+            dphi=self.tcwnmsi_obj.dphi,
+        )
 
         # Define the relevant attributes for TC MSI computations and
         # diagnostics and update the base-class object.
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="azimuth",
-            value=wnd10mpolar_obj.azimuth)
+            object_in=self.tcwnmsi_obj, key="azimuth", value=wnd10mpolar_obj.azimuth
+        )
+        self.tcwnmsi_obj.azimuth = units.Quantity(
+            self.tcwnmsi_obj.azimuth, "degrees")
+
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="lat_0", value=lat_0)
+            object_in=self.tcwnmsi_obj, key="lat_0_deg", value=lat_0
+        )
+        self.tcwnmsi_obj.lat_0_deg = units.Quantity(
+            self.tcwnmsi_obj.lat_0_deg, "degrees"
+        )
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="lon_0", value=lon_0)
+            object_in=self.tcwnmsi_obj, key="lon_0_deg", value=lon_0
+        )
+        self.tcwnmsi_obj.lon_0_deg = units.Quantity(
+            self.tcwnmsi_obj.lon_0_deg, "degrees"
+        )
+
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="radial",
-            value=wnd10mpolar_obj.radial)
+            object_in=self.tcwnmsi_obj, key="radial", value=wnd10mpolar_obj.radial
+        )
+        self.tcwnmsi_obj.radial = units.Quantity(
+            self.tcwnmsi_obj.radial, "meters")
+
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="total_wind",
-            value=wnd10mpolar_obj.varout)
+            object_in=self.tcwnmsi_obj, key="total_wind", value=wnd10mpolar_obj.varout
+        )
+        self.tcwnmsi_obj.total_wind = units.Quantity(
+            self.tcwnmsi_obj.total_wind, "mps")
 
         # Compute the forward fast-Fourier transform of the 10-meter
         # wind field.
@@ -359,14 +468,16 @@ class WNMSI:
         # Deconstruct the Fourier transformed 10-meter wind field
         # accordingly and reconstruct the allowable wave numbers for
         # the 10-meter wind field.
-        nallow = int(wnd10mpolar_obj.varout.shape[1]/2)
+        nallow = int(wnd10mpolar_obj.varout.shape[1] / 2)
         ncoeffs = min(self.tcwnmsi_obj.max_wn, nallow)
 
         if self.tcwnmsi_obj.max_wn > nallow:
             msg = f"Resetting the total number of Fourier coefficients to {ncoeffs}."
             self.logger.warn(msg=msg)
 
-        msg = f"Decomposing the 10-meter wind field using {ncoeffs} Fourier coefficients."
+        msg = (
+            f"Decomposing the 10-meter wind field using {ncoeffs} Fourier coefficients."
+        )
         self.logger.info(msg=msg)
         self.wndrstrct(varin=varout, ncoeffs=ncoeffs)
 
@@ -395,8 +506,7 @@ class WNMSI:
         """
 
         # Save the input variable.
-        fftsave = parser_interface.object_deepcopy(
-            object_in=varin)
+        fftsave = parser_interface.object_deepcopy(object_in=varin)
 
         # For each (allowable) wavenumber (e.g., spectral
         # coefficient), reconstruct the respective variable from using
@@ -404,7 +514,6 @@ class WNMSI:
         wndrstrct_dict = {}
 
         for coeff in range(ncoeffs):
-
             # Define the Fourier coefficients for the respective
             # wavenumber.
             msg = f"Computing the total wind-field components for wave-number {coeff}."
@@ -416,12 +525,12 @@ class WNMSI:
             # Compute the inverse Fourier transform.
             ifftr = inverse_fft2d(varin=fftr)
 
-            wndrstrct_dict[coeff] = numpy.real(ifftr)
+            wndrstrct_dict[coeff] = units.Quantity(numpy.real(ifftr), "mps")
 
         # Update the base-class object accordingly.
         self.tcwnmsi_obj = parser_interface.object_setattr(
-            object_in=self.tcwnmsi_obj, key="wavenumbers",
-            value=wndrstrct_dict)
+            object_in=self.tcwnmsi_obj, key="wavenumbers", value=wndrstrct_dict
+        )
 
     def write_output(self, tcid: str) -> None:
         """
@@ -440,15 +549,70 @@ class WNMSI:
 
         """
 
+        # Build the output variable list and object.
+        ncoeffs = len(self.tcwnmsi_obj.wavenumbers)
+        var_list = self.output_varlist + \
+            [f"wn{idx}" for idx in range(0, ncoeffs)]
+
+        # Update the output variable object.
+        wns_dict = parser_interface.object_getattr(
+            object_in=self.tcwnmsi_obj, key="wavenumbers"
+        )
+
+        for idx in wns_dict:
+            value = parser_interface.dict_key_value(
+                dict_in=wns_dict, key=idx, no_split=True
+            )
+            self.tcwnmsi_obj = parser_interface.object_setattr(
+                object_in=self.tcwnmsi_obj, key=f"wn{idx}", value=value
+            )
+
+        # Build the dimensional and CF compliant dimensions.
+        coords_2d = OrderedDict(
+            {
+                "radial": (["radial"], self.tcwnmsi_obj.radial),
+                "azimuth": (["azimuth"], self.tcwnmsi_obj.azimuth),
+            }
+        )
+
+        coords_3d = OrderedDict(
+            {
+                "radial": (["radial"], self.tcwnmsi_obj.radial),
+                "azimuth": (["azimuth"], self.tcwnmsi_obj.azimuth),
+                "wavenumbers": (["wavenumbers"], numpy.arange(0, ncoeffs)),
+            }
+        )
+
+        # Define the global attributes accordingly.
+        global_attrs_dict = {}
+
+        for global_attr in self.output_attrslist:
+            attr = parser_interface.object_getattr(
+                object_in=self.tcwnmsi_obj, key=global_attr, force=True
+            )
+
+            if attr is not None:
+                value = numpy.array(attr)
+                try:
+                    units = attr.units
+                    global_attrs_dict[global_attr] = f"{value} {units}"
+
+                except AttributeError:
+                    global_attrs_dict[global_attr] = value
+
         # Write the netCDF-formatted file path containing the TC MPI
         # attributes.
         tcdiags_out = TCDiagsOutputsNetCDFIO(
-            output_file="test.nc")  # self.tcmpi_obj.output_file)
+            output_file=self.tcwnmsi_obj.output_file % tcid
+        )
 
         tcdiags_out.write(
             var_obj=self.tcwnmsi_obj,
-            var_list=["total_wind"],
-            coords_2d=["aximuth", "radial"]
+            var_list=var_list,
+            coords_2d=coords_2d,
+            coords_3d=coords_3d,
+            attrs_list=["units"],
+            global_attrs_dict=global_attrs_dict,
         )
 
     def write_table(self, tcid: str) -> None:
@@ -491,15 +655,21 @@ class WNMSI:
 
             """
 
-            msg = "\n" + tabulate(table, header,
-                                  tablefmt="fancy_grid", numalign=("center", "center"),
-                                  colalign=("center", "center"))
+            msg = "\n" + tabulate(
+                table,
+                header,
+                tablefmt="fancy_grid",
+                numalign=("center", "center"),
+                colalign=("center", "center"),
+            )
             self.logger.info(msg=msg)
 
         # Build and write the table for the wavenumber spectra maximum
         # wind speed values.
-        header = [f"TC {tcid} Wave number",
-                  f"Maximum Wind Speed ({self.tcwnmsi_obj.uwnd.units})"]
+        header = [
+            f"TC {tcid} Wave number",
+            f"Maximum Wind Speed ({self.tcwnmsi_obj.uwnd.units})",
+        ]
 
         table = []
 
@@ -511,43 +681,63 @@ class WNMSI:
         __buildtbl__(header=header, table=table)
 
         # Build and write the table for the TC MSI attributes.
-        header = [f"TC {tcid} MSI Attribute",
-                  f"Value ({self.tcwnmsi_obj.uwnd.units})"]
+        header = [f"TC {tcid} MSI Attribute", f"Value"]
 
         table = []
 
-        for item in ["vmax", "wn0", "wn1", "wn0p1", "epsi"]:
+        for item in self.output_attrslist:
             value = parser_interface.object_getattr(
-                object_in=self.tcwnmsi_obj, key=item)
+                object_in=self.tcwnmsi_obj, key=item
+            )
 
             msg = [item, value]
             table.append(msg)
 
         __buildtbl__(header=header, table=table)
 
-    def run(self) -> None:
+    def run(self) -> object:
         """
         Description
         -----------
 
+        This method performs the following tasks:
+
+        (1) Computes the input fields required to compute the TC MSI.
+
+        (2) Decomposes the total-wind field into it's respective
+            wavenumber components as a function of TC event.
+
+        (3) Computes the TC MSI attributes, including the geographical
+            location for the radius of maximum winds as a function of
+            TC event.
+
+        (4) Writes a table of the respective TC MSI attributes and
+            writes a netCDF-formatted file containing each of the
+            (allowable) wavenumber components of the respective TC
+            wind field and the attributes written to the
+            aforementioned table are written as global attributes
+            within the respective netCDF-formatted file.
 
         """
 
+        # Compute the input variables.
+        self.compute_inputs()
+
         # Compute the TC MSI components for each respective TC event.
         for tcid in self.tcv_dict:
-
             # Define the geographical location about which the
             # 10-meter wind field for the respective TC event will be
             # analyzed.
-            (lat_0, lon_0) = [self.tcv_dict[tcid][key]
-                              for key in ["lat_deg", "lon_deg"]]
+            (lat_0, lon_0) = [
+                self.tcv_dict[tcid][key] for key in ["lat_deg", "lon_deg"]
+            ]
 
             # Decompose the 10-meter wind field into the respective
             # (allowable) wave-number structures.
             self.wndcmp(lat_0=lat_0, lon_0=lon_0)
 
             # Compute the TC maximum potential intensity attributes.
-            self.compute_tcmsi(tcid=tcid)
+            self.compute_tcmsi()
             self.compute_tcmsigeo()
 
             # Write the diagnostics accordingly.
