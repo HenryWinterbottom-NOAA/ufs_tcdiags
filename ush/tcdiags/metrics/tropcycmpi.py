@@ -143,7 +143,7 @@ class TropCycMPI:
         self.tcmpi_var_dict = {
             "mslp_max": 2000.0,
             "output_file": "tcmpi.nc",
-            "zmax": 10.0
+            "zmax": 10.0,
         }  # NEED TO UPDAT THIS USING DEFAULT DICTIONARY
 
         # Define the array dimension attributes.
@@ -211,14 +211,11 @@ class TropCycMPI:
 
         # Compute the input variables.
         self.tcmpi_obj = moisture.spfh_to_mxrt(inputs_obj=self.inputs_obj)
-        self.tcmpi_obj = pressures.pressure_to_sealevel(
-            inputs_obj=self.inputs_obj)
+        self.tcmpi_obj = pressures.pressure_to_sealevel(inputs_obj=self.inputs_obj)
 
         # Update the input variable units accordingly.
-        self.tcmpi_obj.pslp = units.Quantity(
-            self.inputs_obj.pslp, "hectopascal")
-        self.tcmpi_obj.pres = units.Quantity(
-            self.inputs_obj.pres, "hectopascal")
+        self.tcmpi_obj.pslp = units.Quantity(self.inputs_obj.pslp, "hectopascal")
+        self.tcmpi_obj.pres = units.Quantity(self.inputs_obj.pres, "hectopascal")
         self.tcmpi_obj.temp = units.Quantity(self.inputs_obj.temp, "celsius")
 
     def compute_tcmpi(self) -> None:
@@ -236,9 +233,7 @@ class TropCycMPI:
 
         # Compute the tropical cyclone maximum potential intensity
         # attributes.
-        msg = ("Computing the tropical cyclone maximum potential intensity "
-               "metrics."
-               )
+        msg = "Computing the tropical cyclone maximum potential intensity " "metrics."
         self.logger.info(msg=msg)
         [self.tcpi(idx=idx) for idx in range(self.ndim)]
 
@@ -252,29 +247,25 @@ class TropCycMPI:
         self.tcmpi_obj = parser_interface.object_setattr(
             object_in=self.tcmpi_obj, key="mslp", value=self.mslp
         )
-        self.tcmpi_obj.mslp = numpy.reshape(
-            self.tcmpi_obj.mslp, (self.ny, self.nx))
+        self.tcmpi_obj.mslp = numpy.reshape(self.tcmpi_obj.mslp, (self.ny, self.nx))
         self.tcmpi_obj.mslp = units.Quantity(self.tcmpi_obj.mslp, "pascal")
 
         self.tcmpi_obj = parser_interface.object_setattr(
             object_in=self.tcmpi_obj, key="pout", value=self.pout
         )
-        self.tcmpi_obj.pout = numpy.reshape(
-            self.tcmpi_obj.pout, (self.ny, self.nx))
+        self.tcmpi_obj.pout = numpy.reshape(self.tcmpi_obj.pout, (self.ny, self.nx))
         self.tcmpi_obj.pout = units.Quantity(self.tcmpi_obj.pout, "pascal")
 
         self.tcmpi_obj = parser_interface.object_setattr(
             object_in=self.tcmpi_obj, key="tout", value=self.tout
         )
-        self.tcmpi_obj.tout = numpy.reshape(
-            self.tcmpi_obj.tout, (self.ny, self.nx))
+        self.tcmpi_obj.tout = numpy.reshape(self.tcmpi_obj.tout, (self.ny, self.nx))
         self.tcmpi_obj.tout = units.Quantity(self.tcmpi_obj.tout, "kelvin")
 
         self.tcmpi_obj = parser_interface.object_setattr(
             object_in=self.tcmpi_obj, key="vmax", value=self.vmax
         )
-        self.tcmpi_obj.vmax = numpy.reshape(
-            self.tcmpi_obj.vmax, (self.ny, self.nx))
+        self.tcmpi_obj.vmax = numpy.reshape(self.tcmpi_obj.vmax, (self.ny, self.nx))
 
         # Correct the units for output.
         self.tcmpi_obj.pres = units.Quantity(self.tcmpi_obj.pres, "pascal")
@@ -282,12 +273,14 @@ class TropCycMPI:
 
         for tcmpi_var in self.tcmpi_var_list:
             value = parser_interface.object_getattr(
-                object_in=self.tcmpi_obj, key=tcmpi_var)
+                object_in=self.tcmpi_obj, key=tcmpi_var
+            )
 
-            msg = (f"The tropical cyclone metric {tcmpi_var} range values: "
-                   f"({numpy.nanmin(numpy.array(value))}, {numpy.nanmax(numpy.array(value))}) "
-                   f"{value.units}."
-                   )
+            msg = (
+                f"The tropical cyclone metric {tcmpi_var} range values: "
+                f"({numpy.nanmin(numpy.array(value))}, {numpy.nanmax(numpy.array(value))}) "
+                f"{value.units}."
+            )
             self.logger.info(msg=msg)
 
     def define_locals(self) -> None:
@@ -305,16 +298,13 @@ class TropCycMPI:
         self.sstc = numpy.array(self.inputs_obj.temp)[0, :, :].ravel()
         self.slp = numpy.array(self.tcmpi_obj.pslp).ravel()
         self.mxrt = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.mxrt), (self.tcmpi_obj.mxrt.shape[0], self.ndim)
+            numpy.array(self.tcmpi_obj.mxrt), (self.tcmpi_obj.mxrt.shape[0], self.ndim)
         )
         self.pres = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.pres), (self.tcmpi_obj.pres.shape[0], self.ndim)
+            numpy.array(self.tcmpi_obj.pres), (self.tcmpi_obj.pres.shape[0], self.ndim)
         )
         self.temp = numpy.reshape(
-            numpy.array(
-                self.tcmpi_obj.temp), (self.tcmpi_obj.temp.shape[0], self.ndim)
+            numpy.array(self.tcmpi_obj.temp), (self.tcmpi_obj.temp.shape[0], self.ndim)
         )
         self.zsfc = numpy.array(self.inputs_obj.zsfc).ravel()
 
@@ -408,8 +398,7 @@ class TropCycMPI:
 
         # Write the netCDF-formatted file path containing the TC MPI
         # attributes.
-        tcdiags_out = TCDiagsOutputsNetCDFIO(
-            output_file=self.tcmpi_obj.output_file)
+        tcdiags_out = TCDiagsOutputsNetCDFIO(output_file=self.tcmpi_obj.output_file)
 
         tcdiags_out.write(
             var_obj=self.tcmpi_obj,
