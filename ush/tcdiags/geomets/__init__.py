@@ -46,8 +46,6 @@ Functions
 Requirements
 ------------
 
-- geopy; https://github.com/geopy/geopy
-
 - ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
 Author(s)
@@ -68,15 +66,13 @@ History
 
 # ----
 
-from math import asin, cos, radians, sin, sqrt
+from math import asin, atan2, cos, radians, sin, sqrt
 from typing import Tuple
 
+import numpy
 from astropy.constants import R_earth
 from exceptions import GeoMetsError
 from utils.logger_interface import Logger
-
-import geopy
-from geopy.distance import geodesic
 
 # ----
 
@@ -96,7 +92,9 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 
-def bearing_geoloc(loc1: Tuple, dist: float, heading: float) -> Tuple[float, float]:
+def bearing_geoloc(
+    loc1: Tuple, dist: float, heading: float, radius: float = R_earth.value
+) -> Tuple[float, float]:
     """
     Description
     -----------
@@ -135,14 +133,30 @@ def bearing_geoloc(loc1: Tuple, dist: float, heading: float) -> Tuple[float, flo
 
     """
 
-    # Define the origin location attributes.
-    origin = geopy.Point(loc1)
+    # Scale the values accordingly.
+    (lat1, lon1, heading) = [
+        numpy.radians(loc1[0]),
+        numpy.radians(loc1[1]),
+        numpy.radians(heading),
+    ]
 
-    # Compute the destination location.
-    dest = geodesic(meters=dist).destination(origin, heading)
-    loc2 = [dest.latitude, dest.longitude]
+    # Compute the new latitude and longitude geographical location.
+    lat2 = numpy.degrees(
+        asin(
+            sin(lat1) * cos(dist / radius)
+            + cos(lat1) * sin(dist / radius) * cos(heading)
+        )
+    )
+    lon2 = numpy.degrees(
+        lon1
+        + atan2(
+            sin(heading) * sin(dist / radius) * cos(lat1),
+            cos(dist / radius) - sin(lat1) * sin(lat2),
+        )
+    )
 
-    return loc2
+    return (lat2, lon2)
+
 
 # ----
 
@@ -198,8 +212,7 @@ def haversine(loc1: Tuple, loc2: Tuple, radius: float = R_earth.value) -> float:
     dlat = lat2 - lat1
     dlon = lon2 - lon1
 
-    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * \
-        cos(lat2) * sin(dlon / 2.0) ** 2.0
+    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * cos(lat2) * sin(dlon / 2.0) ** 2.0
     hvsine = 2.0 * radius * asin(sqrt(dist))
 
     return hvsine
