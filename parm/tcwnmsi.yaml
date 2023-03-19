@@ -14,3 +14,5 @@ max_radius: 1200000.0
 # overridden by the number of allowable wave-numbers as per the polar
 # coordinate transformation.
 max_wn: 50
+
+output_file: "/work/%s.TCMSI.nc"
