@@ -62,7 +62,6 @@ History
 # ----
 
 import numpy
-
 from exceptions import FFTError
 from utils.logger_interface import Logger
 
@@ -120,19 +119,22 @@ def forward_fft2d(varin: numpy.array) -> numpy.complex_:
     # Compute the forward fast Fourier transform in the input variable
     # array.
     if len(varin.shape) != 2:
-        msg = ("The input array is not 2-dimensions; received an array of "
-               f"{len(varin.shape)} dimensions. Aborting!!!"
-               )
+        msg = (
+            "The input array is not 2-dimensions; received an array of "
+            f"{len(varin.shape)} dimensions. Aborting!!!"
+        )
         raise FFTError(msg=msg)
 
-    msg = ("Computing the forward Fourier transform of input array dimension "
-           f"({varin.shape[0]}, {varin.shape[1]})."
-           )
+    msg = (
+        "Computing the forward Fourier transform of input array dimension "
+        f"({varin.shape[0]}, {varin.shape[1]})."
+    )
     logger.info(msg=msg)
 
     varout = numpy.fft.fft2(varin)
 
     return varout
+
 
 # ----
 
@@ -173,14 +175,16 @@ def inverse_fft2d(varin: numpy.complex_) -> numpy.complex_:
     # Compute the inverse fast Fourier transform in the input variable
     # array.
     if len(varin.shape) != 2:
-        msg = ("The input array is not 2-dimensions; received an array of "
-               f"{len(varin.shape)} dimensions. Aborting!!!"
-               )
+        msg = (
+            "The input array is not 2-dimensions; received an array of "
+            f"{len(varin.shape)} dimensions. Aborting!!!"
+        )
         raise FFTError(msg=msg)
 
-    msg = ("Computing the inverse Fourier transform of input array dimension "
-           f"({varin.shape[0]}, {varin.shape[1]})."
-           )
+    msg = (
+        "Computing the inverse Fourier transform of input array dimension "
+        f"({varin.shape[0]}, {varin.shape[1]})."
+    )
     logger.info(msg=msg)
 
     varout = numpy.fft.ifft2(varin)
