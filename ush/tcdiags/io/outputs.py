@@ -61,6 +61,7 @@ History
 # pylint: disable=protected-access
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
+# pylint: disable=unused-argument
 
 # ----
 
@@ -71,7 +72,7 @@ import numpy
 from exceptions import TCDiagsIOError
 from tools import parser_interface
 from utils.logger_interface import Logger
-from xarray import DataArray, merge, open_dataset
+from xarray import DataArray, merge
 
 # ----
 
@@ -151,6 +152,7 @@ class TCDiagsOutputsNetCDFIO:
         coords_2d: Dict = None,
         unlimited_dims: str = None,
         attrs_list: List = None,
+        global_attrs_dict: Dict = None,
     ) -> None:
         """
         Description
@@ -213,7 +215,6 @@ class TCDiagsOutputsNetCDFIO:
         dataout_list = []
 
         for var in var_list:
-
             # Define the output variable attributes; proceed
             # accordingly.
             varout = parser_interface.object_getattr(
@@ -221,7 +222,6 @@ class TCDiagsOutputsNetCDFIO:
             )
 
             if varout is None:
-
                 msg = (
                     f"Variable {var} could not be determined from the input object "
                     "`var_obj` and will not be written to {self.output_file}."
@@ -229,7 +229,6 @@ class TCDiagsOutputsNetCDFIO:
                 self.logger.warn(msg=msg)
 
             if varout is not None:
-
                 # Build the data array for the respective variables
                 # and setup the xarray object.
                 data = numpy.array(varout)
@@ -270,7 +269,6 @@ class TCDiagsOutputsNetCDFIO:
                             self.logger.warn(msg=msg)
 
                         if value is not None:
-
                             varout_attrs_dict[attr] = list(value._units.keys())
 
                         xarray_obj.attrs = varout_attrs_dict
@@ -280,4 +278,12 @@ class TCDiagsOutputsNetCDFIO:
 
         # Build and write the netCDF-formatted output file.
         dataset_output = merge(dataout_list)
+
+        # Write the global attributes (if applicable).
+        if global_attrs_dict is not None:
+            for global_attr in global_attrs_dict:
+                dataset_output.attrs[global_attr] = parser_interface.dict_key_value(
+                    dict_in=global_attrs_dict, key=global_attr, no_split=None
+                )
+
         dataset_output.to_netcdf(self.output_file)

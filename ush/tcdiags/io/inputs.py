@@ -58,6 +58,7 @@ History
 # ----
 
 # pylint: disable=consider-using-dict-items
+# pylint: disable=line-too-long
 
 # ----
 
@@ -388,20 +389,23 @@ class TCDiagsInputsNetCDFIO:
 
         # Check that the geographical coordinate arrays are correct;
         # proceed accordingly.
-        if (len(numpy.array(inputs_obj.lat).shape) <= 1) and \
-           (len(numpy.array(inputs_obj.lon).shape) <= 1):
-
-            msg = ("The geographical coordinate arrays for latitude and longitude "
-                   "are 1-dimensional; converting to gridded values."
-                   )
+        if (len(numpy.array(inputs_obj.lat).shape) <= 1) and (
+            len(numpy.array(inputs_obj.lon).shape) <= 1
+        ):
+            msg = (
+                "The geographical coordinate arrays for latitude and longitude "
+                "are 1-dimensional; converting to gridded values."
+            )
             self.logger.warn(msg=msg)
 
             (x, y) = numpy.meshgrid(inputs_obj.lon, inputs_obj.lat)
 
             inputs_obj = parser_interface.object_setattr(
-                object_in=inputs_obj, key="lat", value=y)
+                object_in=inputs_obj, key="lat", value=y
+            )
             inputs_obj = parser_interface.object_setattr(
-                object_in=inputs_obj, key="lon", value=x)
+                object_in=inputs_obj, key="lon", value=x
+            )
 
         # Compute/define the remaining diagnostic variables.
         inputs_obj = self._get_pressure(inputs_obj=inputs_obj)
