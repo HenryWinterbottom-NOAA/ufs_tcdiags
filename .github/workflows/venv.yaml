@@ -68,13 +68,6 @@ jobs:
         wget --no-check-certificate https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh
         sh Miniconda3-py39_4.10.3-Linux-x86_64.sh -b -p miniconda
         python -m pip install --upgrade pip
-
-    # Update the Ubuntu environment.
-    - name: Update the Ubuntu environment.
-      run: |
-        apt-get update -y
-        apt-get install -y --no-install-recommends
-        apt-get install -y gfortran
          
     # Clone the ufs_tcdiags repository branch.
     - name: Checkout ufs_tcdiags.
