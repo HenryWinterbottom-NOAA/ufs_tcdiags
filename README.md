@@ -4,6 +4,10 @@
 
 [![Dependencies](https://img.shields.io/badge/dependencies-ufs__pyutils-orange)](https://github.com/HenryWinterbottom-NOAA/ufs_pyutils)
 
+[![Python Coding Standards](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml)
+[![Container Builds](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/containers.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/containers.yaml)
+[![Python Virtual Environments](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/venv.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/venv.yaml)
+
 # Disclaimer
 
 The United States Department of Commerce (DOC) GitHub project code is
