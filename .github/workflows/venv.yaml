@@ -69,7 +69,6 @@ jobs:
         sh Miniconda3-py39_4.10.3-Linux-x86_64.sh -b -p miniconda
         python -m pip install --upgrade pip
         sudo apt install gfortran-12
-        export FCFLAGS="-fallow-argument-mismatch"
          
     # Clone the ufs_tcdiags repository branch.
     - name: Checkout ufs_tcdiags.
@@ -84,5 +83,6 @@ jobs:
            python -m venv $GITHUB_WORKSPACE/ufs_tcdiags/venv/ufs_tcdiags
            cd $GITHUB_WORKSPACE/ufs_tcdiags/venv/ufs_tcdiags
            ./bin/python -m pip install --upgrade pip
+           export FCFLAGS="-fallow-argument-mismatch"
            ./bin/pip install -r $GITHUB_WORKSPACE/ufs_tcdiags/venv/stack-requirements.txt
            
