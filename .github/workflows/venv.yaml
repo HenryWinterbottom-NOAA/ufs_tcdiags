@@ -58,6 +58,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: Run the ufs_tcdiags Python virtual environment builder.
+    env:
+         FCFLAGS: "-fallow-argument-mismatch"
         
     steps:
 
