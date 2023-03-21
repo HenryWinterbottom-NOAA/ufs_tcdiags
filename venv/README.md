@@ -19,8 +19,11 @@ user@host:$ ./bin/pip install -r ../stack-requirements.txt
 ~~~
 
 If successful this will yield the path `/path/to/virtual_environment`
-containing the Python virtual environment. The Python virtual
-environment can be installed as follows.
+containing the Python virtual environment. In some instances the
+`pyspharm` package will not build successfully. Known fixed are to
+update the respective FORTRAN compiler(s) (For GNU FORTRAN, version
+12+ demonstrates the fix) or (for GNU FORTRAN) include the flag
+`-fallow-argument-mismatch`.
 
 ### Activating the Virtual Environment
 
