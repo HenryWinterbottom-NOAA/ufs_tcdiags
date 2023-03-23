@@ -47,7 +47,7 @@ Functions
 Usage
 -----
 
-    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file
+    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file [--tcfilt True] [--tcmpi True] [--tcwnmsi True]
 
 Parameters
 ----------
@@ -57,8 +57,6 @@ Parameters
         A Python string specifying the path to the YAML-formatted
         configuration file for the tropical cyclone (TC) diagnostics
         applications.
-
-        --yaml_file /path/to/yaml/file or -yaml_file /path/to/yaml/file
 
 Keywords
 --------
@@ -72,7 +70,18 @@ Keywords
         configuration; if not specified the attribute defaults to
         NoneType.
 
-        --tcfilt True
+    tcmpi: bool, optional
+
+        A Python boolean valued variable specifying whether to compute
+        the tropical cyclone (TC) (maximum) potential intensity
+        following the methodlogy of Bister and Emanuel [2002].
+
+    tcwnmsi: bool, optional
+
+        A Python boolean valued variable specifying whether to compute
+        the wave-number decomposition and the tropical cyclone (TC)
+        multi-scale intensity (MSI) indice values following Vukicevic
+        et al., [2014].
 
 Requirements
 ------------
@@ -174,7 +183,7 @@ class ComputeTCDiags:
 # ----
 
 
-def main():
+def main() -> None:
     """
     Description
     -----------
