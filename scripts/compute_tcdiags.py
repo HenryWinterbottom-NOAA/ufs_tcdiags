@@ -47,7 +47,7 @@ Functions
 Usage
 -----
 
-    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file
+    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file [--tcfilt True] [--tcmpi True] [--tcwnmsi True]
 
 Parameters
 ----------
@@ -57,8 +57,6 @@ Parameters
         A Python string specifying the path to the YAML-formatted
         configuration file for the tropical cyclone (TC) diagnostics
         applications.
-
-        --yaml_file /path/to/yaml/file or -yaml_file /path/to/yaml/file
 
 Keywords
 --------
@@ -71,8 +69,6 @@ Keywords
         the syndat-formatted filepath defined in the experiment
         configuration; if not specified the attribute defaults to
         NoneType.
-
-        --tcfilt True
 
 Requirements
 ------------
@@ -174,7 +170,7 @@ class ComputeTCDiags:
 # ----
 
 
-def main():
+def main() -> None:
     """
     Description
     -----------
