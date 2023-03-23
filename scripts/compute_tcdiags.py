@@ -70,6 +70,19 @@ Keywords
         configuration; if not specified the attribute defaults to
         NoneType.
 
+    tcmpi: bool, optional
+
+        A Python boolean valued variable specifying whether to compute
+        the tropical cyclone (TC) (maximum) potential intensity
+        following the methodlogy of Bister and Emanuel [2002].
+
+    tcwnmsi: bool, optional
+
+        A Python boolean valued variable specifying whether to compute
+        the wave-number decomposition and the tropical cyclone (TC)
+        multi-scale intensity (MSI) indice values following Vukicevic
+        et al., [2014].
+
 Requirements
 ------------
 
