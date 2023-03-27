@@ -30,6 +30,8 @@ from tcdiags.atmos.pressures import pressure_to_sealevel
 
 from scipy import interpolate
 
+from global_land_mask import globe
+
 from typing import Dict
 import numpy
 
@@ -78,16 +80,35 @@ class SteeringFlows:
         # Compute the radial distance.
         loc = (13.4, -72.0)
         latgrid = numpy.array(self.inputs_obj.lat).ravel()
-        longrid = numpy.array(self.inputs_obj.lon).ravel()
+        longrid = numpy.roll(numpy.array(
+            (self.inputs_obj.lon) + (360.0 - 180.0)), 180, axis=1).ravel()  # NEEDED
+
+        print(longrid.min(), longrid.max())
+        print(longrid.shape, latgrid.shape)
 
         self.tcsteer_obj.raddist = numpy.reshape(radial_distance(
             refloc=loc, latgrid=latgrid, longrid=longrid), numpy.shape(self.inputs_obj.lat))
 
         self.inputs_obj = pressure_to_sealevel(inputs_obj=self.inputs_obj)
 
-        test = numpy.where((numpy.array(self.tcsteer_obj.raddist) <= 1200.0*1000.0) &
-                           (numpy.array(self.inputs_obj.zsfc) <= 0.0), numpy.nan,
-                           self.inputs_obj.psfc)
+        ocean_grid = globe.is_ocean(
+            latgrid, longrid).reshape(numpy.shape(self.inputs_obj.lat))
+
+        land_grid = globe.is_land(
+            latgrid, longrid).reshape(numpy.shape(self.inputs_obj.lat))
+
+        variable = self.inputs_obj.uwnd[0, :, :]
+
+        distance = 2000.0*1000.0
+
+        test = numpy.where(
+            (numpy.array(self.tcsteer_obj.raddist) <= distance) & ocean_grid, numpy.nan, variable)
+
+        outside = numpy.where((numpy.array(
+            self.tcsteer_obj.raddist) > distance) & land_grid, variable, test)
+
+        test = outside
+        # test = numpy.where(ocean_grid, self.inputs_obj.pslp, test)
 
         # test = numpy.where((numpy.array(self.tcsteer_obj.raddist) <= 1200.0*1000.0),
         #                   numpy.nan,
@@ -123,15 +144,27 @@ class SteeringFlows:
 
         interp = interpolate.griddata((x1, y1), newarr.ravel(),
                                       (x, y), method="cubic")
+        # interp = numpy.where(land_grid, numpy.array(
+        #    self.inputs_obj.psfc), interp)
 
         import matplotlib.pyplot as plt
         levels = numpy.linspace(
-            self.inputs_obj.psfc.min(), self.inputs_obj.psfc.max(), 255)
+            variable.min(), variable.max(), 255)
         plt.contourf(interp, levels=levels, cmap="jet")
         plt.savefig("steering_test.png")
+
         plt.clf()
-        plt.contourf(self.inputs_obj.psfc, levels=levels, cmap="jet")
+        plt.contourf(variable, levels=levels, cmap="jet")
         plt.savefig("orig.png")
+
         plt.clf()
         plt.contourf(test, levels=levels, cmap="jet")
         plt.savefig("mask.png")
+
+        plt.clf()
+        plt.contourf(interp-numpy.array(variable))
+        plt.savefig("diff.png")
+
+        plt.clf()
+        plt.contourf(land_grid)
+        plt.savefig("land.png")
