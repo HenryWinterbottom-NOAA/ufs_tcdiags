@@ -31,54 +31,60 @@ Description
 Classes
 -------
 
-    AtmosMoistureError()
+    AtmosMoistureError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/atmos/moisture module; it is a sub-class of Error.
 
-    AtmosWindsError()
+    AtmosWindsError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/atmos/winds module; it is a sub-class of Error.
 
-    FFTError()
+    FFTError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/analysis/fft module; it is a sub-class of Error.
 
-    FilterVortexError()
+    FilterVortexError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/tc module FilterVortex class; it is a sub-class of
         Error.
 
-    GeoMetsError()
+    GeoMetsError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/geomets module; it is a sub-class of Error.
 
-    InterpError()
+    InterpError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/interp module; it is a sub-class of Error.
 
-    TCDiagsError()
+    TCDiagsError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags module; it is a sub-class of Error.
 
-    TCDiagsIOError()
+    TCDiagsIOError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/io module; it is a sub-class of Error.
 
-    TropCycMPIError()
+    TropCycMPIError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of
         Error.
 
-    TropCycWNMSIError()
+    TropCycSteeringFlowsError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/metrics/steeringflows module; it is a sub-class of
+        Error.
+
+    TropCycWNMSIError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/metrics/tropcycwnmsi module; it is a sub-class of
@@ -110,7 +116,7 @@ from utils.error_interface import Error
 # Define all available attributes.
 __all__ = ["AtmosMoistureError", "AtmosWindsError", "FFTError", "FilterVortexError",
            "GeoMetsError", "InterpError", "TCDiagsError", "TCDiagsIOError",
-           "TropCycMPIError", "TropCycWNMSIError"
+           "TropCycMPIError", "TropCycSteeringFlowsError", "TropCycWNMSIError"
            ]
 
 # ----
@@ -241,7 +247,22 @@ class TropCycMPIError(Error):
 # ----
 
 
+class TropCycSteeringFlowsError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/metrics/steeringflows module; it is a sub-class of
+    Error.
+
+    """
+
+# ----
+
+
 class TropCycWNMSIError(Error):
+
     """
     Description
     -----------

@@ -64,6 +64,7 @@ from tools import parser_interface
 from utils.logger_interface import Logger
 
 from tcdiags.io.inputs import TCDiagsInputsNetCDFIO
+from tcdiags.metrics.steeringflows import SteeringFlows
 from tcdiags.metrics.tropcycmpi import TropCycMPI
 from tcdiags.tc import FilterVortex
 from tcdiags.tc.wnmsi import WNMSI
@@ -108,7 +109,7 @@ class TCDiags:
 
         # Define the available application options.
         self.apps_dict = {"tcfilt": FilterVortex, "tcmpi": TropCycMPI,
-                          "tcwnmsi": WNMSI}
+                          "tcsteering": SteeringFlows, "tcwnmsi": WNMSI}
 
     def run(self) -> None:
         """

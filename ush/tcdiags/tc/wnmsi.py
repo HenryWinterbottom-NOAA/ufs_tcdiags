@@ -131,8 +131,8 @@ class WNMSI:
 
     def __init__(self, yaml_dict: Dict, inputs_obj: object):
         """
-        Descriptions
-        ------------
+        Description
+        -----------
 
         Creates a new WNMSI object.
 
