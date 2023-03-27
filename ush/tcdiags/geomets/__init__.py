@@ -43,6 +43,12 @@ Functions
         This function computes and returns the great-circle (i.e.,
         haversine) between two locations.
 
+    radial_distance(refloc, latgrid, longrid, radius=R_earth.value)
+
+        This function computes the radial distance for all
+        geographical locations relative to a fixed (e.g., reference)
+        location using the Haversine formulation.
+
 Requirements
 ------------
 
@@ -51,7 +57,7 @@ Requirements
 Author(s)
 ---------
 
-    Henry R. Winterbottom; 13March 2023
+    Henry R. Winterbottom; 13 March 2023
 
 History
 -------
@@ -70,6 +76,9 @@ from math import asin, atan2, cos, radians, sin, sqrt
 from typing import Tuple
 
 import numpy
+
+from metpy.units import units
+
 from astropy.constants import R_earth
 from exceptions import GeoMetsError
 from utils.logger_interface import Logger
@@ -77,7 +86,7 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["bearing_geoloc", "haversine"]
+__all__ = ["bearing_geoloc", "haversine", "radial_distance"]
 
 # ----
 
@@ -212,7 +221,84 @@ def haversine(loc1: Tuple, loc2: Tuple, radius: float = R_earth.value) -> float:
     dlat = lat2 - lat1
     dlon = lon2 - lon1
 
-    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * cos(lat2) * sin(dlon / 2.0) ** 2.0
+    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * \
+        cos(lat2) * sin(dlon / 2.0) ** 2.0
     hvsine = 2.0 * radius * asin(sqrt(dist))
 
     return hvsine
+
+# ----
+
+
+def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
+                    numpy.array, radius: float = R_earth.value) -> numpy.array:
+    """
+    Description
+    -----------
+
+    This function computes the radial distance for all geographical
+    locations relative to a fixed (e.g., reference) location using the
+    Haversine formulation.
+
+    Parameters
+    ----------
+
+    refloc: tuple
+
+        A Python tuple containing the geographical coordinates for the
+        reference location; format is (lat, lon); units are degrees.
+
+    latgrid: array-type
+
+        A Python 1-dimensional array-type variable containing the
+        latitude coordinate values; units are degrees.
+
+    longrid: array-type
+
+        A Python 1-dimensional array-type variable containing the
+        longitude coordinate values; units are degrees.
+
+    Keywords
+    --------
+
+    radius: float, optional
+
+        A Python float value defining the radial distance to be used
+        when computing the haversine; units are meters.
+
+    Returns
+    -------
+
+    raddist: array-type
+
+        A Python 1-dimensional array-type variable containing the
+        radial distances relative to the reference geographical
+        location; units are meters.
+
+    Raises
+    ------
+
+    GeoMetsError:
+
+        * raised if the either or both the latitude and longitude
+          arrays are not 1-dimensional upon entry.
+
+    """
+
+    # Check that the input arrays are a single dimension; proceed
+    # accordingly.
+    if len(latgrid.shape) > 1 or len(longrid.shape) > 1:
+        msg = ("The input latitude and longitude arrays must be of 1-dimension; "
+               f"received latitude dimension {latgrid.shape} and longitude "
+               f"dimension {longrid.shape} upon entry. Aborting!!!"
+               )
+        raise GeoMetsError(msg=msg)
+
+    # Compute the radial distance array relative to the reference
+    # location.
+    raddist = numpy.zeros(numpy.shape(latgrid))
+    raddist = units.Quantity([haversine(refloc, (latgrid[idx], longrid[idx]),
+                                        radius=radius) for idx in range(len(raddist))],
+                             "meter")
+
+    return raddist
