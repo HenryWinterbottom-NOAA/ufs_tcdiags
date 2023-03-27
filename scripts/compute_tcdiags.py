@@ -47,7 +47,7 @@ Functions
 Usage
 -----
 
-    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file [--tcfilt True] [--tcmpi True] [--tcwnmsi True]
+    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file [--tcfilt True] [--tcmpi True] [--tcwnmsi True] [--tcsteering True]
 
 Parameters
 ----------
@@ -75,6 +75,13 @@ Keywords
         A Python boolean valued variable specifying whether to compute
         the tropical cyclone (TC) (maximum) potential intensity
         following the methodlogy of Bister and Emanuel [2002].
+
+    tcsteering: bool, optional
+
+        A Python boolean valued variable specifying whether to compute
+        the tropical cyclone (TC) steering flow as a function of TC
+        intensity following the methodology of Velden and Leslie
+        [1991].
 
     tcwnmsi: bool, optional
 
@@ -128,6 +135,7 @@ CLS_SCHEMA = {
     "yaml_file": str,
     Optional("tcfilt", default=False): bool,
     Optional("tcmpi", default=False): bool,
+    Optional("tcsteering", default=False): bool,
     Optional("tcwnmsi", default=False): bool
 }
 
