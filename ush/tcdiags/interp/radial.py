@@ -18,15 +18,48 @@
 # =========================================================================
 
 """
+Module
+------
+
+    radial.py
+
+Description
+-----------
+
+    This module contains function(s) implemented for successive radial
+    interval interpolations necessary to estimate variable field
+    values in defined/specified data-void regions.
+
+Functions
+---------
+
+    interp(interp_obj, method="linear")
+
+        This function provides a successive radial interpolation
+        application.
+
+Requirements
+------------
+
+- ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
+
+Author(s)
+---------
+
+    Henry R. Winterbottom; 28 April 2023
+
+History
+-------
+
+    2023-04-28: Henry Winterbottom -- Initial implementation.
 
 """
 
 # ----
 
-from scipy.interpolate import griddata
-import numpy
-
-from utils.logger_interface import Logger
+# pylint: disable=invalid-name
+# pylint: disable=no-member
+# pylint: disable=too-many-locals
 
 # ----
 
@@ -36,42 +69,88 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+import numpy
+from scipy.interpolate import griddata
+from utils.logger_interface import Logger
+
+# ----
+
 logger = Logger()
 
 # ----
 
 
-def interp(interp_obj: object, method: str = "linear") -> object:
-    """ """
+def interp(interp_obj: object, method: str = "linear") -> numpy.array:
+    """
+    Description
+    -----------
+
+    This function provides a successive radial interpolation
+    application.
+
+    Parameters
+    ----------
+
+    interp_obj: object
+
+        A Python object containing the radial interpolation
+        attributes.
+
+    Keywords
+    --------
+
+    method: str, optional
+
+        A Python string specifying the radial interpolation type; the
+        following options are supported.
+
+        - nearest; nearest-neighbor interpolation
+
+        - linear; bi-linear interpolation
+
+        Cubic-spline interpolation methods are also supportted but are
+        however not optimal for the respective application.
+
+    Returns
+    -------
+
+    interp_var: numpy.array
+
+        A Python array-type variable containing the variable field
+        with the data-void region, included in the respective variable
+        field upon entry, updated via the application within.
+
+    """
 
     # Initialize the grid attributes.
-    x = numpy.arange(0, numpy.shape(interp_obj.vararray)[1], 1.0)
-    y = numpy.arange(0, numpy.shape(interp_obj.vararray)[0], 1.0)
+    xgrid = numpy.arange(0, numpy.shape(interp_obj.vararray)[1], 1.0)
+    ygrid = numpy.arange(0, numpy.shape(interp_obj.vararray)[0], 1.0)
 
-    (xx, yy) = numpy.meshgrid(x, y)
-    outer_dist = interp_obj.distance
+    (xxgrid, yygrid) = numpy.meshgrid(xgrid, ygrid)
+    max_dist = interp_obj.distance
+    outer_dist = max_dist
     inner_dist = outer_dist - interp_obj.ddist
     interp_var = interp_obj.vararray
 
     # Interpolate radially inward to recover the initial
     # missing-datum.
-    while (inner_dist >= 0.0):
+    while inner_dist >= 0.0:
 
+        # Define the values to be used to approximate the missing
+        # datum.
         msg = f"Interpolating within range {inner_dist} and {outer_dist}."
         logger.info(msg=msg)
 
-        varin = numpy.where((interp_obj.raddist <= inner_dist), numpy.nan,
-                            interp_var)
-
+        varin = numpy.where((interp_obj.raddist <= inner_dist), numpy.nan, interp_var)
         mask = numpy.ma.masked_invalid(varin)
 
-        xf = xx[~mask.mask]
-        yf = yy[~mask.mask]
+        # Interpolate across the specified radial interval.
+        xf = xxgrid[~mask.mask]
+        yf = yygrid[~mask.mask]
         invar = interp_var[~mask.mask]
+        interp_var = griddata((xf, yf), invar, (xxgrid, yygrid), method=method)
 
-        interp_var = griddata(
-            (xf, yf), invar, (xx, yy), method=method)
-
+        # Update the interpolation interval range.
         outer_dist = inner_dist
         inner_dist = outer_dist - interp_obj.ddist
 
