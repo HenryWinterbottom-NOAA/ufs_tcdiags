@@ -64,10 +64,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 import numpy
-
 from metpy.calc import pressure_to_height_std
 from metpy.units import units
-from tools import parser_interface
 from utils.logger_interface import Logger
 
 # ----
@@ -96,9 +94,9 @@ def height_from_pressure(varobj: object) -> numpy.array:
     varobj: object
 
         A Python object containing, at minimum, the pressure levels
-        from which the height profile will be computed. 
+        from which the height profile will be computed.
 
-    Returns 
+    Returns
     -------
 
     height: numpy.array
