@@ -136,6 +136,7 @@ def pressure_from_thickness(varobj: object) -> numpy.array:
 
     return pres
 
+
 # ----
 
 
@@ -167,12 +168,14 @@ def pressure_to_sealevel(varobj: object) -> object:
     """
 
     # Reduce the surface pressure value to the sea-surface.
-    pslp = a2slp(altimeter_value=varobj.psfc[:, :],
-                 height=varobj.zsfc[:, :],
-                 temperature=varobj.temp[0, :, :])
+    pslp = a2slp(
+        altimeter_value=varobj.psfc[:, :],
+        height=varobj.zsfc[:, :],
+        temperature=varobj.temp[0, :, :],
+    )
 
     varobj = parser_interface.object_setattr(
-        object_in=varobj, key="pslp",
-        value=units.Quantity(pslp, "Pa"))
+        object_in=varobj, key="pslp", value=units.Quantity(pslp, "Pa")
+    )
 
     return varobj
