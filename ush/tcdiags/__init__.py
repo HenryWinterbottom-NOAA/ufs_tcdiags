@@ -34,7 +34,7 @@ Classes
     TCDiags(options_obj)
 
         This is the base-class object for all tropical cyclone (TC)
-        diagnostic quantity computations.
+        diagnostic computations and evaluations.
 
 Requirements
 ------------
@@ -59,15 +59,19 @@ from dataclasses import dataclass
 from gc import collect
 
 from confs.yaml_interface import YAML
-from exceptions import TCDiagsError
+from tcdiags.exceptions import TCDiagsError
 from tools import parser_interface
 from utils.logger_interface import Logger
 
-from tcdiags.io.inputs import TCDiagsInputsNetCDFIO
-from tcdiags.metrics.steeringflows import SteeringFlows
-from tcdiags.metrics.tropcycmpi import TropCycMPI
-from tcdiags.tc import FilterVortex
-from tcdiags.tc.wnmsi import WNMSI
+from tcdiags.io.gfs import GFS
+# from tcdiags.metrics.steeringflows import SteeringFlows
+# from tcdiags.metrics.tropcycmpi import TropCycMPI
+# from tcdiags.tc import FilterVortex
+# from tcdiags.tc.wnmsi import WNMSI
+
+from utils.decorator_interface import privatemethod
+
+# from tcdiags.tc.wnmsi import WNMSI
 
 # ----
 
@@ -79,7 +83,7 @@ class TCDiags:
     -----------
 
     This is the base-class object for all tropical cyclone (TC)
-    diagnostic quantity computations.
+    diagnostic computations and evaluations.
 
     Parameters
     ----------
@@ -91,7 +95,7 @@ class TCDiags:
 
     """
 
-    def __init__(self, options_obj: object):
+    def __init__(self: dataclass, options_obj: object):
         """
         Description
         -----------
@@ -104,14 +108,32 @@ class TCDiags:
         self.options_obj = options_obj
         self.logger = Logger()
         self.yaml_file = self.options_obj.yaml_file
-        self.yaml_dict = YAML().read_yaml(yaml_file=self.yaml_file)
-        self.tcdiags_io = TCDiagsInputsNetCDFIO(yaml_dict=self.yaml_dict)
 
         # Define the available application options.
-        self.apps_dict = {"tcfilt": FilterVortex, "tcmpi": TropCycMPI,
-                          "tcsteering": SteeringFlows, "tcwnmsi": WNMSI}
+#        self.apps_dict = {"tcfilt": FilterVortex, "tcmpi": TropCycMPI,
+#                          "tcsteering": SteeringFlows, "tcwnmsi": WNMSI}
 
-    def run(self) -> None:
+    @privatemethod
+    def config(self: dataclass) -> object:
+        """ """
+
+        yaml_obj = YAML().read_yaml(yaml_file=self.yaml_file,
+                                    return_obj=True)
+
+        tcdiags_obj = parser_interface.object_define()
+
+        inputs_io = GFS(yaml_file=yaml_obj.inputs)
+        tcdiags_obj.inputs = inputs_io.read_inputs()
+
+        quit()
+
+        if "tcvitals" in self.yaml_dict:
+            tcdiags_obj.tcinfo = YAML().read_yaml(
+                yaml_file=self.yaml_dict["tcvitals"], return_obj=True)
+
+        print(tcdiags_obj.tcinfo)
+
+    def run(self: dataclass) -> None:
         """
         Description
         -----------
@@ -125,8 +147,30 @@ class TCDiags:
 
         """
 
-        # Read the input variables.
-        inputs_obj = self.tcdiags_io.read_inputs()
+        self.config()
+        quit()
+
+        # Read the input variables; proceed accordingly.
+        inputs_obj = parser_interface.object_define()
+        inputs_obj.fields = self.tcdiags_io.read_inputs()
+
+        tcinfo_dict = parser_interface.dict_key_value(
+            dict_in=self.yaml_dict, key="tcvitals", force=True)
+        if tcinfo_dict is None:
+            input_obj.tcinfo = None
+
+        if tcinfo_dict is not None:
+            inputs_obj.tcinfo = parser_interface.object_define()
+            for tcinfo in tcinfo_dict:
+                inputs_obj.tcinfo = parser_interface.object_setattr(
+                    object_in=inputs_obj.tcinfo, key=tcinfo,
+                    value=tcinfo_dict[tcinfo])
+
+        # TODO: Clean this up; implement `import_lib` and build a
+        # namespace for each application (e.g., `tcfilt`, `tcmpi`,
+        # etc.,).
+
+        quit()
 
         # Execute each of the specified applications.
         for app in self.apps_dict:
