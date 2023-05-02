@@ -41,6 +41,11 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/atmos/winds module; it is a sub-class of Error.
 
+    DerivedError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/io/derived module; it is a sub-class of Error.
+
     FFTError(msg)
 
         This is the base-class for exceptions encountered within the
@@ -56,6 +61,11 @@ Classes
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/geomets module; it is a sub-class of Error.
+
+    GFSError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/io/gfs module; it is a sub-class of Error.
 
     InputFieldsError(msg)
 
@@ -120,6 +130,12 @@ History
 
 # ----
 
+__author__ = "Henry R. Winterbottom"
+__maintainer__ = "Henry R. Winterbottom"
+__email__ = "henry.winterbottom@noaa.gov"
+
+# ----
+
 from utils.error_interface import Error
 
 # ----
@@ -128,22 +144,20 @@ from utils.error_interface import Error
 __all__ = [
     "AtmosMoistureError",
     "AtmosWindsError",
+    "DerivedError",
     "FFTError",
     "FilterVortexError",
     "GeoMetsError",
+    "GFSError",
+    "InputFieldsError",
     "InterpError",
     "TCDiagsError",
     "TCDiagsIOError",
     "TropCycMPIError",
     "TropCycSteeringFlowsError",
     "TropCycWNMSIError",
+    "VarIOError",
 ]
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
@@ -169,6 +183,20 @@ class AtmosWindsError(Error):
 
     This is the base-class for exceptions encountered within the
     ush/tcdiags/atmos/winds module; it is a sub-class of Error.
+
+    """
+
+
+# ----
+
+
+class DerivedError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/io/derived module; it is a sub-class of Error.
 
     """
 
@@ -212,6 +240,20 @@ class GeoMetsError(Error):
 
     This is the base-class for exceptions encountered within the
     ush/tcdiags/geomets module; it is a sub-class of Error.
+
+    """
+
+
+# ----
+
+
+class GFSError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/io/gfs module; it is a sub-class of Error.
 
     """
 
