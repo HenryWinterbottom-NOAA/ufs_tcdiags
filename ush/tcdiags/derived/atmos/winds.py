@@ -38,7 +38,7 @@ Functions
         harmonic transform object and subsequently collect any
         remaining/residual object attributes.
 
-    _get_lev_uv(inputs_obj, lev)
+    _get_lev_uv(varobj, lev)
 
         This function returns the total wind vector component
         quantities at the specified vertical level.
@@ -48,23 +48,23 @@ Functions
         This method initializes the spherical harmonic transform
         object.
 
-    global_divg(inputs_obj)
+    global_divg(varobj)
 
         This function computes the global divergence field using
         spherical harmonic transforms.
 
-    global_vort(inputs_obj)
+    global_vort(varobj)
 
         This function computes the global vorticity field using
         spherical harmonic transforms.
 
-    global_wind_part(inputs_obj)
+    global_wind_part(varobj)
 
         This function computes the components of the total wind field
         using spherical harmonic transforms; the methodology follows
         from Lynch [1988].
 
-    wndmag(inputs_obj)
+    wndmag(varobj)
 
         This function computes the magnitude of the vector wind field.
 
@@ -103,13 +103,11 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 import gc
-from typing import Tuple, Union
+from typing import Tuple
 
 import numpy
 import spharm
 from tcdiags.exceptions import AtmosWindsError
-from metpy.units import units
-from pint import Quantity
 from tools import parser_interface
 from utils.logger_interface import Logger
 
@@ -137,7 +135,7 @@ def _cleanup(xspharm: spharm.Spharmt) -> None:
     Parameters
     ----------
 
-    xspharm: object
+    xspharm: spharm.Spharmt
 
         A Python object containing the initialized spherical harmonic
         transform object.
@@ -152,8 +150,7 @@ def _cleanup(xspharm: spharm.Spharmt) -> None:
 # ----
 
 
-def _get_lev_uv(inputs_obj: object, lev: int) -> Tuple[
-        Union[numpy.array, Quantity], Union[numpy.array, Quantity]]:
+def _get_lev_uv(varobj: object, lev: int) -> Tuple[numpy.array, numpy.array]:
     """
     Description
     -----------
@@ -164,10 +161,10 @@ def _get_lev_uv(inputs_obj: object, lev: int) -> Tuple[
     Parameters
     ----------
 
-    inputs_obj: object
+    varobj: object
 
         A Python object containing, at minimum, the zonal and
-        meridional total wind components; units are meters per second.
+        meridional total wind components.
 
     lev: int
 
@@ -177,12 +174,12 @@ def _get_lev_uv(inputs_obj: object, lev: int) -> Tuple[
     Returns
     -------
 
-    xuwnd: Union[numpy.array, Quantity]
+    xuwnd: numpy.array
 
         A Python array-type variable containing the zonal wind
         component collected for the specified vertical level.
 
-    xvwnd: Union[numpy.array, Quantity]
+    xvwnd: numpy.array
 
         A Python array-type variable containing the meridional wind
         component collected for the specified vertical level.
@@ -191,7 +188,7 @@ def _get_lev_uv(inputs_obj: object, lev: int) -> Tuple[
 
     # Define the zonal and meridional total wind components.
     (uwnd, vwnd) = [
-        parser_interface.object_getattr(object_in=inputs_obj, key=wndvar)
+        parser_interface.object_getattr(object_in=varobj, key=wndvar)
         for wndvar in ["uwnd", "vwnd"]
     ]
 
@@ -216,7 +213,7 @@ def _get_lev_uv(inputs_obj: object, lev: int) -> Tuple[
 # ----
 
 
-def _init_spharm(array_in: Union[numpy.array, Quantity]) -> spharm.Spharmt:
+def _init_spharm(array_in: numpy.array) -> spharm.Spharmt:
     """
     Description
     -----------
@@ -226,7 +223,7 @@ def _init_spharm(array_in: Union[numpy.array, Quantity]) -> spharm.Spharmt:
     Parameters
     ----------
 
-    array_in: Union[numpy.array, Quantity]
+    array_in: numpy.array
 
         A Python array-type variable; the shape of the respective
         array will be used to initialize the spherical harmonic
@@ -257,7 +254,7 @@ def _init_spharm(array_in: Union[numpy.array, Quantity]) -> spharm.Spharmt:
 # ----
 
 
-def global_divg(inputs_obj: object) -> object:
+def global_divg(varobj: object) -> numpy.array:
     """
     Description
     -----------
@@ -268,7 +265,7 @@ def global_divg(inputs_obj: object) -> object:
     Parameters
     ----------
 
-    inputs_obj: object
+    varobj: object
 
         A Python object containing, at minimum, the zonal and
         meridional wind components; units are meters per second.
@@ -276,51 +273,38 @@ def global_divg(inputs_obj: object) -> object:
     Returns
     -------
 
-    inputs_obj: object
+    divg: numpy.array
 
-        A Python object updated to now contain the global divergence
-        field `divg`.
+        A Python array-type variable containing the global divergence
+        values.
 
     """
 
     # Initialize the local variable and objects.
-    xdivg = numpy.zeros(inputs_obj.uwnd.shape)
-    xspharm = _init_spharm(array_in=xdivg)
-    nlevs = xdivg.shape[0]
+    divg = numpy.zeros(varobj.uwnd.shape)
+    xspharm = _init_spharm(array_in=divg)
+    nlevs = divg.shape[0]
 
     # Compute the divergence field; proceed accordingly.
-    msg = f"Computing global diverenge array of dimension {xdivg.shape}."
+    msg = f"Computing global diverenge array of dimension {divg.shape}."
     logger.info(msg=msg)
 
     for lev in range(nlevs):
-        (u, v) = _get_lev_uv(inputs_obj=inputs_obj, lev=lev)
+        (u, v) = _get_lev_uv(varobj=varobj, lev=lev)
 
         (_, dataspec) = xspharm.getvrtdivspec(ugrid=u, vgrid=v)
-        xdivg[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
-
-    # Define the correct units with respect to the input variable.
-    xdivg = units.Quantity(xdivg, "1/second")
-
-    inputs_obj = parser_interface.object_setattr(
-        object_in=inputs_obj, key="divg", value=xdivg
-    )
-
-    msg = (
-        f"Global divergence values range({numpy.array(xdivg).min()}, "
-        f"{numpy.array(xdivg).max()}) {xdivg.units}."
-    )
-    logger.info(msg=msg)
+        divg[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
 
     # Deallocate memory for the spherical harmonic transform object.
     _cleanup(xspharm=xspharm)
 
-    return inputs_obj
+    return divg
 
 
 # ----
 
 
-def global_vort(inputs_obj: object) -> object:
+def global_vort(varobj: object) -> numpy.array:
     """
     Description
     -----------
@@ -331,7 +315,7 @@ def global_vort(inputs_obj: object) -> object:
     Parameters
     ----------
 
-    inputs_obj: object
+    varobj: object
 
         A Python object containing, at minimum, the zonal and
         meridional wind components; units are meters per second.
@@ -339,51 +323,42 @@ def global_vort(inputs_obj: object) -> object:
     Returns
     -------
 
-    inputs_obj: object
+    vort: numpy.array
 
-        A Python object updated to now contain the global vorticity
-        field `vort`.
+        A Python array-type variable containing the global vorticity
+        values.
 
     """
 
     # Initialize the local variable and objects.
-    xvort = numpy.zeros(inputs_obj.uwnd.shape)
-    xspharm = _init_spharm(array_in=xvort)
-    nlevs = xvort.shape[0]
+    vort = numpy.zeros(varobj.uwnd.shape)
+    xspharm = _init_spharm(array_in=vort)
+    nlevs = vort.shape[0]
 
-    msg = f"Computing global vorticity array of dimension {xvort.shape}."
+    msg = f"Computing global vorticity array of dimension {vort.shape}."
     logger.info(msg=msg)
 
     # Compute the vorticity field; proceed accordingly.
     for lev in range(nlevs):
-        (u, v) = _get_lev_uv(inputs_obj=inputs_obj, lev=lev)
+        (u, v) = _get_lev_uv(varobj=varobj, lev=lev)
 
         (dataspec, _) = xspharm.getvrtdivspec(ugrid=u, vgrid=v)
-        xvort[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
-
-    # Define the correct units with respect to the input variable.
-    xvort = units.Quantity(xvort, "1/second")
-
-    inputs_obj = parser_interface.object_setattr(
-        object_in=inputs_obj, key="vort", value=xvort
-    )
-
-    msg = (
-        f"Global vorticity values range({numpy.array(xvort).min()}, "
-        f"{numpy.array(xvort).max()}) {xvort.units}."
-    )
-    logger.info(msg=msg)
+        vort[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
 
     # Deallocate memory for the spherical harmonic transform object.
     _cleanup(xspharm=xspharm)
 
-    return inputs_obj
+    return vort
 
 
 # ----
 
 
-def global_wind_part(inputs_obj: object) -> object:
+def global_wind_part(
+    varobj: object,
+) -> Tuple[
+    numpy.array, numpy.array, numpy.array, numpy.array, numpy.array, numpy.array
+]:
     """
     Description
     -----------
@@ -395,7 +370,7 @@ def global_wind_part(inputs_obj: object) -> object:
     Parameters
     ----------
 
-    inputs_obj: object
+    varobj: object
 
         A Python object containing, at minimum, the zonal and
         meridional wind components; units are meters per second.
@@ -403,19 +378,20 @@ def global_wind_part(inputs_obj: object) -> object:
     Returns
     -------
 
-    inputs_obj: object
+    (udiv, vdiv): [numpy.array, numpy.array]
 
-        A Python object updated to now contain the global total wind
-        field paritioning; the respective quantities are as follows.
+        The components of the divergent component of the global total
+        wind field.
 
-        - (udiv, vdiv); the components of the divergent component of
-          the global total wind field.
+    (uhrm, vhrm): [numpy.array, numpy.array]
 
-        - (uhrm, vhrm); the components of the harmonic (i.e.,
-          residual) component of the global total wind field.
+        The components of the harmonic (i.e., residual) component of
+        the global total wind field.
 
-        - (uvor, vvor); the components of the rotational component of
-          the global total wind field.
+    (uvor, vvort): [numpy.array, numpy.array]
+
+        The components of the rotational component of the global total
+        wind field.
 
     References
     ----------
@@ -428,61 +404,44 @@ def global_wind_part(inputs_obj: object) -> object:
     """
 
     # Initialize the local variable and objects.
-    (xudiv, xuhrm, xuvor, xvdiv, xvhrm, xvvor) = [
-        numpy.zeros(inputs_obj.uwnd.shape) for idx in range(6)
+    (udiv, uhrm, uvor, vdiv, vhrm, vvor) = [
+        numpy.zeros(varobj.uwnd.shape) for idx in range(6)
     ]
 
-    xspharm = _init_spharm(array_in=xuvor)
-    nlevs = xuvor.shape[0]
+    xspharm = _init_spharm(array_in=uvor)
+    nlevs = uvor.shape[0]
 
-    msg = f"Computing global partitioned total wind arrays of dimension {xuvor.shape}."
+    msg = f"Computing global partitioned total wind arrays of dimension {uvor.shape}."
     logger.info(msg=msg)
 
     # Compute the total wind components; proceed accordingly.
     for lev in range(nlevs):
-        (u, v) = _get_lev_uv(inputs_obj=inputs_obj, lev=lev)
+        (u, v) = _get_lev_uv(varobj=varobj, lev=lev)
         (zspec_save, dspec_save) = xspharm.getvrtdivspec(ugrid=u, vgrid=v)
 
         # Compute the divergent component of the total wind field.
         (zspec, dspec) = [numpy.zeros(zspec_save.shape), dspec_save]
-        (xudiv[lev, :, :], xvdiv[lev, :, :]) = xspharm.getuv(
-            vrtspec=zspec, divspec=dspec
-        )
+        (udiv[lev, :, :], vdiv[lev, :, :]) = xspharm.getuv(vrtspec=zspec, divspec=dspec)
 
         # Compute the rotational component of the total wind field.
         (zspec, dspec) = [zspec_save, numpy.zeros(dspec_save.shape)]
-        (xuvor[lev, :, :], xvvor[lev, :, :]) = xspharm.getuv(
-            vrtspec=zspec, divspec=dspec
-        )
+        (uvor[lev, :, :], vvor[lev, :, :]) = xspharm.getuv(vrtspec=zspec, divspec=dspec)
 
         # Compute the residual (i.e., harmonic) component of the total
         # wind field.
-        xuhrm[lev, :, :] = numpy.array(
-            u[:, :]) - (xuvor[lev, :, :] + xudiv[lev, :, :])
-        xvhrm[lev, :, :] = numpy.array(
-            v[:, :]) - (xvvor[lev, :, :] + xvdiv[lev, :, :])
-
-    # Define the correct units with respect to the input variable.
-    (xudiv, xuhrm, xuvor, xvdiv, xvhrm, xvvor) = [
-        inputs_obj.uwnd.units for wcmpn in [xudiv, xuhrm, xuvor, xvdiv, xvhrm, xvvor]
-    ]
-
-    inputs_obj = [
-        parser_interface.object_setattr(
-            object_in=inputs_obj, key=key, value=value)
-        for key in ["udiv", "uhrm", "uvor", "vdiv", "vhrm", "vvor"]
-        for value in [xudiv, xuhrm, xuvor, xvdiv, xvhrm, xvvor]
-    ]
+        uhrm[lev, :, :] = numpy.array(u[:, :]) - (uvor[lev, :, :] + udiv[lev, :, :])
+        vhrm[lev, :, :] = numpy.array(v[:, :]) - (vvor[lev, :, :] + vdiv[lev, :, :])
 
     # Deallocate memory for the spherical harmonic transform object.
     _cleanup(xspharm=xspharm)
 
-    return inputs_obj
+    return (udiv, vdiv, uhrm, vhrm, uvor, vvor)
+
 
 # ----
 
 
-def wndmag(inputs_obj: object) -> object:
+def wndmag(varobj: object) -> numpy.array:
     """
     Description
     -----------
@@ -492,7 +451,7 @@ def wndmag(inputs_obj: object) -> object:
     Parameters
     ----------
 
-    inputs_obj: object
+    varobj: object
 
         A Python object containing, at minimum, the zonal and
         meridional wind components; units are meters per second.
@@ -500,32 +459,17 @@ def wndmag(inputs_obj: object) -> object:
     Returns
     -------
 
-    inputs_obj: object
+    magwnd: numpy.array
 
-        A Python object updated to now contain the total wind speed
-        magnitude field `wndmag`.
+        A Python array-type variable containing the magnitude of the
+        total wind field.
 
     """
 
     # Initialize the local variable array.
-    wndmag = numpy.zeros(inputs_obj.uwnd.shape)
+    magwnd = numpy.zeros(varobj.uwnd.shape)
 
     # Compute the magnitude of the vector wind field.
-    xwndmag = numpy.sqrt(inputs_obj.uwnd*inputs_obj.uwnd +
-                         inputs_obj.vwnd*inputs_obj.vwnd
-                         )
+    magwnd = numpy.sqrt(varobj.uwnd * varobj.uwnd + varobj.vwnd * varobj.vwnd)
 
-    # Define the correct units with respect to the input variable.
-    xwndmag = units.Quantity(xwndmag, "mps")
-
-    inputs_obj = parser_interface.object_setattr(
-        object_in=inputs_obj, key="wndmag", value=xwndmag
-    )
-
-    msg = (
-        f"Wind speed magnitude range values ({numpy.array(xwndmag).min()}, "
-        f"{numpy.array(xwndmag).max()}) {xwndmag.units}."
-    )
-    logger.info(msg=msg)
-
-    return inputs_obj
+    return magwnd
