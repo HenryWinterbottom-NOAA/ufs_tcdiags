@@ -43,10 +43,20 @@ Functions
         This function computes a height diagnostic type using the
         specified method.
 
+    compute_moisture(varobj, method)
+
+        This function computes a moisture type using the specified
+        method.
+
     compute_pressure(varobj, method)
 
         This function computes a pressure type using the specified
         method.
+
+    compute_wind(varobj, method)
+
+        This function computes a wind diagnostic type using the
+        specified method.
 
 Author(s)
 ---------
@@ -79,7 +89,7 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["compute_height", "compute_pressure"]
+__all__ = ["compute_height", "compute_moisture", "compute_pressure", "compute_wind"]
 
 # ----
 
@@ -119,6 +129,7 @@ def _get_module(module: str, method: str) -> Callable:
 
     """
 
+    # Define the method/function within the specified module.
     try:
         compute_method = parser_interface.object_getattr(
             object_in=import_module(module), key=f"{method}", force=True
@@ -183,6 +194,52 @@ def compute_height(varobj: object, method: str) -> numpy.array:
 # ----
 
 
+def compute_moisture(varobj: object, method: str) -> numpy.array:
+    """
+    Description
+    -----------
+
+    This function computes a height diagnostic type using the
+    specified method.
+
+    Parameters
+    ----------
+
+    varobj: object
+
+        A Python object containing, at minimum, the variables required
+        for the respective moisture type computation.
+
+    method: str
+
+        A Python string specifying the method beneath
+        `tcdiags.derived.atmos.moisture`; currently supported methods
+        are the following.
+
+        - spfh_to_mxrt
+
+    Returns
+    -------
+
+    moisture: numpy.array
+
+        A Python array-type variable containing the computed
+        moisture-type values.
+
+    """
+
+    # Compute the respective moisture type from the specified method.
+    compute_module = "tcdiags.derived.atmos.moisture"
+
+    compute_method = _get_module(module=compute_module, method=method)
+    moisture = compute_method(varobj=varobj)
+
+    return moisture
+
+
+# ----
+
+
 def compute_pressure(varobj: object, method: str) -> numpy.array:
     """
     Description
@@ -225,3 +282,56 @@ def compute_pressure(varobj: object, method: str) -> numpy.array:
     pressure = compute_method(varobj=varobj)
 
     return pressure
+
+
+# ----
+
+
+def compute_wind(varobj: object, method: str) -> numpy.array:
+    """
+    Description
+    -----------
+
+    This function computes a wind-diagnostic type using the specified
+    method.
+
+    Parameters
+    ----------
+
+    varobj: object
+
+        A Python object containing, at minimum, the variables required
+        for the respective wind-diagnostic computation.
+
+    method: str
+
+        A Python string specifying the method beneath
+        `tcdiags.derived.atmos.winds`; currently supported methods
+        are the following.
+
+        - global_divg
+
+        - global_vort
+
+        - global_wind_part
+
+        - wndmag
+
+    Returns
+    -------
+
+    wind: numpy.array
+
+        A Python array-type variable containing the computed
+        wind-diagnostic values.
+
+    """
+
+    # Compute the respective wind-diagnostic type from the specified
+    # method.
+    compute_module = "tcdiags.derived.atmos.winds"
+
+    compute_method = _get_module(module=compute_module, method=method)
+    wind = compute_method(varobj=varobj)
+
+    return wind

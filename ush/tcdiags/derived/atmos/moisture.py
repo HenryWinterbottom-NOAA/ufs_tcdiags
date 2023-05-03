@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/atmos/moisture.py
+# Module: ush/tcdiags/derived/atmos/moisture.py
 
 # Author: Henry R. Winterbottom
 
@@ -64,9 +64,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+import numpy
 from metpy.calc import mixing_ratio_from_specific_humidity as mxrt_from_spfh
-from metpy.units import units
-from tools import parser_interface
 from utils.logger_interface import Logger
 
 # ----
@@ -81,7 +80,7 @@ logger = Logger()
 # ----
 
 
-def spfh_to_mxrt(inputs_obj: object) -> object:
+def spfh_to_mxrt(varobj: object) -> numpy.array:
     """
     Description
     -----------
@@ -95,30 +94,27 @@ def spfh_to_mxrt(inputs_obj: object) -> object:
     inputs_obj: object
 
         A Python object containing, at minimum, the specific humidity
-        profile from which the mixing ratio will be computed.
+        profile (`specific_humidity`) from which the mixing ratio will
+        be computed.
 
     Returns
     -------
 
-    inputs_obj: object
+    mxrt: numpy.array
 
-        A Python object updated to contain the mixing ratio profile.
+        A Python array-type variable containing the mixing-ratio
+        profile.
 
     """
 
     # Compute the mixing ratio profile from the specific humidity
     # profile.
-    msg = "Computing the mixing ratio array of dimension " f"{inputs_obj.spfh.shape}."
+    msg = (
+        "Computing the mixing ratio array of dimension "
+        f"{varobj.specific_humidity.shape}."
+    )
     logger.info(msg=msg)
 
-    mxrt = units.Quantity(
-        mxrt_from_spfh(
-            specific_humidity=inputs_obj.spfh), "kilogram / kilogram"
-    )
+    mxrt = mxrt_from_spfh(specific_humidity=varobj.specific_humidity)
 
-    # Update the input variable object.
-    inputs_obj = parser_interface.object_setattr(
-        object_in=inputs_obj, key="mxrt", value=mxrt
-    )
-
-    return inputs_obj
+    return mxrt
