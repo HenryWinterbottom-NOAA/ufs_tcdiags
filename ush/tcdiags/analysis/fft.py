@@ -25,7 +25,7 @@ Module
 
 Description
 -----------
-   
+
     This module contains functional wrappers for the available numpy
     fast-Fourier transform applications.
 
@@ -61,8 +61,14 @@ History
 
 # ----
 
+__author__ = "Henry R. Winterbottom"
+__maintainer__ = "Henry R. Winterbottom"
+__email__ = "henry.winterbottom@noaa.gov"
+
+# ----
+
 import numpy
-from exceptions import FFTError
+from tcdiags.exceptions import FFTError
 from utils.logger_interface import Logger
 
 # ----
@@ -72,13 +78,7 @@ __all__ = ["forward_fft2d", "inverse_fft2d"]
 
 # ----
 
-logger = Logger()
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
+logger = Logger(caller_name=__name__)
 
 # ----
 
@@ -102,7 +102,7 @@ def forward_fft2d(varin: numpy.array) -> numpy.complex_:
     Returns
     -------
 
-    varout: array-type
+    varout: numpy.complex_
 
         A Python array-type variable containing the 2-dimensional
         complex-values computed from the forward FFT.
@@ -112,7 +112,7 @@ def forward_fft2d(varin: numpy.array) -> numpy.complex_:
 
     FFTError:
 
-        * raised if the input array is not of 2-dimensions.
+        - raised if the input array is not of 2-dimensions.
 
     """
 
@@ -150,7 +150,7 @@ def inverse_fft2d(varin: numpy.complex_) -> numpy.complex_:
     Parameters
     ----------
 
-    varin: array-type
+    varin: numpy.complex_
 
         A Python array-type variable containing the 2-dimensional
         complex-values computed from the FFT.
@@ -158,7 +158,7 @@ def inverse_fft2d(varin: numpy.complex_) -> numpy.complex_:
     Returns
     -------
 
-    varout: array-type
+    varout: numpy.complex_
 
         A Python array-type variable containing the 2-dimensional
         complex-values computed from the inverse FFT.
@@ -168,7 +168,7 @@ def inverse_fft2d(varin: numpy.complex_) -> numpy.complex_:
 
     FFTError:
 
-        * raised if the input array is not of 2-dimensions.
+        - raised if the input array is not of 2-dimensions.
 
     """
 
