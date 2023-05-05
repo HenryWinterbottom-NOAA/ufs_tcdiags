@@ -75,7 +75,7 @@ __all__ = ["spfh_to_mxrt"]
 
 # ----
 
-logger = Logger()
+logger = Logger(caller_name=__name__)
 
 # ----
 

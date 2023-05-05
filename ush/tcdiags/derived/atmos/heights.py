@@ -75,7 +75,7 @@ __all__ = ["height_from_pressure"]
 
 # ----
 
-logger = Logger()
+logger = Logger(caller_name=__name__)
 
 # ----
 
