@@ -71,11 +71,12 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 import numpy
 from scipy.interpolate import griddata
+from tcdiags.exceptions import InterpRadialError
 from utils.logger_interface import Logger
 
 # ----
 
-logger = Logger()
+logger = Logger(caller_name=__name__)
 
 # ----
 
@@ -133,25 +134,38 @@ def interp(interp_obj: object, method: str = "linear") -> numpy.array:
     interp_var = interp_obj.vararray
 
     # Interpolate radially inward to recover the initial
-    # missing-datum.
-    while inner_dist >= 0.0:
+    # missing-datum; proceed accordingly.
+    try:
+        while inner_dist >= 0.0:
 
-        # Define the values to be used to approximate the missing
-        # datum.
-        msg = f"Interpolating within range {inner_dist} and {outer_dist}."
-        logger.info(msg=msg)
+            # Define the values to be used to approximate the missing
+            # datum.
+            msg = f"Interpolating within range {inner_dist} and {outer_dist}."
+            logger.info(msg=msg)
 
-        varin = numpy.where((interp_obj.raddist <= inner_dist), numpy.nan, interp_var)
-        mask = numpy.ma.masked_invalid(varin)
+            # Interpolate across the specified radial interval.
+            varin = interp_var
+            varin = numpy.where((interp_obj.raddist <= inner_dist), numpy.nan, varin)
+            mask = numpy.ma.masked_invalid(varin)
 
-        # Interpolate across the specified radial interval.
-        xf = xxgrid[~mask.mask]
-        yf = yygrid[~mask.mask]
-        invar = interp_var[~mask.mask]
-        interp_var = griddata((xf, yf), invar, (xxgrid, yygrid), method=method)
+            xf = xxgrid[~mask.mask]
+            yf = yygrid[~mask.mask]
+            invar = varin[~mask.mask]
 
-        # Update the interpolation interval range.
-        outer_dist = inner_dist
-        inner_dist = outer_dist - interp_obj.ddist
+            interp_var[:, :] = griddata(
+                (xf, yf), invar, (xxgrid, yygrid), method=method
+            )
+
+            # Update the interpolation interval range.
+            outer_dist = inner_dist
+            inner_dist = outer_dist - interp_obj.ddist
+
+    except Exception as errmsg:
+
+        msg = (
+            f"Interpolation application {__name__} failed with error {errmsg}. "
+            "Aborting!!!"
+        )
+        raise InterpRadialError(msg=msg) from errmsg
 
     return interp_var
