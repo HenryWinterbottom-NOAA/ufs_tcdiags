@@ -124,8 +124,7 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["global_divg", "global_psichi",
-           "global_vort", "global_wind_part", "wndmag"]
+__all__ = ["global_divg", "global_psichi", "global_vort", "global_wind_part", "wndmag"]
 
 # ----
 
@@ -261,6 +260,7 @@ def _init_spharm(array_in: numpy.array) -> spharm.Spharmt:
 
     return xspharm
 
+
 # ----
 
 
@@ -302,6 +302,7 @@ def _reset_nan(vararr: numpy.array, ref_vararr: numpy.array) -> numpy.array:
 
 # ----
 
+
 def _reset_nan2zero(vararr: numpy.array) -> numpy.array:
     """
     Description
@@ -332,6 +333,7 @@ def _reset_nan2zero(vararr: numpy.array) -> numpy.array:
     vararr = numpy.where(numpy.isnan(vararr), 0.0, vararr)
 
     return vararr
+
 
 # ----
 
@@ -389,6 +391,7 @@ def global_divg(varobj: object) -> numpy.array:
 
     return divg
 
+
 # ----
 
 
@@ -431,7 +434,9 @@ def global_psichi(varobj: object) -> Tuple[numpy.array, numpy.array]:
 
     # Compute the streamfunction and velocity potential fields;
     # proceed accordingly.
-    msg = f"Computing global streamfunction and velocity arrays of dimension {chi.shape}."
+    msg = (
+        f"Computing global streamfunction and velocity arrays of dimension {chi.shape}."
+    )
     logger.info(msg=msg)
 
     for lev in range(nlevs):
@@ -443,8 +448,7 @@ def global_psichi(varobj: object) -> Tuple[numpy.array, numpy.array]:
 
         # Compute the streamfunction and velocity potential and reset
         # the output values accordingly.
-        (psi[lev, :, :], chi[lev, :, :]) = xspharm.getpsichi(
-            ugrid=xuwnd, vgrid=xvwnd)
+        (psi[lev, :, :], chi[lev, :, :]) = xspharm.getpsichi(ugrid=xuwnd, vgrid=xvwnd)
         chi[lev, :, :] = _reset_nan(vararr=chi[lev, :, :], ref_vararr=uwnd)
         psi[lev, :, :] = _reset_nan(vararr=psi[lev, :, :], ref_vararr=uwnd)
 
@@ -452,6 +456,7 @@ def global_psichi(varobj: object) -> Tuple[numpy.array, numpy.array]:
     _cleanup(xspharm=xspharm)
 
     return (chi, psi)
+
 
 # ----
 
@@ -585,24 +590,20 @@ def global_wind_part(
 
         # Compute the divergent component of the total wind field.
         (zspec, dspec) = [numpy.zeros(zspec_save.shape), dspec_save]
-        (udiv[lev, :, :], vdiv[lev, :, :]) = xspharm.getuv(
-            vrtspec=zspec, divspec=dspec)
+        (udiv[lev, :, :], vdiv[lev, :, :]) = xspharm.getuv(vrtspec=zspec, divspec=dspec)
         udiv[lev, :, :] = _reset_nan(vararr=udiv[lev, :, :], ref_vararr=uwnd)
         vdiv[lev, :, :] = _reset_nan(vararr=vdiv[lev, :, :], ref_vararr=vwnd)
 
         # Compute the rotational component of the total wind field.
         (zspec, dspec) = [zspec_save, numpy.zeros(dspec_save.shape)]
-        (uvor[lev, :, :], vvor[lev, :, :]) = xspharm.getuv(
-            vrtspec=zspec, divspec=dspec)
+        (uvor[lev, :, :], vvor[lev, :, :]) = xspharm.getuv(vrtspec=zspec, divspec=dspec)
         uvor[lev, :, :] = _reset_nan(vararr=uvor[lev, :, :], ref_vararr=uwnd)
         vvor[lev, :, :] = _reset_nan(vararr=vvor[lev, :, :], ref_vararr=vwnd)
 
         # Compute the residual (i.e., harmonic) component of the total
         # wind field.
-        uhrm[lev, :, :] = numpy.array(
-            xuwnd[:, :]) - (uvor[lev, :, :] + udiv[lev, :, :])
-        vhrm[lev, :, :] = numpy.array(
-            xvwnd[:, :]) - (vvor[lev, :, :] + vdiv[lev, :, :])
+        uhrm[lev, :, :] = numpy.array(xuwnd[:, :]) - (uvor[lev, :, :] + udiv[lev, :, :])
+        vhrm[lev, :, :] = numpy.array(xvwnd[:, :]) - (vvor[lev, :, :] + vdiv[lev, :, :])
 
     # Deallocate memory for the spherical harmonic transform object.
     _cleanup(xspharm=xspharm)
