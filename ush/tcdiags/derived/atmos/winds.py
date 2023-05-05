@@ -117,7 +117,7 @@ from typing import Tuple
 
 import numpy
 import spharm
-from tcdiags.exceptions import AtmosWindsError
+from tcdiags.exceptions import DerivedAtmosWindsError
 from tools import parser_interface
 from utils.logger_interface import Logger
 
@@ -215,7 +215,7 @@ def _get_lev_uv(varobj: object, lev: int) -> Tuple[numpy.array, numpy.array]:
             "The wind vector components could not be parsed and/or "
             "the level attribute is invalid. Aborting!!!"
         )
-        raise AtmosWindsError(msg=msg)
+        raise DerivedAtmosWindsError(msg=msg)
 
     return (xuwnd, xvwnd)
 
