@@ -89,8 +89,7 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["compute_height", "compute_moisture",
-           "compute_pressure", "compute_wind"]
+__all__ = ["compute_height", "compute_moisture", "compute_pressure", "compute_wind"]
 
 # ----
 
