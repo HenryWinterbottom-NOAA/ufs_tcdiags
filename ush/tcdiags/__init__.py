@@ -30,7 +30,7 @@ Description
 
 Classes
 -------
-   
+
     TCDiags(options_obj)
 
         This is the base-class object for all tropical cyclone (TC)
@@ -55,6 +55,10 @@ History
 
 # ----
 
+import pprint  # for testing
+
+from importlib import import_module
+
 from dataclasses import dataclass
 from gc import collect
 
@@ -63,7 +67,7 @@ from tcdiags.exceptions import TCDiagsError
 from tools import parser_interface
 from utils.logger_interface import Logger
 
-from tcdiags.io.gfs import GFS
+# from tcdiags.io.gfs import GFS
 # from tcdiags.metrics.steeringflows import SteeringFlows
 # from tcdiags.metrics.tropcycmpi import TropCycMPI
 # from tcdiags.tc import FilterVortex
@@ -109,29 +113,95 @@ class TCDiags:
         self.logger = Logger()
         self.yaml_file = self.options_obj.yaml_file
 
-        # Define the available application options.
-#        self.apps_dict = {"tcfilt": FilterVortex, "tcmpi": TropCycMPI,
-#                          "tcsteering": SteeringFlows, "tcwnmsi": WNMSI}
+        # Collect the experiment attributes from the YAML-formatted
+        # configuration file; proceed accordingly.
+        self.yaml_obj = YAML().read_yaml(yaml_file=self.yaml_file,
+                                         return_obj=True)
+
+        # Define the available applications.
+        self.apps_list = ["tcmpi", "tcsteering", "tcwnmsi"]
 
     @privatemethod
     def config(self: dataclass) -> object:
-        """ """
+        """
+        Description
+        -----------
 
-        yaml_obj = YAML().read_yaml(yaml_file=self.yaml_file,
-                                    return_obj=True)
+        This method configures the application; the input attributes
+        are collect for the respective input type (e.g., model,
+        analysis, etc.,) and (if available) the information for the
+        respective TCs to be analyzed.
 
+        Returns
+        -------
+
+        tcdiags_obj: object
+
+            A Python object containing all configuration attributes
+            for the respective application including inputs (i.e.,
+            `inputs` and `tcinfo`) as well as the remaining
+            (supported) applications (see base-class attribute
+            `apps_list`).
+
+        Raises
+        ------
+
+        TCDiagsError:
+
+            - raised if an exception is encountered while defining the
+              input I/O module and/or class.
+
+        """
+
+        # Collect the mandatory/standard variables and attributes for
+        # the respective input type.
         tcdiags_obj = parser_interface.object_define()
 
-        inputs_io = GFS(yaml_file=yaml_obj.inputs)
-        tcdiags_obj.inputs = inputs_io.read_inputs()
+        yaml_obj = YAML().read_yaml(yaml_file=self.yaml_obj.inputs,
+                                    return_obj=True)
 
-        quit()
+        try:
+            io_obj = parser_interface.object_getattr(
+                import_module(yaml_obj.io_module), key=f"{yaml_obj.io_class}",
+                force=True)
+        except Exception as errmsg:
+            msg = (f"Defining the inputs I/O module failed with error {errmsg}. "
+                   "Aborting!!!"
+                   )
+            raise TCDiagsError(msg=msg) from errmsg
 
-        if "tcvitals" in self.yaml_dict:
-            tcdiags_obj.tcinfo = YAML().read_yaml(
-                yaml_file=self.yaml_dict["tcvitals"], return_obj=True)
+        tcdiags_obj.inputs = io_obj(
+            yaml_file=self.yaml_obj.inputs).read_inputs()
 
-        print(tcdiags_obj.tcinfo)
+        # Check whether the TC information file has been provided;
+        # proceed accordingly.
+        if parser_interface.object_hasattr(object_in=self.yaml_obj, key="tcinfo"):
+            tcdiags_obj.tcinfo = YAML().read_yaml(yaml_file=self.yaml_obj.tcinfo)
+
+        else:
+            msg = ("No TC-information attribute `tcvitals` was found in experiment "
+                   f"configuration file {self.yaml_file}; resetting to NoneType."
+                   )
+            self.logger.warn(msg=msg)
+            tcdiags_obj.tcinfo = None
+
+        # Collect the information and configuration attributes for the
+        # respective (supported) applications.
+        for app in self.apps_list:
+            if parser_interface.object_hasattr(object_in=self.yaml_obj, key=app):
+                yaml_obj = YAML().read_yaml(yaml_file=parser_interface.object_getattr(
+                    object_in=self.yaml_obj, key=app, force=True), return_obj=True)
+
+                if yaml_obj is None:
+                    msg = ("No configuration attributes have been specified for application "
+                           f"{app}."
+                           )
+                    self.logger.warn(msg=msg)
+
+                tcdiags_obj = parser_interface.object_setattr(
+                    object_in=tcdiags_obj, key=app, value=yaml_obj)
+
+        return tcdiags_obj
 
     def run(self: dataclass) -> None:
         """
@@ -147,7 +217,22 @@ class TCDiags:
 
         """
 
-        self.config()
+        # Collect the configuration attributes.
+        tcdiags_obj = self.config()
+
+        # Execute each application; proceed accordingly.
+        for app in self.apps_list:
+            if not parser_interface.object_getattr(
+                    object_in=tcdiags_obj, key=app, force=True) is None:
+                msg = f"Executing application {app}."
+                self.logger.info(msg=msg)
+
+                app_obj = parser_interface.object_getattr(
+                    object_in=tcdiags_obj, key=app, force=True)
+                app_method = parser_interface.object_getattr(
+                    import_module(app_obj.app_module), key=app_obj.app_class)
+                app_method(tcdiags_obj=tcdiags_obj).run()
+
         quit()
 
         # Read the input variables; proceed accordingly.

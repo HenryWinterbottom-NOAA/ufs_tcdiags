@@ -17,7 +17,8 @@
 
 # =========================================================================
 
-"""Module
+"""
+Module
 ------
 
     gfs.py
@@ -153,7 +154,7 @@ class GFS:
             msg = (f"Reading YAML-formatted file {yaml_file} failed with error "
                    f"{errmsg}. Aborting!!!"
                    )
-            raise InputFieldsError(msg=msg) from errmsg
+            raise GFSError(msg=msg) from errmsg
 
         self.variable_range_msg = self.VARRANGE_STRING
 
@@ -161,7 +162,12 @@ class GFS:
 
     @privatemethod
     def build_varobj(self: dataclass, varname: str) -> object:
-        """ """
+        """ 
+        # TODO
+
+
+
+        """
 
         varobj = parser_interface.object_define()
 
@@ -204,7 +210,7 @@ class GFS:
         Raises
         ------
 
-        InputFieldsError:
+        GFSError:
 
             - raised if the pressure variable attributes cannot be
               determined from the experiment configuration or are not
@@ -235,7 +241,7 @@ class GFS:
             msg = ("Detemining the pressure profile computation methodology failed "
                    f"with error {errmsg}. Aborting!!!"
                    )
-            raise InputFieldsError(msg=msg)
+            raise GFSError(msg=msg)
 
         self.inputs_obj = app(inputs_obj=self.inputs_obj)
         msg = self.variable_range_msg % (
@@ -265,7 +271,7 @@ class GFS:
         Raises
         ------
 
-        InputFieldsError:
+        GFSError:
 
             - raised if a mandatory input variable has not been
               specified in the YAML-formatted file containing the
@@ -288,9 +294,8 @@ class GFS:
                 "The following mandatory input variables could not be found in the "
                 f"experiment configuration: {missing_vars}. Aborting!!!"
             )
-            raise InputFieldsError(msg=msg)
+            raise GFSError(msg=msg)
 
-        # TODO: Break this loop into chunks/methods.
         for varname in self.INPUTS_DICT:
 
             vardict = parser_interface.dict_key_value(
@@ -331,7 +336,6 @@ class GFS:
                               )
 
         # Compute/define the remaining diagnostic variables.
-        # self.get_pressure()
         self.inputs_obj.pressure.values = vario.define_units(
             varin=derived.compute_pressure(varobj=self.inputs_obj,
                                            method="pressure_from_thickness"),
@@ -342,3 +346,5 @@ class GFS:
             varin=derived.compute_height(varobj=self.inputs_obj,
                                          method="height_from_pressure"),
             varunits="m")
+
+        return self.inputs_obj

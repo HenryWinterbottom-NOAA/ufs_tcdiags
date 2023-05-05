@@ -69,7 +69,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 import numpy
-from exceptions import TCDiagsIOError
+from tcdiags.exceptions import TCDiagsIOError
 from tools import parser_interface
 from utils.logger_interface import Logger
 from xarray import DataArray, merge
@@ -78,7 +78,7 @@ from xarray import DataArray, merge
 
 
 @dataclass
-class TCDiagsOutputsNetCDFIO:
+class NCOutputs:
     """
     Description
     -----------
@@ -101,48 +101,13 @@ class TCDiagsOutputsNetCDFIO:
         Description
         -----------
 
-        Creates a new TCDiagsOutputsNetCDFIO object.
+        Creates a new NCOutputs object.
 
         """
 
         # Define the base-class attributes
         self.logger = Logger()
         self.output_file = output_file
-
-    def build_varobj(self, ncvarname: str) -> object:
-        """
-        Description
-        -----------
-
-        This method defines a Python object to be used by the xarray
-        library/package to define/update the respective netCDF output
-        file/variables.
-
-        Parameters
-        ----------
-
-        ncvarname: str
-
-            A Python string specifying the netCDF variable name to be
-            defined and/or written within the output netCDF file.
-
-        Returns
-        -------
-
-        var_obj: object
-
-            A Pyton object containing the netCDF variable attributes
-            to be used by xarray library/package to define/update the
-            respective netCDF output file/variables.
-
-        """
-
-        # Define the Python object containing the netCDF variable
-        # attributes.
-        var_obj = parser_interface.object_define()
-        var_obj = parser_interface.object_setattr(
-            object_in=var_obj, key="ncvarname", value=ncvarname
-        )
 
     def write(
         self,
@@ -169,7 +134,7 @@ class TCDiagsOutputsNetCDFIO:
             A Python object containing all variables to be written to
             the netCDF-formatteed output file path.
 
-        var_list: list
+        var_list: List
 
             A Python list of variable names to be collected from the
             `var_obj` parameters specified upon entry.
@@ -177,12 +142,12 @@ class TCDiagsOutputsNetCDFIO:
         Keywords
         --------
 
-        coords_2d: dict, optional
+        coords_2d: Dict, optional
 
             A Python object describing the coordinate dimensions for
             (any) 2-dimensional variables.
 
-        coords_3d: dict, optional
+        coords_3d: Dict, optional
 
             A Python object describing the coordinate dimensions for
             (any) 3-dimensional variables.
@@ -202,7 +167,7 @@ class TCDiagsOutputsNetCDFIO:
 
         TCDiagsIOError:
 
-            * raised if the coordinate dimensions cannot be determined
+            - raised if the coordinate dimensions cannot be determined
               for specified output variable.
 
         """
@@ -215,8 +180,10 @@ class TCDiagsOutputsNetCDFIO:
         dataout_list = []
 
         for var in var_list:
+
             # Define the output variable attributes; proceed
             # accordingly.
+            #            varout = var
             varout = parser_interface.object_getattr(
                 object_in=var_obj, key=var, force=True
             )
@@ -229,13 +196,30 @@ class TCDiagsOutputsNetCDFIO:
                 self.logger.warn(msg=msg)
 
             if varout is not None:
+
+                # Collect (any) attributes for the respective variable.
+                try:
+                    attributes = {key: value for (key, value) in
+                                  varout.attrs.items() if value is not None}
+
+                except AttributeError:
+                    msg = (f"No attributes have been defined for variable {var}; attributes "
+                           f"for variable will not be written to {self.output_file}."
+                           )
+                    self.logger.warn(msg=msg)
+
+                    attributes = {}
+
                 # Build the data array for the respective variables
                 # and setup the xarray object.
-                data = numpy.array(varout)
-                if len(data.shape) == 2:
+                data = numpy.array(varout.values)
+
+                # Define the coordinate dimensions for the respective
+                # variable.
+                if data.ndim == 2:
                     coords = coords_2d
 
-                elif len(data.shape) == 3:
+                elif data.ndim == 3:
                     coords = coords_3d
 
                 else:
@@ -247,43 +231,14 @@ class TCDiagsOutputsNetCDFIO:
 
                 dims = list(coords.keys())
 
+                # Build the xarray object corresponding to the
+                # respective variable.
                 xarray_obj = DataArray(
-                    name=var, data=varout, dims=dims, coords=(coords)
-                )
+                    name=var, data=data, dims=dims, coords=(
+                        coords)).assign_attrs(attributes)
 
-                # If applicable, define the netCDF-formatted
-                # attributes for the respective variable.
-                if attrs_list is not None:
-                    varout_attrs_dict = {}
-
-                    for attr in attrs_list:
-                        value = parser_interface.object_getattr(
-                            object_in=varout, key=attr, force=True
-                        )
-
-                        if value is None:
-                            msg = (
-                                f"Attribute {attr} could not be determined for variable "
-                                f"{var} and will not be written to output file {self.output_file}."
-                            )
-                            self.logger.warn(msg=msg)
-
-                        if value is not None:
-                            varout_attrs_dict[attr] = list(value._units.keys())
-
-                        xarray_obj.attrs = varout_attrs_dict
-
-                # Update the xarray objects list.
                 dataout_list.append(xarray_obj.to_dataset(name=var))
 
         # Build and write the netCDF-formatted output file.
         dataset_output = merge(dataout_list)
-
-        # Write the global attributes (if applicable).
-        if global_attrs_dict is not None:
-            for global_attr in global_attrs_dict:
-                dataset_output.attrs[global_attr] = parser_interface.dict_key_value(
-                    dict_in=global_attrs_dict, key=global_attr, no_split=None
-                )
-
         dataset_output.to_netcdf(self.output_file)

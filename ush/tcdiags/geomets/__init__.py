@@ -26,8 +26,8 @@ Module
 Description
 -----------
 
-    This module contains various method for compute attributes on a
-    sphere.
+    This module contains various method to compute attributes/values
+    on a sphere.
 
 Functions
 ---------
@@ -52,6 +52,10 @@ Functions
 Requirements
 ------------
 
+- astropy; https://github.com/astropy/astropy
+
+- metpy; https://unidata.github.io/MetPy/latest/index.html
+
 - ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
 Author(s)
@@ -72,6 +76,12 @@ History
 
 # ----
 
+__author__ = "Henry R. Winterbottom"
+__maintainer__ = "Henry R. Winterbottom"
+__email__ = "henry.winterbottom@noaa.gov"
+
+# ----
+
 from math import asin, atan2, cos, radians, sin, sqrt
 from typing import Tuple
 
@@ -80,7 +90,7 @@ import numpy
 from metpy.units import units
 
 from astropy.constants import R_earth
-from exceptions import GeoMetsError
+from tcdiags.exceptions import GeoMetsError
 from utils.logger_interface import Logger
 
 # ----
@@ -91,12 +101,6 @@ __all__ = ["bearing_geoloc", "haversine", "radial_distance"]
 # ----
 
 logger = Logger()
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
@@ -115,7 +119,7 @@ def bearing_geoloc(
     Parameters
     ----------
 
-    loc1: tuple
+    loc1: Tuple
 
         A Python tuple containing the geographical coordinates of
         location 1; format is (lat, lon); units are degrees.
@@ -135,7 +139,7 @@ def bearing_geoloc(
     Returns
     -------
 
-    loc2: tuple
+    loc2: Tuple
 
         A Python tuple containing the geographical coordinates of
         destination location; format is (lat, lon); units are degrees.
@@ -181,12 +185,12 @@ def haversine(loc1: Tuple, loc2: Tuple, radius: float = R_earth.value) -> float:
     Parameters
     ----------
 
-    loc1: tuple
+    loc1: Tuple
 
         A Python tuple containing the geographical coordinates of
         location 1; format is (lat, lon); units are degrees.
 
-    loc2: tuple
+    loc2: Tuple
 
         A Python tuple containing the geographical coordinates of
         location 2; format is (lat, lon); units are degrees.
@@ -243,17 +247,17 @@ def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
     Parameters
     ----------
 
-    refloc: tuple
+    refloc: Tuple
 
         A Python tuple containing the geographical coordinates for the
         reference location; format is (lat, lon); units are degrees.
 
-    latgrid: array-type
+    latgrid: numpy.array
 
         A Python 1-dimensional array-type variable containing the
         latitude coordinate values; units are degrees.
 
-    longrid: array-type
+    longrid: numpy.array
 
         A Python 1-dimensional array-type variable containing the
         longitude coordinate values; units are degrees.
@@ -269,7 +273,7 @@ def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
     Returns
     -------
 
-    raddist: array-type
+    raddist: numpy.array
 
         A Python 1-dimensional array-type variable containing the
         radial distances relative to the reference geographical
@@ -280,7 +284,7 @@ def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
 
     GeoMetsError:
 
-        * raised if the either or both the latitude and longitude
+        - raised if the either or both the latitude and longitude
           arrays are not 1-dimensional upon entry.
 
     """
@@ -297,8 +301,7 @@ def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
     # Compute the radial distance array relative to the reference
     # location.
     raddist = numpy.zeros(numpy.shape(latgrid))
-    raddist = units.Quantity([haversine(refloc, (latgrid[idx], longrid[idx]),
-                                        radius=radius) for idx in range(len(raddist))],
-                             "meter")
+    raddist = ([haversine(refloc, (latgrid[idx], longrid[idx]),
+                          radius=radius) for idx in range(len(raddist))])
 
     return raddist
