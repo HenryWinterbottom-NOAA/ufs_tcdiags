@@ -85,7 +85,7 @@ __all__ = ["pressure_from_thickness", "pressure_to_sealevel"]
 
 # ----
 
-logger = Logger()
+logger = Logger(caller_name=__name__)
 
 # ----
 

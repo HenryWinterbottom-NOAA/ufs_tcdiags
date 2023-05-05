@@ -48,6 +48,16 @@ Functions
         This method initializes the spherical harmonic transform
         object.
 
+    _reset_nan(vararr, ref_vararr)
+
+        This function sets all array `vararr` values where the
+        reference variable `ref_vararr` is `numpy.nan` to `numpy.nan`.
+
+    _reset_nan2zero(vararr)
+
+        This function resets all `numpy.nan` values within the array
+        `vararr` to `0.0`.
+
     global_divg(varobj)
 
         This function computes the global divergence field using
@@ -114,11 +124,12 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["global_divg", "global_vort", "global_wind_part", "wndmag"]
+__all__ = ["global_divg", "global_psichi",
+           "global_vort", "global_wind_part", "wndmag"]
 
 # ----
 
-logger = Logger()
+logger = Logger(caller_name=__name__)
 
 # ----
 
@@ -383,6 +394,32 @@ def global_divg(varobj: object) -> numpy.array:
 
 def global_psichi(varobj: object) -> Tuple[numpy.array, numpy.array]:
     """
+    Description
+    -----------
+
+    This function computes the global velocity potential (`chi`) and
+    streamfunction (`psi`) fields using spherical harmonic transforms.
+
+    Parameters
+    ----------
+
+    varobj: object
+
+        A Python object containing, at minimum, the zonal and
+        meridional wind components; units are meters per second.
+
+    Returns
+    -------
+
+    chi: numpy.array
+
+        A Python array-type variable containing the global velocity
+        potential values.
+
+    psi: numpy.array
+
+        A Python array-type variable containing the global
+        streamfunction values.
 
     """
 
