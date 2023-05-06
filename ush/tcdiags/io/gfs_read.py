@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/io/gfs.py
+# Module: ush/tcdiags/io/gfs_read.py
 
 # Author: Henry R. Winterbottom
 
@@ -21,7 +21,7 @@
 Module
 ------
 
-    gfs.py
+    gfs_read.py
 
 Description
 -----------
@@ -33,7 +33,7 @@ Description
 Classes
 -------
 
-    GFS(yaml_dict)
+    GFSRead(yaml_dict)
 
         This is the base-class object for all GFS netCDF-formatted
         file reading and variable derivations and computations.
@@ -60,7 +60,6 @@ History
 # ----
 
 # pylint: disable=consider-using-dict-items
-# pylint: disable=line-too-long
 
 # ----
 
@@ -71,22 +70,15 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 from dataclasses import dataclass
-from typing import Dict
 
 import numpy
-from tcdiags.exceptions import GFSError
-from ioapps import netcdf4_interface
-from metpy.units import units
-
-from tools import parser_interface
-from utils.logger_interface import Logger
-
-from tcdiags.derived import derived
-from tcdiags.io import vario
-
 from confs.yaml_interface import YAML
-
+from tcdiags.derived import derived
+from tcdiags.exceptions import GFSReadError
+from tcdiags.io import vario
+from tools import parser_interface
 from utils.decorator_interface import privatemethod
+from utils.logger_interface import Logger
 
 # ----
 
@@ -112,7 +104,7 @@ class GFS:
     Raises
     ------
 
-    GFSError:
+    GFSReadError:
 
         - raised if the attribute `inputs` can not be determined from
           the experiment configuration file.
@@ -146,15 +138,17 @@ class GFS:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger()
+        self.logger = Logger(
+            caller_name=f"{__name__}.{self.__class__.__name__}")
 
         try:
             self.inputs_dict = YAML().read_yaml(yaml_file=yaml_file)
         except Exception as errmsg:
-            msg = (f"Reading YAML-formatted file {yaml_file} failed with error "
-                   f"{errmsg}. Aborting!!!"
-                   )
-            raise GFSError(msg=msg) from errmsg
+            msg = (
+                f"Reading YAML-formatted file {yaml_file} failed with error "
+                f"{errmsg}. Aborting!!!"
+            )
+            raise GFSReadError(msg=msg) from errmsg
 
         self.variable_range_msg = self.VARRANGE_STRING
 
@@ -162,95 +156,40 @@ class GFS:
 
     @privatemethod
     def build_varobj(self: dataclass, varname: str) -> object:
-        """ 
-        # TODO
-
-
-
-        """
-
-        varobj = parser_interface.object_define()
-
-        vardict = parser_interface.dict_key_value(
-            dict_in=self.inputs_dict, key=varname, force=True,
-            no_split=True
-        )
-
-        varobj = vario.init_ncvar(varname=varname, vardict=vardict)
-
-        return varobj
-
-    @privatemethod
-    def get_pressure(self: dataclass) -> None:
         """
         Description
         -----------
 
-        This method computes the pressure profile in accordance with
-        the experiment configuration attributes.
+        This function initiates a Python object (e.g., container) to
+        contain the attributes for the respective netCDF-formatted
 
         Parameters
         ----------
 
-        inputs_obj: object
+        varname: str
 
-            A Python object containing the mandatory input variables;
-            this includes, at minimum, the pressure and surface
-            pressure values; see below for additional information.
+            A Python string specifying the variable name.
 
         Returns
         -------
 
-        inputs_obj: object
+        varobj: object
 
-            A Python object updated to contain the pressure profile
-            array in accordance with the method defined in the
-            experiment configuration.
-
-        Raises
-        ------
-
-        GFSError:
-
-            - raised if the pressure variable attributes cannot be
-              determined from the experiment configuration or are not
-              defined within this module (see base-class attribute
-              `PRES_PROF_COMP_METHODS_DICT` above).
-
-        Notes
-        -----
-
-        For the respective pressure profile computations, the
-        respective methods assume the pressure array upon entry
-        contains the following:
-
-        1: pressure_from_thickness :: pres = the layer thickness; this
-           is used to derive the pressure profile by integrating from
-           the top layer thickness to the surface.
+            A Python object containing the initialized
+            netCDF-formatted variable container.
 
         """
 
-        # Define the method to be used for the pressure profile and
-        # compute the pressure profile accordingly.
-        try:
-            app = parser_interface.dict_key_value(
-                dict_in=self.PRES_PROF_COMP_METHODS_DICT,
-                key=self.inputs_obj.pressure.method, force=True
-            )
-        except Exception as errmsg:
-            msg = ("Detemining the pressure profile computation methodology failed "
-                   f"with error {errmsg}. Aborting!!!"
-                   )
-            raise GFSError(msg=msg)
+        # Build the netCDF-formatted variable container object; proceed
+        # accordingly.
+        varobj = parser_interface.object_define()
 
-        self.inputs_obj = app(inputs_obj=self.inputs_obj)
-        msg = self.variable_range_msg % (
-            "pressure",
-            (self.inputs_obj.pressure.values).min(),
-            (self.inputs_obj.pressure.values).max(),
-            self.inputs_obj.pressure.units
+        vardict = parser_interface.dict_key_value(
+            dict_in=self.inputs_dict, key=varname, force=True, no_split=True
         )
-        self.logger.info(msg=msg)
+        varobj = vario.init_ncvar(varname=varname, vardict=vardict)
+
+        return varobj
 
     def read_inputs(self: dataclass) -> object:
         """
@@ -271,7 +210,7 @@ class GFS:
         Raises
         ------
 
-        GFSError:
+        GFSReadError:
 
             - raised if a mandatory input variable has not been
               specified in the YAML-formatted file containing the
@@ -294,28 +233,26 @@ class GFS:
                 "The following mandatory input variables could not be found in the "
                 f"experiment configuration: {missing_vars}. Aborting!!!"
             )
-            raise GFSError(msg=msg)
+            raise GFSReadError(msg=msg)
 
         for varname in self.INPUTS_DICT:
-
-            vardict = parser_interface.dict_key_value(
-                dict_in=self.inputs_dict, key=varname, force=True,
-                no_split=True
-            )
 
             # Collect the respective variable and scale as necessary.
             varobj = self.build_varobj(varname=varname)
             varobj = vario.read_ncvar(varname=varname, varobj=varobj)
-            varobj.values = \
-                vario.update_varattrs(varin=varobj.values,
-                                      flip_lat=varobj.flip_lat, flip_z=varobj.flip_z,
-                                      scale_mult=varobj.scale_mult, scale_add=varobj.scale_add
-                                      )
+            varobj.values = vario.update_varattrs(
+                varin=varobj.values,
+                flip_lat=varobj.flip_lat,
+                flip_z=varobj.flip_z,
+                scale_mult=varobj.scale_mult,
+                scale_add=varobj.scale_add,
+            )
 
             units = parser_interface.dict_key_value(
-                dict_in=self.INPUTS_DICT[varname], key="units", no_split=True)
-            varobj.values = vario.define_units(varin=varobj.values,
-                                               varunits=units)
+                dict_in=self.INPUTS_DICT[varname], key="units", no_split=True
+            )
+            varobj.values = vario.define_units(
+                varin=varobj.values, varunits=units)
 
             msg = self.variable_range_msg % (
                 varname,
@@ -326,25 +263,33 @@ class GFS:
             self.logger.info(msg=msg)
 
             self.inputs_obj = parser_interface.object_setattr(
-                object_in=self.inputs_obj, key=varname, value=varobj)
+                object_in=self.inputs_obj, key=varname, value=varobj
+            )
 
         # Check that the grid-projection geographical location
         # variables are 2-dimensional; proceed accordingly.
-        (self.inputs_obj.latitude.values, self.inputs_obj.longitude.values) = \
-            vario.update_grid(xlat_in=self.inputs_obj.latitude.values,
-                              xlon_in=self.inputs_obj.longitude.values
-                              )
+        (
+            self.inputs_obj.latitude.values,
+            self.inputs_obj.longitude.values,
+        ) = vario.update_grid(
+            xlat_in=self.inputs_obj.latitude.values,
+            xlon_in=self.inputs_obj.longitude.values,
+        )
 
         # Compute/define the remaining diagnostic variables.
         self.inputs_obj.pressure.values = vario.define_units(
-            varin=derived.compute_pressure(varobj=self.inputs_obj,
-                                           method="pressure_from_thickness"),
-            varunits="Pa")
+            varin=derived.compute_pressure(
+                varobj=self.inputs_obj, method="pressure_from_thickness"
+            ),
+            varunits="Pa",
+        )
 
         self.inputs_obj.heights = self.build_varobj(varname=varname)
         self.inputs_obj.heights.values = vario.define_units(
-            varin=derived.compute_height(varobj=self.inputs_obj,
-                                         method="height_from_pressure"),
-            varunits="m")
+            varin=derived.compute_height(
+                varobj=self.inputs_obj, method="height_from_pressure"
+            ),
+            varunits="m",
+        )
 
         return self.inputs_obj
