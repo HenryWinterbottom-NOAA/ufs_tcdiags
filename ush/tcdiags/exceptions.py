@@ -96,6 +96,12 @@ Classes
         ush/tcdiags/io/ncwrite module; it is a sub-class of
         Error.
 
+    MetricsVL1991Error(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/metrics/vl1991_metric module; it is a sub-class of
+        Error.
+
     TCDiagsError(msg)
 
         This is the base-class for exceptions encountered within the
@@ -112,11 +118,7 @@ Classes
         ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of
         Error.
 
-    TropCycSteeringFlowsError(msg)
 
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/metrics/steeringflows module; it is a sub-class of
-        Error.
 
     TropCycWNMSIError(msg)
 
@@ -173,10 +175,10 @@ __all__ = [
     "InterpRadialError",
     "InterpVerticalError",
     "IoNcWriteError",
+    "MetricsVL1991Error",
     "TCDiagsError",
     "TCDiagsIOError",
     "TropCycMPIError",
-    "TropCycSteeringFlowsError",
     "TropCycWNMSIError",
     "VarIOError",
 ]
@@ -347,6 +349,20 @@ class IoNcWriteError(Error):
 
     """
 
+# ----
+
+
+class MetricsVL1991Error(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/metrics/vl1999_metric module; it is a sub-class of
+    Error.
+
+    """
+
 
 # ----
 
@@ -388,22 +404,6 @@ class TropCycMPIError(Error):
     ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of Error.
 
     """
-
-
-# ----
-
-
-class TropCycSteeringFlowsError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/metrics/steeringflows module; it is a sub-class of
-    Error.
-
-    """
-
 
 # ----
 

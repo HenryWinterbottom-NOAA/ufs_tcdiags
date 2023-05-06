@@ -80,7 +80,7 @@ from wrf import interplevel
 # ----
 
 # Define all available functions.
-__all__ = ["vertical"]
+__all__ = ["interp"]
 
 # ----
 
@@ -89,7 +89,7 @@ logger = Logger(caller_name=__name__)
 # ----
 
 
-def vertical(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.array:
+def interp(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.array:
     """
     Description
     -----------
