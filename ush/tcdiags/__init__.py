@@ -171,7 +171,7 @@ class TCDiags:
             raise TCDiagsError(msg=msg) from errmsg
 
         tcdiags_obj.inputs = io_obj(
-            yaml_file=self.yaml_obj.inputs).read_inputs()
+            yaml_file=self.yaml_obj.inputs).read()
 
         # Check whether the TC information file has been provided;
         # proceed accordingly.
