@@ -97,5 +97,5 @@ class Metrics:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger()
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
         self.tcdiags_obj = tcdiags_obj

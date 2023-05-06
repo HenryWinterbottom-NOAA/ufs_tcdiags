@@ -18,7 +18,51 @@
 # =========================================================================
 
 """
+Module
+------
 
+    vl1991_metric.py
+
+Description
+-----------
+
+    This module contains the base-class object for tropical cyclone
+    (TC) steering flow evalutions as described in Velden and Leslie
+    [1991].
+
+Classes
+-------
+
+    VL1991(tcdiags_obj)
+
+        This is the base-class object for all tropical cyclone (TC)
+        steering flow evaluations presented in Velden and Leslie
+        [1991]; it is a sub-class of Metrics.
+
+References
+----------
+
+    Velden, C. S. and L. M. Leslie. "The Basic Relationship between
+    Tropical Cyclone Intensity and the Depth of the Environmental
+    Steering Layer in the Australian Region." Weather and Forecasting
+    6 (1991): 244-253.
+
+    DOI: https://doi.org/10.1175/1520-0434(1991)006<0244:TBRBTC>2.0.CO;2
+
+Requirements
+------------
+
+- ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
+
+Author(s)
+---------
+
+    Henry R. Winterbottom; 05 May 2023
+
+History
+-------
+
+    2023-05-03: Henry Winterbottom -- Initial implementation.
 
 """
 
@@ -30,27 +74,18 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
-from collections import OrderedDict
 import ast
-from typing import Dict, List, Tuple
+from typing import Tuple
+
 import numpy
-
-from tcdiags.exceptions import TropCycSteeringFlowsError
-
-from tcdiags.geomets import radial_distance
-from tcdiags.interp import radial
-from tools import parser_interface
-# from metpy.units import units
-
-from tcdiags.derived.atmos import winds
-
-from tcdiags.metrics.metrics import Metrics
-
-from utils.decorator_interface import privatemethod
 from tcdiags import interp
-from tcdiags.io.outputs import NCOutputs
-
-from tcdiags.io import vario
+from tcdiags.derived.atmos import winds
+from tcdiags.geomets import radial_distance
+from tcdiags.interp import radial, vertical
+from tcdiags.io.nc_write import NCWrite
+from tcdiags.metrics.metrics import Metrics
+from tools import parser_interface
+from utils.decorator_interface import privatemethod
 from xarray import DataArray
 
 # ----
@@ -102,23 +137,40 @@ class VL1991(Metrics):
         self.rdlintrp_obj = parser_interface.object_define()
         self.tcstrflw_obj = parser_interface.object_define()
 
-        self.latgrid = numpy.array(
-            self.tcdiags_obj.inputs.latitude.values).ravel()
-        self.longrid = numpy.array(
-            self.tcdiags_obj.inputs.longitude.values + (360.0 - 180.0)).ravel()
+        self.latgrid = numpy.array(self.tcdiags_obj.inputs.latitude.values).ravel()
+        self.longrid = numpy.array(self.tcdiags_obj.inputs.longitude.values).ravel()
 
-        self.plevs = numpy.array([ast.literal_eval(plev)
-                                  for plev in
-                                  self.tcdiags_obj.tcsteering.isolevels.split()])[:, 0]
+        self.plevs = numpy.array(
+            [
+                ast.literal_eval(plev)
+                for plev in self.tcdiags_obj.tcsteering.isolevels.split()
+            ]
+        )[:, 0]
 
         self.tcstrflw_obj.dims = {
             "plevs": (["plevs"], self.plevs),
             "lat": (["lat"], self.tcdiags_obj.inputs.latitude.values[:, 0]),
-            "lon": (["lon"], self.tcdiags_obj.inputs.longitude.values[0, :])
+            "lon": (
+                ["lon"],
+                self.tcdiags_obj.inputs.longitude.values[0, :]
+                - self.tcdiags_obj.inputs.longitude.scale_add,
+            ),
         }
 
-        self.output_varlist = ["chi", "divg", "psi", "udiv", "uhrm", "uvor", "uwnd",
-                               "vort", "vdiv", "vhrm", "vvor", "vwnd"]
+        self.output_varlist = [
+            "chi",
+            "divg",
+            "psi",
+            "udiv",
+            "uhrm",
+            "uvor",
+            "uwnd",
+            "vort",
+            "vdiv",
+            "vhrm",
+            "vvor",
+            "vwnd",
+        ]
 
     @privatemethod
     def compute_diags(self: Metrics, vararr: DataArray) -> None:
@@ -155,44 +207,59 @@ class VL1991(Metrics):
         """
 
         # Compute the diagnostic wind components.
-        (chi, divg, psi, udiv, uhrm, uvor, vdiv, vhrm,
-         vvor, vort) = [vararr for idx in range(10)]
+        (chi, divg, psi, udiv, uhrm, uvor, vdiv, vhrm, vvor, vort) = [
+            vararr for idx in range(10)
+        ]
 
         self.tcstrflw_obj.divg = divg.assign_attrs(
-            {"units": "1/second", "name": "divergence"})
-        self.tcstrflw_obj.divg.values = winds.global_divg(
-            varobj=self.tcstrflw_obj)
+            {"units": "1/second", "name": "divergence"}
+        )
+        self.tcstrflw_obj.divg.values = winds.global_divg(varobj=self.tcstrflw_obj)
 
         self.tcstrflw_obj.vort = vort.assign_attrs(
-            {"units": "1/second", "name": "vorticity"})
-        self.tcstrflw_obj.vort.values = winds.global_vort(
-            varobj=self.tcstrflw_obj)
+            {"units": "1/second", "name": "vorticity"}
+        )
+        self.tcstrflw_obj.vort.values = winds.global_vort(varobj=self.tcstrflw_obj)
 
         self.tcstrflw_obj.chi = chi.assign_attrs(
-            {"units": "meters^2/second", "name": "velocity potential"})
+            {"units": "meters^2/second", "name": "velocity potential"}
+        )
         self.tcstrflw_obj.psi = psi.assign_attrs(
-            {"units": "meters^2/second", "name": "streamfunction"})
-        (self.tcstrflw_obj.chi.values, self.tcstrflw_obj.psi.values) = \
-            winds.global_psichi(varobj=self.tcstrflw_obj)
+            {"units": "meters^2/second", "name": "streamfunction"}
+        )
+        (
+            self.tcstrflw_obj.chi.values,
+            self.tcstrflw_obj.psi.values,
+        ) = winds.global_psichi(varobj=self.tcstrflw_obj)
 
         self.tcstrflw_obj.udiv = udiv.assign_attrs(
-            {"units": "meter_per_second", "name": "divergent zonal wind"})
+            {"units": "meter_per_second", "name": "divergent zonal wind"}
+        )
         self.tcstrflw_obj.vdiv = vdiv.assign_attrs(
-            {"units": "meter_per_second", "name": "divergent meridional wind"})
+            {"units": "meter_per_second", "name": "divergent meridional wind"}
+        )
 
         self.tcstrflw_obj.uhrm = uhrm.assign_attrs(
-            {"units": "meter_per_second", "name": "residual zonal wind"})
+            {"units": "meter_per_second", "name": "residual zonal wind"}
+        )
         self.tcstrflw_obj.vhrm = vhrm.assign_attrs(
-            {"units": "meter_per_second", "name": "residual meridional wind"})
+            {"units": "meter_per_second", "name": "residual meridional wind"}
+        )
 
         self.tcstrflw_obj.uvor = uvor.assign_attrs(
-            {"units": "meter_per_second", "name": "rotational zonal wind"})
+            {"units": "meter_per_second", "name": "rotational zonal wind"}
+        )
         self.tcstrflw_obj.vvor = vvor.assign_attrs(
-            {"units": "meter_per_second", "name": "rotational meridional wind"})
-        (self.tcstrflw_obj.udiv.values, self.tcstrflw_obj.vdiv.values,
-         self.tcstrflw_obj.uhrm.values, self.tcstrflw_obj.vhrm.values,
-         self.tcstrflw_obj.uvor.values, self.tcstrflw_obj.vvor.values) = \
-            winds.global_wind_part(varobj=self.tcstrflw_obj)
+            {"units": "meter_per_second", "name": "rotational meridional wind"}
+        )
+        (
+            self.tcstrflw_obj.udiv.values,
+            self.tcstrflw_obj.vdiv.values,
+            self.tcstrflw_obj.uhrm.values,
+            self.tcstrflw_obj.vhrm.values,
+            self.tcstrflw_obj.uvor.values,
+            self.tcstrflw_obj.vvor.values,
+        ) = winds.global_wind_part(varobj=self.tcstrflw_obj)
 
     @privatemethod
     def plev_interp(self: Metrics, varin: numpy.array) -> numpy.array:
@@ -226,14 +293,20 @@ class VL1991(Metrics):
 
         # Interpolate the variable `varin` to the specified vertical
         # levels (`plevs`).
-        varout = interp.interp_vertical(
-            varin=varin, zarr=self.tcdiags_obj.inputs.pressure.values, levs=self.plevs)
+        varout = vertical.interp(
+            varin=varin, zarr=self.tcdiags_obj.inputs.pressure.values, levs=self.plevs
+        )
 
         return varout
 
     @privatemethod
-    def radial_filter(self: Metrics, rdlintrp_obj: object, tcevent: str,
-                      uplev: numpy.array, vplev: numpy.array) -> Tuple[numpy.array, numpy.array]:
+    def radial_filter(
+        self: Metrics,
+        rdlintrp_obj: object,
+        tcevent: str,
+        uplev: numpy.array,
+        vplev: numpy.array,
+    ) -> Tuple[numpy.array, numpy.array]:
         """
         Description
         -----------
@@ -286,27 +359,23 @@ class VL1991(Metrics):
         # Filter the TC event from the analysis using
         # successive radial interpolations.
         for idx in range(numpy.shape(uplev[:, 0, 0])[0]):
-            msg = (f"Filtering zonal wind component for TC {tcevent} isobaric "
-                   f"level {self.plevs[idx]}."
-                   )
+            msg = (
+                f"Filtering zonal wind component for TC {tcevent} isobaric "
+                f"level {self.plevs[idx]}."
+            )
             self.logger.info(msg=msg)
             rdlintrp_obj.vararray = uplev[idx, :, :]
-            uplev[idx, :, :] = interp.radial.interp(
-                interp_obj=rdlintrp_obj, method="linear")
+            uplev[idx, :, :] = radial.interp(interp_obj=rdlintrp_obj, method="linear")
 
-            # TODO: Radial interpolation is broken; explore use of
-            # bi-linear or ESMF applications.
-            diff = (rdlintrp_obj.vararray - uplev[idx, ...])
-            print(numpy.nanmin(diff), numpy.nanmax(diff))
-            quit()
-
-            msg = (f"Filtering meridional wind component for TC {tcevent} isobaric "
-                   f"level {self.plevs[idx]}."
-                   )
+            msg = (
+                f"Filtering meridional wind component for TC {tcevent} isobaric "
+                f"level {self.plevs[idx]}."
+            )
             self.logger.info(msg=msg)
             rdlintrp_obj.vararray = vplev[idx, :, :]
             vplev[idx, :, :] = interp.radial.interp(
-                interp_obj=rdlintrp_obj, method="linear")
+                interp_obj=rdlintrp_obj, method="linear"
+            )
 
         return (uplev, vplev)
 
@@ -341,9 +410,12 @@ class VL1991(Metrics):
         """
 
         # Compute the radial distance.
-        rdlintrp_obj.raddist = numpy.reshape(radial_distance(
-            refloc=rdlintrp_obj.loc, latgrid=self.latgrid, longrid=self.longrid),
-            numpy.shape(self.tcdiags_obj.inputs.latitude.values))
+        rdlintrp_obj.raddist = numpy.reshape(
+            radial_distance(
+                refloc=rdlintrp_obj.loc, latgrid=self.latgrid, longrid=self.longrid
+            ),
+            numpy.shape(self.tcdiags_obj.inputs.latitude.values),
+        )
 
         return rdlintrp_obj
 
@@ -360,21 +432,13 @@ class VL1991(Metrics):
 
         # Define the netCDF output object and write the respective
         # variables to the external netCDF-formatted file path.
-        ncoutput = NCOutputs(
-            output_file=self.tcdiags_obj.tcsteering.output_file)
+        ncwrite = NCWrite(output_file=self.tcdiags_obj.tcsteering.output_file)
 
-        coords_3d = OrderedDict(
-            {"plevs": (["plevs"], self.plevs),
-             "lat": (["lat"], self.tcdiags_obj.inputs.latitude.values[:, 0]),
-             "lon": (["lon"], self.tcdiags_obj.inputs.longitude.values[0, :])
-             }
-        )
-
-        ncoutput.write(
+        ncwrite.write(
             var_obj=self.tcstrflw_obj,
             var_list=self.output_varlist,
             coords_2d=None,
-            coords_3d=coords_3d
+            coords_3d=self.tcstrflw_obj.dims,
         )
 
     def run(self: Metrics) -> None:
@@ -384,8 +448,17 @@ class VL1991(Metrics):
 
         This method performs the following tasks:
 
-        (1) TODO
+        (1) Interpolates the wind-vector components to the isobaric
+            levels specified in the TC steering flow configuration.
 
+        (2) For each TC event the respective wind-fields is "filtered"
+            using a successive radial interpolation application.
+
+        (3) Compute diagnostic quantities from the "filtered"
+            wind-vector components.
+
+        (4) Write the results to the specified netCDF-formatted output
+            file `output_file`.
 
         """
 
@@ -395,9 +468,11 @@ class VL1991(Metrics):
         vplev = self.plev_interp(varin=self.tcdiags_obj.inputs.vwind.values)
 
         self.tcstrflw_obj.uwnd = uplev.assign_attrs(
-            {"units": "meter_per_second", "name": "zonal wind"})
+            {"units": "meter_per_second", "name": "zonal wind"}
+        )
         self.tcstrflw_obj.vwnd = vplev.assign_attrs(
-            {"units": "meter_per_second", "name": "meridional wind"})
+            {"units": "meter_per_second", "name": "meridional wind"}
+        )
 
         rdlintrp_obj = parser_interface.object_define()
         rdlintrp_obj.ddist = self.tcdiags_obj.tcsteering.ddist
@@ -406,18 +481,19 @@ class VL1991(Metrics):
         # Check whether TC information has been provided via the
         # experiment configuration; proceed accordingly.
         if self.tcdiags_obj.tcinfo is not None:
-
             for tcevent in self.tcdiags_obj.tcinfo:
-
                 # Compute the radial distance grid relative to the
                 # respective TC event position.
                 tcevent_obj = parser_interface.dict_toobject(
                     in_dict=parser_interface.dict_key_value(
-                        dict_in=self.tcdiags_obj.tcinfo, key=tcevent))
+                        dict_in=self.tcdiags_obj.tcinfo, key=tcevent
+                    )
+                )
 
-                msg = (f"Computing the radial distance relative to TC {tcevent} "
-                       f"centered at {tcevent_obj.lat_deg}, {tcevent_obj.lon_deg}."
-                       )
+                msg = (
+                    f"Computing the radial distance relative to TC {tcevent} "
+                    f"centered at {tcevent_obj.lat_deg}, {tcevent_obj.lon_deg}."
+                )
                 self.logger.info(msg=msg)
                 rdlintrp_obj.loc = (tcevent_obj.lat_deg, tcevent_obj.lon_deg)
                 rdlintrp_obj = self.radial_dist(rdlintrp_obj)
@@ -425,13 +501,13 @@ class VL1991(Metrics):
                 # Filter the respective TC event from the wind
                 # analysis.
                 (uplev.values, vplev.values) = self.radial_filter(
-                    rdlintrp_obj=rdlintrp_obj, tcevent=tcevent, uplev=uplev.values,
-                    vplev=vplev.values)
+                    rdlintrp_obj=rdlintrp_obj,
+                    tcevent=tcevent,
+                    uplev=uplev.values,
+                    vplev=vplev.values,
+                )
 
             # Update the filtered variables.
-            # self.tcstrflw_obj.uwnd.values = uplev.values
-            # self.tcstrflw_obj.vwnd.values = vplev.values
-
             self.tcstrflw_obj.uwnd = uplev
             self.tcstrflw_obj.vwnd = vplev
 
