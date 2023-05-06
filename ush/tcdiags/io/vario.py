@@ -113,7 +113,7 @@ __all__ = [
 
 # ----
 
-logger = Logger()
+logger = Logger(caller_name=__name__)
 
 # ----
 
@@ -353,7 +353,7 @@ def update_grid(
         xlat_out = xlat_in
         xlon_out = xlon_in
 
-    return (xlon_out, xlat_out)
+    return (xlat_out, xlon_out)
 
 
 # ----
@@ -435,7 +435,6 @@ def update_varattrs(
                 varout = numpy.flip(varout[:, :, :], axis=1)
 
     else:
-
         # Check whether the respective variable is to be flipped along the
         # y-axis; proceed accordingly.
         if flip_lat:

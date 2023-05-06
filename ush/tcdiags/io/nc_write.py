@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/io/outputs.py
+# Module: ush/tcdiags/io/nc_write.py
 
 # Author: Henry R. Winterbottom
 
@@ -21,18 +21,18 @@
 Module
 ------
 
-    outputs.py
+    nc_write.py
 
 Description
 -----------
 
-    This module contains the base-class object for all output file
-    writing.
+    This module contains the base-class object for all
+    netCDF-formatted output file writing.
 
 Classes
 -------
 
-    TCDiagsOutputsCetCDFIO(output_file)
+    NCWrite(output_file)
 
         This is the base-class object for all netCDF-formatted file
         writing.
@@ -58,7 +58,6 @@ History
 
 # ----
 
-# pylint: disable=protected-access
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
@@ -69,7 +68,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 import numpy
-from tcdiags.exceptions import TCDiagsIOError
+from tcdiags.exceptions import IoNcWriteError
 from tools import parser_interface
 from utils.logger_interface import Logger
 from xarray import DataArray, merge
@@ -78,7 +77,7 @@ from xarray import DataArray, merge
 
 
 @dataclass
-class NCOutputs:
+class NCWrite:
     """
     Description
     -----------
@@ -96,21 +95,22 @@ class NCOutputs:
 
     """
 
-    def __init__(self, output_file: str):
+    def __init__(self: dataclass, output_file: str):
         """
         Description
         -----------
 
-        Creates a new NCOutputs object.
+        Creates a new NCWrite object.
 
         """
 
         # Define the base-class attributes
-        self.logger = Logger()
+        self.logger = Logger(
+            caller_name=f"{__name__}.{self.__class__.__name__}")
         self.output_file = output_file
 
     def write(
-        self,
+        self: dataclass,
         var_obj: object,
         var_list: List,
         coords_3d: Dict = None,
@@ -165,7 +165,7 @@ class NCOutputs:
         Raises
         ------
 
-        TCDiagsIOError:
+        IoNcWriteError:
 
             - raised if the coordinate dimensions cannot be determined
               for specified output variable.
@@ -180,10 +180,8 @@ class NCOutputs:
         dataout_list = []
 
         for var in var_list:
-
             # Define the output variable attributes; proceed
             # accordingly.
-            #            varout = var
             varout = parser_interface.object_getattr(
                 object_in=var_obj, key=var, force=True
             )
@@ -196,16 +194,19 @@ class NCOutputs:
                 self.logger.warn(msg=msg)
 
             if varout is not None:
-
                 # Collect (any) attributes for the respective variable.
                 try:
-                    attributes = {key: value for (key, value) in
-                                  varout.attrs.items() if value is not None}
+                    attributes = {
+                        key: value
+                        for (key, value) in varout.attrs.items()
+                        if value is not None
+                    }
 
                 except AttributeError:
-                    msg = (f"No attributes have been defined for variable {var}; attributes "
-                           f"for variable will not be written to {self.output_file}."
-                           )
+                    msg = (
+                        f"No attributes have been defined for variable {var}; attributes "
+                        f"for variable will not be written to {self.output_file}."
+                    )
                     self.logger.warn(msg=msg)
 
                     attributes = {}
@@ -227,15 +228,15 @@ class NCOutputs:
                         f"The coordinates for variable {var} could not be determined. "
                         "Aborting!!!"
                     )
-                    raise TCDiagsIOError(msg=msg)
+                    raise IoNcWriteError(msg=msg)
 
                 dims = list(coords.keys())
 
                 # Build the xarray object corresponding to the
                 # respective variable.
                 xarray_obj = DataArray(
-                    name=var, data=data, dims=dims, coords=(
-                        coords)).assign_attrs(attributes)
+                    name=var, data=data, dims=dims, coords=(coords)
+                ).assign_attrs(attributes)
 
                 dataout_list.append(xarray_obj.to_dataset(name=var))
 

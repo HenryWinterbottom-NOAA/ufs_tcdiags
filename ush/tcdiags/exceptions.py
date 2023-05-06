@@ -64,10 +64,10 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/geomets module; it is a sub-class of Error.
 
-    GFSError(msg)
+    GFSReadError(msg)
 
         This is the base-class for exceptions encountered within the
-        ush/tcdiags/io/gfs module; it is a sub-class of Error.
+        ush/tcdiags/io/gfsread module; it is a sub-class of Error.
 
     InputFieldsError(msg)
 
@@ -89,6 +89,12 @@ Classes
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/interp/vertical module; it is a sub-class of Error.
+
+    IoNcWriteError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/io/ncwrite module; it is a sub-class of
+        Error.
 
     TCDiagsError(msg)
 
@@ -161,11 +167,12 @@ __all__ = [
     "FFTError",
     "FilterVortexError",
     "GeoMetsError",
-    "GFSError",
+    "GFSReadError",
     "InputFieldsError",
     "InterpProjectionsError",
     "InterpRadialError",
     "InterpVerticalError",
+    "IoNcWriteError",
     "TCDiagsError",
     "TCDiagsIOError",
     "TropCycMPIError",
@@ -264,7 +271,7 @@ class GeoMetsError(Error):
 # ----
 
 
-class GFSError(Error):
+class GFSReadError(Error):
     """
     Description
     -----------
@@ -324,6 +331,19 @@ class InterpVerticalError(Error):
 
     This is the base-class for exceptions encountered within the
     ush/tcdiags/interp/vertical module; it is a sub-class of Error.
+
+    """
+
+# ----
+
+
+class IoNcWriteError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/io/ncwrite module; it is a sub-class of Error.
 
     """
 
