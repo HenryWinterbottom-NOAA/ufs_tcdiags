@@ -84,7 +84,7 @@ from utils.logger_interface import Logger
 
 
 @dataclass
-class GFS:
+class GFSRead:
     """
     Description
     -----------
@@ -191,7 +191,7 @@ class GFS:
 
         return varobj
 
-    def read_inputs(self: dataclass) -> object:
+    def read(self: dataclass) -> object:
         """
         Description
         -----------
