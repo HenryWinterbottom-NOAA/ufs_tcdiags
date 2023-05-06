@@ -31,20 +31,22 @@ Description
 Classes
 -------
 
-    AtmosMoistureError(msg)
+    DerivedAtmosMoistureError(msg)
 
         This is the base-class for exceptions encountered within the
-        ush/tcdiags/atmos/moisture module; it is a sub-class of Error.
+        ush/tcdiags/derived/atmos/moisture module; it is a sub-class
+        of Error.
 
-    AtmosWindsError(msg)
+    DerivedAtmosWindsError(msg)
 
         This is the base-class for exceptions encountered within the
-        ush/tcdiags/atmos/winds module; it is a sub-class of Error.
+        ush/tcdiags/derived/atmos/winds module; it is a sub-class of
+        Error.
 
     DerivedError(msg)
 
         This is the base-class for exceptions encountered within the
-        ush/tcdiags/io/derived module; it is a sub-class of Error.
+        ush/tcdiags/derived module; it is a sub-class of Error.
 
     FFTError(msg)
 
@@ -72,10 +74,21 @@ Classes
         This is the base-class for exceptions encounterd within the
         ush/tcdiags/io/inputs module.
 
-    InterpError(msg)
+    InterpProjectionsError(msg)
 
         This is the base-class for exceptions encountered within the
-        ush/tcdiags/interp module; it is a sub-class of Error.
+        ush/tcdiags/interp/projections module; it is a sub-class of
+        Error.
+
+    InterpRadialError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/interp/radial module; it is a sub-class of Error.
+
+    InterpVerticalError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/interp/vertical module; it is a sub-class of Error.
 
     TCDiagsError(msg)
 
@@ -142,15 +155,17 @@ from utils.error_interface import Error
 
 # Define all available attributes.
 __all__ = [
-    "AtmosMoistureError",
-    "AtmosWindsError",
+    "DerivedAtmosMoistureError",
+    "DerivedAtmosWindsError",
     "DerivedError",
     "FFTError",
     "FilterVortexError",
     "GeoMetsError",
     "GFSError",
     "InputFieldsError",
-    "InterpError",
+    "InterpProjectionsError",
+    "InterpRadialError",
+    "InterpVerticalError",
     "TCDiagsError",
     "TCDiagsIOError",
     "TropCycMPIError",
@@ -162,13 +177,14 @@ __all__ = [
 # ----
 
 
-class AtmosMoistureError(Error):
+class DerivedAtmosMoistureError(Error):
     """
     Description
     -----------
 
     This is the base-class for exceptions encountered within the
-    ush/tcdiags/atmos/moisture module; it is a sub-class of Error.
+    ush/tcdiags/derived/atmos/moisture module; it is a sub-class of
+    Error.
 
     """
 
@@ -176,13 +192,14 @@ class AtmosMoistureError(Error):
 # ----
 
 
-class AtmosWindsError(Error):
+class DerivedAtmosWindsError(Error):
     """
     Description
     -----------
 
     This is the base-class for exceptions encountered within the
-    ush/tcdiags/atmos/winds module; it is a sub-class of Error.
+    ush/tcdiags/derived/atmos/winds module; it is a sub-class of
+    Error.
 
     """
 
@@ -196,7 +213,7 @@ class DerivedError(Error):
     -----------
 
     This is the base-class for exceptions encountered within the
-    ush/tcdiags/io/derived module; it is a sub-class of Error.
+    ush/tcdiags/derived module; it is a sub-class of Error.
 
     """
 
@@ -271,17 +288,42 @@ class InputFieldsError(Error):
 
     """
 
-
 # ----
 
 
-class InterpError(Error):
+class InterpProjectionsError(Error):
     """
     Description
     -----------
 
     This is the base-class for exceptions encountered within the
-    ush/tcdiags/interp module; it is a sub-class of Error.
+    ush/tcdiags/interp/projections module; it is a sub-class of Error.
+
+    """
+
+# ----
+
+
+class InterpRadialError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/interp/radial module; it is a sub-class of Error.
+
+    """
+
+# ----
+
+
+class InterpVerticalError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/interp/vertical module; it is a sub-class of Error.
 
     """
 
