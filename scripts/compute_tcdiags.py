@@ -47,7 +47,7 @@ Functions
 Usage
 -----
 
-    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file [--tcfilt True] [--tcmpi True] [--tcwnmsi True] [--tcsteering True]
+    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file 
 
 Parameters
 ----------
@@ -57,38 +57,6 @@ Parameters
         A Python string specifying the path to the YAML-formatted
         configuration file for the tropical cyclone (TC) diagnostics
         applications.
-
-Keywords
---------
-
-    tcfilt: bool, optional
-
-        A Python boolean valued variable specifying whether to apply
-        the tropical cyclone (TC) filtering application described in
-        Winterbottom and Chassignet [2011] to the TCs defined within
-        the syndat-formatted filepath defined in the experiment
-        configuration; if not specified the attribute defaults to
-        NoneType.
-
-    tcmpi: bool, optional
-
-        A Python boolean valued variable specifying whether to compute
-        the tropical cyclone (TC) (maximum) potential intensity
-        following the methodlogy of Bister and Emanuel [2002].
-
-    tcsteering: bool, optional
-
-        A Python boolean valued variable specifying whether to compute
-        the tropical cyclone (TC) steering flow as a function of TC
-        intensity following the methodology of Velden and Leslie
-        [1991].
-
-    tcwnmsi: bool, optional
-
-        A Python boolean valued variable specifying whether to compute
-        the wave-number decomposition and the tropical cyclone (TC)
-        multi-scale intensity (MSI) indice values following Vukicevic
-        et al., [2014].
 
 Requirements
 ------------
@@ -109,6 +77,12 @@ History
 
 # ----
 
+__author__ = "Henry R. Winterbottom"
+__maintainer__ = "Henry R. Winterbottom"
+__email__ = "henry.winterbottom@noaa.gov"
+
+# ----
+
 import os
 import time
 from dataclasses import dataclass
@@ -118,11 +92,6 @@ from tcdiags import TCDiags
 from utils.arguments_interface import Arguments
 from utils.logger_interface import Logger
 
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
@@ -132,11 +101,7 @@ EVAL_SCHEMA = True
 
 # Define the schema attributes.
 CLS_SCHEMA = {
-    "yaml_file": str,
-    Optional("tcfilt", default=False): bool,
-    Optional("tcmpi", default=False): bool,
-    Optional("tcsteering", default=False): bool,
-    Optional("tcwnmsi", default=False): bool
+    "yaml_file": str
 }
 
 # ----
@@ -160,7 +125,7 @@ class ComputeTCDiags:
 
     """
 
-    def __init__(self, options_obj: object):
+    def __init__(self: dataclass, options_obj: object):
         """
         Description
         -----------
@@ -173,7 +138,7 @@ class ComputeTCDiags:
         self.options_obj = options_obj
         self.tcdiags = TCDiags(options_obj=self.options_obj)
 
-    def run(self) -> None:
+    def run(self: dataclass) -> None:
         """
         Description
         -----------
