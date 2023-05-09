@@ -138,8 +138,7 @@ class GFSRead:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(
-            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
 
         try:
             self.inputs_dict = YAML().read_yaml(yaml_file=yaml_file)
@@ -251,8 +250,7 @@ class GFSRead:
             units = parser_interface.dict_key_value(
                 dict_in=self.INPUTS_DICT[varname], key="units", no_split=True
             )
-            varobj.values = vario.define_units(
-                varin=varobj.values, varunits=units)
+            varobj.values = vario.define_units(varin=varobj.values, varunits=units)
 
             msg = self.variable_range_msg % (
                 varname,
@@ -295,8 +293,10 @@ class GFSRead:
         self.inputs_obj.mixing_ratio = self.build_varobj(varname=varname)
         self.inputs_obj.mixing_ratio.values = vario.define_units(
             varin=derived.compute_moisture(
-                varobj=self.inputs_obj, method="spfh_to_mxrt"),
-            varunits="kg/kg")
+                varobj=self.inputs_obj, method="spfh_to_mxrt"
+            ),
+            varunits="kg/kg",
+        )
 
         self.inputs_obj.pslp = self.build_varobj(varname=varname)
         self.inputs_obj.pslp.values = vario.define_units(
