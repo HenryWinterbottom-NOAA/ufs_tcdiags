@@ -147,10 +147,11 @@ class BE2002(Metrics):
         super().__init__(tcdiags_obj=tcdiags_obj)
 
         self.tcpi_obj = parser_interface.object_define()
-        self.tcmpi_var_list = ["mslp", "pout", "tout", "vmax"]
 
-        # TODO: The following should be evaluated via the schema
-        # interface and updated accordingly.
+        # TODO: /begin
+
+        # The following should be evaluated via the schema interface
+        # and updated accordingly.
 
         # Define the experiment configuration variables.
         self.tcmpi_var_dict = {
@@ -246,13 +247,15 @@ class BE2002(Metrics):
         # Compute/define the input variables.
         self.tcpi_obj.mxrt = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.mixing_ratio.values, (self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.mixing_ratio.values, (
+                    self.nlevs, self.ndim)
             ),
             "gram/gram",
         )
         self.tcpi_obj.pres = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.pressure.values, (self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.pressure.values, (
+                    self.nlevs, self.ndim)
             ),
             "hectopascal",
         )
@@ -261,7 +264,8 @@ class BE2002(Metrics):
         )
         self.tcpi_obj.temp = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.temperature.values, (self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.temperature.values, (
+                    self.nlevs, self.ndim)
             ),
             "celsius",
         )
@@ -272,7 +276,6 @@ class BE2002(Metrics):
             self.tcdiags_obj.inputs.surface_height.values.ravel(), "meters"
         )
 
-    @privatemethod
     def tcpi(self: Metrics, idx: int) -> None:
         """
         Description

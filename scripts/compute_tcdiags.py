@@ -47,7 +47,7 @@ Functions
 Usage
 -----
 
-    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file 
+    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file [--tcfilt True] [--tcmpi True] [--tcwnmsi True]
 
 Parameters
 ----------
@@ -58,8 +58,35 @@ Parameters
         configuration file for the tropical cyclone (TC) diagnostics
         applications.
 
+Keywords
+--------
+
+    tcfilt: bool, optional
+
+        A Python boolean valued variable specifying whether to apply
+        the tropical cyclone (TC) filtering application described in
+        Winterbottom and Chassignet [2011] to the TCs defined within
+        the syndat-formatted filepath defined in the experiment
+        configuration; if not specified the attribute defaults to
+        NoneType.
+
+    tcmpi: bool, optional
+
+        A Python boolean valued variable specifying whether to compute
+        the tropical cyclone (TC) (maximum) potential intensity
+        following the methodlogy of Bister and Emanuel [2002].
+
+    tcwnmsi: bool, optional
+
+        A Python boolean valued variable specifying whether to compute
+        the wave-number decomposition and the tropical cyclone (TC)
+        multi-scale intensity (MSI) indice values following Vukicevic
+        et al., [2014].
+
 Requirements
 ------------
+
+- schema; https://github.com/keleshev/schema
 
 - ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
@@ -92,16 +119,20 @@ from tcdiags import TCDiags
 from utils.arguments_interface import Arguments
 from utils.logger_interface import Logger
 
-
 # ----
 
 # Specify whether to evaluate the format for the respective parameter
 # values.
 EVAL_SCHEMA = True
 
+# TODO: Only YAML-formatted file should be passed; from that information the application/compuations should be decided.
 # Define the schema attributes.
 CLS_SCHEMA = {
-    "yaml_file": str
+    "yaml_file": str,
+    Optional("tcfilt", default=False): bool,
+    Optional("tcmpi", default=False): bool,
+    Optional("tcsteering", default=False): bool,
+    Optional("tcwnmsi", default=False): bool
 }
 
 # ----
@@ -167,10 +198,11 @@ def main() -> None:
     """
 
     # Collect the command line arguments.
+    caller_name = __name__
     script_name = os.path.basename(__file__)
     start_time = time.time()
     msg = f"Beginning application {script_name}."
-    Logger().info(msg=msg)
+    Logger(caller_name=caller_name).info(msg=msg)
     options_obj = Arguments().run(eval_schema=EVAL_SCHEMA, cls_schema=CLS_SCHEMA)
 
     # Launch the task.
@@ -179,10 +211,10 @@ def main() -> None:
 
     stop_time = time.time()
     msg = f"Completed application {script_name}."
-    Logger().info(msg=msg)
+    Logger(caller_name=caller_name).info(msg=msg)
     total_time = stop_time - start_time
     msg = f"Total Elapsed Time: {total_time} seconds."
-    Logger().info(msg=msg)
+    Logger(caller_name=caller_name).info(msg=msg)
 
 
 # ----

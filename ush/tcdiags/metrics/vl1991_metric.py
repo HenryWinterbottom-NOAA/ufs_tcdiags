@@ -131,6 +131,9 @@ class VL1991(Metrics):
 
         """
 
+        # TODO: Add schema interface to evaluate input values and/or
+        # set defaults.
+
         # Define the base-class attributes.
         super().__init__(tcdiags_obj=tcdiags_obj)
 
