@@ -67,6 +67,12 @@ History
 
 # ----
 
+__author__ = "Henry R. Winterbottom"
+__maintainer__ = "Henry R. Winterbottom"
+__email__ = "henry.winterbottom@noaa.gov"
+
+# ----
+
 from collections import OrderedDict
 from dataclasses import dataclass
 from typing import Dict, List
@@ -86,12 +92,6 @@ from utils.logger_interface import Logger
 
 # ----
 
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
-
-# ----
-
 
 @dataclass
 class WNMSI:
@@ -106,7 +106,7 @@ class WNMSI:
     Parameters
     ----------
 
-    yaml_dict: dict
+    yaml_dict: Dict
 
         A Python dictionary containing the attributes from the
         experiment configuration file; the TC MSI application
@@ -123,13 +123,13 @@ class WNMSI:
 
     TropCycWNMSIError:
 
-        * raised if the TC attributes cannot be determined from the
+        - raised if the TC attributes cannot be determined from the
           `tcvitals` attributes or the attribute has not been
           specified.
 
     """
 
-    def __init__(self, yaml_dict: Dict, inputs_obj: object):
+    def __init__(self: dataclass, yaml_dict: Dict, inputs_obj: object):
         """
         Description
         -----------
@@ -218,7 +218,7 @@ class WNMSI:
             "wn0p1_msi_mps",
         ]
 
-    def compute_inputs(self) -> None:
+    def compute_inputs(self: dataclass) -> None:
         """
         Description
         -----------
@@ -262,7 +262,7 @@ class WNMSI:
         )
         self.logger.info(msg=msg)
 
-    def compute_tcmsi(self) -> None:
+    def compute_tcmsi(self: dataclass) -> None:
         """
         Description
         -----------
@@ -313,7 +313,7 @@ class WNMSI:
                 object_in=self.tcwnmsi_obj, key=item, value=value
             )
 
-    def compute_tcmsigeo(self) -> None:
+    def compute_tcmsigeo(self: dataclass) -> None:
         """
         Description
         -----------
@@ -378,7 +378,7 @@ class WNMSI:
             self.tcwnmsi_obj.lon_rmw_deg, "degrees"
         )
 
-    def wndcmp(self, lat_0: float, lon_0: float) -> None:
+    def wndcmp(self: dataclass, lat_0: float, lon_0: float) -> None:
         """
         Description
         -----------
@@ -481,7 +481,7 @@ class WNMSI:
         self.logger.info(msg=msg)
         self.wndrstrct(varin=varout, ncoeffs=ncoeffs)
 
-    def wndrstrct(self, varin: numpy.complex_, ncoeffs: int) -> None:
+    def wndrstrct(self: dataclass, varin: numpy.complex_, ncoeffs: int) -> None:
         """
         Description
         -----------
@@ -493,7 +493,7 @@ class WNMSI:
         Parameters
         ----------
 
-        varin: array-type
+        varin: numpy.complex_
 
             A Python array-type complex variable; this is typically
             the Fourier transformed 10-meter total wind-field.
@@ -532,11 +532,12 @@ class WNMSI:
             object_in=self.tcwnmsi_obj, key="wavenumbers", value=wndrstrct_dict
         )
 
-    def write_output(self, tcid: str) -> None:
+    def write_output(self: dataclass, tcid: str) -> None:
         """
         Description
         -----------
 
+        TODO
 
         Parameters
         ----------
@@ -615,7 +616,7 @@ class WNMSI:
             global_attrs_dict=global_attrs_dict,
         )
 
-    def write_table(self, tcid: str) -> None:
+    def write_table(self: dataclass, tcid: str) -> None:
         """
         Description
         -----------
@@ -695,7 +696,7 @@ class WNMSI:
 
         __buildtbl__(header=header, table=table)
 
-    def run(self) -> object:
+    def run(self: dataclass):
         """
         Description
         -----------
