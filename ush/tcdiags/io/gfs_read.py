@@ -292,4 +292,18 @@ class GFSRead:
             varunits="m",
         )
 
+        self.inputs_obj.mixing_ratio = self.build_varobj(varname=varname)
+        self.inputs_obj.mixing_ratio.values = vario.define_units(
+            varin=derived.compute_moisture(
+                varobj=self.inputs_obj, method="spfh_to_mxrt"),
+            varunits="kg/kg")
+
+        self.inputs_obj.pslp = self.build_varobj(varname=varname)
+        self.inputs_obj.pslp.values = vario.define_units(
+            varin=derived.compute_pressure(
+                varobj=self.inputs_obj, method="pressure_to_sealevel"
+            ),
+            varunits="Pa",
+        )
+
         return self.inputs_obj
