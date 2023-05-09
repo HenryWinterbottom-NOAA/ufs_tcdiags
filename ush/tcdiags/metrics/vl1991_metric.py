@@ -44,7 +44,7 @@ References
 
     Velden, C. S. and L. M. Leslie. "The Basic Relationship between
     Tropical Cyclone Intensity and the Depth of the Environmental
-    Steering Layer in the Australian Region." Weather and Forecasting
+    Steering Layer in the Australian Region". Weather and Forecasting
     6 (1991): 244-253.
 
     DOI: https://doi.org/10.1175/1520-0434(1991)006<0244:TBRBTC>2.0.CO;2
@@ -115,7 +115,7 @@ class VL1991(Metrics):
 
     Velden, C. S. and L. M. Leslie. "The Basic Relationship between
     Tropical Cyclone Intensity and the Depth of the Environmental
-    Steering Layer in the Australian Region." Weather and Forecasting
+    Steering Layer in the Australian Region". Weather and Forecasting
     6 (1991): 244-253.
 
     DOI: https://doi.org/10.1175/1520-0434(1991)006<0244:TBRBTC>2.0.CO;2
@@ -137,8 +137,10 @@ class VL1991(Metrics):
         self.rdlintrp_obj = parser_interface.object_define()
         self.tcstrflw_obj = parser_interface.object_define()
 
-        self.latgrid = numpy.array(self.tcdiags_obj.inputs.latitude.values).ravel()
-        self.longrid = numpy.array(self.tcdiags_obj.inputs.longitude.values).ravel()
+        self.latgrid = numpy.array(
+            self.tcdiags_obj.inputs.latitude.values).ravel()
+        self.longrid = numpy.array(
+            self.tcdiags_obj.inputs.longitude.values).ravel()
 
         self.plevs = numpy.array(
             [
@@ -214,12 +216,14 @@ class VL1991(Metrics):
         self.tcstrflw_obj.divg = divg.assign_attrs(
             {"units": "1/second", "name": "divergence"}
         )
-        self.tcstrflw_obj.divg.values = winds.global_divg(varobj=self.tcstrflw_obj)
+        self.tcstrflw_obj.divg.values = winds.global_divg(
+            varobj=self.tcstrflw_obj)
 
         self.tcstrflw_obj.vort = vort.assign_attrs(
             {"units": "1/second", "name": "vorticity"}
         )
-        self.tcstrflw_obj.vort.values = winds.global_vort(varobj=self.tcstrflw_obj)
+        self.tcstrflw_obj.vort.values = winds.global_vort(
+            varobj=self.tcstrflw_obj)
 
         self.tcstrflw_obj.chi = chi.assign_attrs(
             {"units": "meters^2/second", "name": "velocity potential"}
@@ -365,7 +369,8 @@ class VL1991(Metrics):
             )
             self.logger.info(msg=msg)
             rdlintrp_obj.vararray = uplev[idx, :, :]
-            uplev[idx, :, :] = radial.interp(interp_obj=rdlintrp_obj, method="linear")
+            uplev[idx, :, :] = radial.interp(
+                interp_obj=rdlintrp_obj, method="linear")
 
             msg = (
                 f"Filtering meridional wind component for TC {tcevent} isobaric "
