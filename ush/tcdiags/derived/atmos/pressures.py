@@ -74,8 +74,6 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 import numpy
 from metpy.calc import altimeter_to_sea_level_pressure as a2slp
-from metpy.units import units
-from tools import parser_interface
 from utils.logger_interface import Logger
 
 # ----
@@ -140,7 +138,7 @@ def pressure_from_thickness(varobj: object) -> numpy.array:
 # ----
 
 
-def pressure_to_sealevel(varobj: object) -> object:
+def pressure_to_sealevel(varobj: object) -> numpy.array:
     """
     Description
     -----------
@@ -160,7 +158,7 @@ def pressure_to_sealevel(varobj: object) -> object:
     Returns
     -------
 
-    varobj: object
+    varobj: object # TODO
 
         A Python object updated to contain the surface pressure
         reduced to sea-level.
@@ -169,13 +167,9 @@ def pressure_to_sealevel(varobj: object) -> object:
 
     # Reduce the surface pressure value to the sea-surface.
     pslp = a2slp(
-        altimeter_value=varobj.psfc[:, :],
-        height=varobj.zsfc[:, :],
-        temperature=varobj.temp[0, :, :],
+        altimeter_value=varobj.surface_pressure.values[:, :],
+        height=varobj.surface_height.values[:, :],
+        temperature=varobj.temperature.values[0, :, :],
     )
 
-    varobj = parser_interface.object_setattr(
-        object_in=varobj, key="pslp", value=units.Quantity(pslp, "Pa")
-    )
-
-    return varobj
+    return pslp

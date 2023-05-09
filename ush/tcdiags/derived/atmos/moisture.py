@@ -111,10 +111,10 @@ def spfh_to_mxrt(varobj: object) -> numpy.array:
     # profile.
     msg = (
         "Computing the mixing ratio array of dimension "
-        f"{varobj.specific_humidity.shape}."
+        f"{varobj.specific_humidity.values.shape}."
     )
     logger.info(msg=msg)
 
-    mxrt = mxrt_from_spfh(specific_humidity=varobj.specific_humidity)
+    mxrt = mxrt_from_spfh(specific_humidity=varobj.specific_humidity.values)
 
     return mxrt
