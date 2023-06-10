@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/metrics/steeringflows.py
+# Module: ush/tcdiags/metrics/vl1991_metric.py
 
 # Author: Henry R. Winterbottom
 
@@ -75,8 +75,10 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 import ast
+from types import SimpleNamespace
 from typing import Tuple
 
+from confs.yaml_interface import YAML
 import numpy
 from tcdiags import interp
 from tcdiags.derived.atmos import winds
@@ -87,6 +89,8 @@ from tcdiags.metrics.metrics import Metrics
 from tools import parser_interface
 from utils.decorator_interface import privatemethod
 from xarray import DataArray
+
+from tcdiags.analysis import svd
 
 # ----
 
@@ -103,12 +107,13 @@ class VL1991(Metrics):
     Parameters
     ----------
 
-    tcdiags_obj: object
+    tcdiags_obj: SimpleNamespace
 
-        A Python object containing all configuration attributes for
-        the respective application including inputs (i.e., `inputs`
-        and `tcinfo`) as well as the remaining (supported)
-        applications (see base-class attribute `apps_list`).
+        A Python SimpleNamespace object containing all configuration
+        attributes for the respective application including inputs
+        (i.e., `inputs` and `tcinfo`) as well as the remaining
+        (supported) applications (see base-class attribute
+        `apps_list`).
 
     References
     ----------
@@ -122,7 +127,7 @@ class VL1991(Metrics):
 
     """
 
-    def __init__(self: Metrics, tcdiags_obj: object):
+    def __init__(self: Metrics, tcdiags_obj: SimpleNamespace):
         """
         Description
         -----------
@@ -131,27 +136,19 @@ class VL1991(Metrics):
 
         """
 
-        # TODO: Add schema interface to evaluate input values and/or
-        # set defaults.
-
         # Define the base-class attributes.
         super().__init__(tcdiags_obj=tcdiags_obj)
+        self.options_obj = parser_interface.dict_toobject(
+            in_dict=self.schema(cls_schema_file=tcdiags_obj.tcsteering.schema,
+                                cls_opts=parser_interface.object_todict(
+                                    object_in=tcdiags_obj.tcsteering)
+                                )
+        )
 
-        self.rdlintrp_obj = parser_interface.object_define()
+        self.output_varlist = list(self.options_obj.output_varlist.keys())
         self.tcstrflw_obj = parser_interface.object_define()
 
-        self.latgrid = numpy.array(
-            self.tcdiags_obj.inputs.latitude.values).ravel()
-        self.longrid = numpy.array(
-            self.tcdiags_obj.inputs.longitude.values).ravel()
-
-        self.plevs = numpy.array(
-            [
-                ast.literal_eval(plev)
-                for plev in self.tcdiags_obj.tcsteering.isolevels.split()
-            ]
-        )[:, 0]
-
+        self.plevs = numpy.array([plev for plev in self.options_obj.isolevels])
         self.tcstrflw_obj.dims = {
             "plevs": (["plevs"], self.plevs),
             "lat": (["lat"], self.tcdiags_obj.inputs.latitude.values[:, 0]),
@@ -162,23 +159,8 @@ class VL1991(Metrics):
             ),
         }
 
-        self.output_varlist = [
-            "chi",
-            "divg",
-            "psi",
-            "udiv",
-            "uhrm",
-            "uvor",
-            "uwnd",
-            "vort",
-            "vdiv",
-            "vhrm",
-            "vvor",
-            "vwnd",
-        ]
-
     @privatemethod
-    def compute_diags(self: Metrics, vararr: DataArray) -> None:
+    def compute_diags(self: Metrics, uwnd: numpy.array, vwnd: numpy.array) -> None:
         """
         Description
         -----------
@@ -211,62 +193,65 @@ class VL1991(Metrics):
 
         """
 
-        # Compute the diagnostic wind components.
-        (chi, divg, psi, udiv, uhrm, uvor, vdiv, vhrm, vvor, vort) = [
-            vararr for idx in range(10)
+        # Initialize the diagnostic variable quantities.
+        varobj = parser_interface.object_define()
+        diagvars_obj = parser_interface.dict_toobject(
+            in_dict=self.options_obj.output_varlist)
+        (nx, ny, nz) = [len(self.tcdiags_obj.inputs.longitude.values[0, :]),
+                        len(self.tcdiags_obj.inputs.latitude.values[:, 0]),
+                        len(self.plevs)
+                        ]
+        for output_var in self.output_varlist:
+            self.tcstrflw_obj = parser_interface.object_setattr(
+                object_in=self.tcstrflw_obj, key=output_var,
+                value=parser_interface.object_define())
+
+        # Interpolate the winds to the specified isobaric levels.
+        varobj.uwnd = self.plev_interp(varin=uwnd)
+        varobj.vwnd = self.plev_interp(varin=vwnd)
+        self.tcstrflw_obj.uwnd = varobj.uwnd.assign_attrs(
+            diagvars_obj.uwnd)
+        self.tcstrflw_obj.uwnd.values = varobj.uwnd
+        self.tcstrflw_obj.vwnd = varobj.vwnd.assign_attrs(
+            diagvars_obj.vwnd)
+        self.tcstrflw_obj.vwnd.values = varobj.vwnd
+
+        # Compute the velocity potential and streamfunction.
+        (self.tcstrflw_obj.chi, self.tcstrflw_obj.psi) = [
+            varobj.uwnd.assign_attrs(
+                parser_interface.object_getattr(
+                    object_in=diagvars_obj, key=varname)) for
+            varname in ["chi", "psi"]
         ]
+        (self.tcstrflw_obj.chi.values, self.tcstrflw_obj.psi.values) = \
+            winds.global_psichi(varobj=varobj)
 
-        self.tcstrflw_obj.divg = divg.assign_attrs(
-            {"units": "1/second", "name": "divergence"}
-        )
-        self.tcstrflw_obj.divg.values = winds.global_divg(
-            varobj=self.tcstrflw_obj)
+        # Compute the vorticity and divergence.
+        (self.tcstrflw_obj.divg, self.tcstrflw_obj.vort) = [
+            varobj.uwnd.assign_attrs(
+                parser_interface.object_getattr(
+                    object_in=diagvars_obj, key=varname)) for
+            varname in ["divg", "vort"]
+        ]
+        self.tcstrflw_obj.divg.values = winds.global_divg(varobj=varobj)
+        self.tcstrflw_obj.vort.values = winds.global_vort(varobj=varobj)
 
-        self.tcstrflw_obj.vort = vort.assign_attrs(
-            {"units": "1/second", "name": "vorticity"}
-        )
-        self.tcstrflw_obj.vort.values = winds.global_vort(
-            varobj=self.tcstrflw_obj)
-
-        self.tcstrflw_obj.chi = chi.assign_attrs(
-            {"units": "meters^2/second", "name": "velocity potential"}
-        )
-        self.tcstrflw_obj.psi = psi.assign_attrs(
-            {"units": "meters^2/second", "name": "streamfunction"}
-        )
-        (
-            self.tcstrflw_obj.chi.values,
-            self.tcstrflw_obj.psi.values,
-        ) = winds.global_psichi(varobj=self.tcstrflw_obj)
-
-        self.tcstrflw_obj.udiv = udiv.assign_attrs(
-            {"units": "meter_per_second", "name": "divergent zonal wind"}
-        )
-        self.tcstrflw_obj.vdiv = vdiv.assign_attrs(
-            {"units": "meter_per_second", "name": "divergent meridional wind"}
-        )
-
-        self.tcstrflw_obj.uhrm = uhrm.assign_attrs(
-            {"units": "meter_per_second", "name": "residual zonal wind"}
-        )
-        self.tcstrflw_obj.vhrm = vhrm.assign_attrs(
-            {"units": "meter_per_second", "name": "residual meridional wind"}
-        )
-
-        self.tcstrflw_obj.uvor = uvor.assign_attrs(
-            {"units": "meter_per_second", "name": "rotational zonal wind"}
-        )
-        self.tcstrflw_obj.vvor = vvor.assign_attrs(
-            {"units": "meter_per_second", "name": "rotational meridional wind"}
-        )
+        # Compute the components of the total wind field.
+        [parser_interface.object_setattr(
+            object_in=self.tcstrflw_obj, key=varname,
+            value=varobj.uwnd.assign_attrs(parser_interface.object_getattr(
+                object_in=diagvars_obj, key=varname)
+            )
+        ) for varname in ["udiv", "uhrm", "urot", "vdiv", "vhrm", "vrot"]
+        ]
         (
             self.tcstrflw_obj.udiv.values,
             self.tcstrflw_obj.vdiv.values,
             self.tcstrflw_obj.uhrm.values,
             self.tcstrflw_obj.vhrm.values,
-            self.tcstrflw_obj.uvor.values,
-            self.tcstrflw_obj.vvor.values,
-        ) = winds.global_wind_part(varobj=self.tcstrflw_obj)
+            self.tcstrflw_obj.urot.values,
+            self.tcstrflw_obj.vrot.values,
+        ) = winds.global_wind_part(varobj=varobj)
 
     @privatemethod
     def plev_interp(self: Metrics, varin: numpy.array) -> numpy.array:
@@ -282,19 +267,19 @@ class VL1991(Metrics):
 
         varin: numpy.array
 
-            A Python array-type variable containing the variable to be
-            interpolated to the specified vertical levels.
+            A Python numpy.array variable containing the variable to
+            be interpolated to the specified vertical levels.
 
         Returns
         -------
 
         varout: numpy.array
 
-            A Python array-type containing the interpolated variable;
-            the output variable is of dimension (nz, ny, nx) where
-            `nz` is the number of levels specified by `plevs` and `ny`
-            and `nx` are the respective horizontal dimensions resolved
-            from `varin`.
+            A Python numpy.array variable containing the interpolated
+            variable; the output variable is of dimension (nz, ny, nx)
+            where `nz` is the number of levels specified by `plevs`
+            and `ny` and `nx` are the respective horizontal dimensions
+            resolved from `varin`.
 
         """
 
@@ -306,126 +291,153 @@ class VL1991(Metrics):
 
         return varout
 
-    @privatemethod
-    def radial_filter(
-        self: Metrics,
-        rdlintrp_obj: object,
-        tcevent: str,
-        uplev: numpy.array,
-        vplev: numpy.array,
-    ) -> Tuple[numpy.array, numpy.array]:
+    @staticmethod
+    def filter_var(varin: numpy.array, ncoeffs: int) -> numpy.array:
         """
         Description
         -----------
 
-        This method filters the region relative to the TC position
-        using a successive radial filtering (e.g., interpolation)
-        application.
+        This method filters a specified input variable `varin` by
+        deconstructing the respective variable using singular value
+        decomposition (SVD) methods and subsequently reconstructing
+        the variable field using only the specified singular values as
+        determined by the value for `ncoeffs` upon entry.
 
         Parameters
         ----------
 
-        rdlintrp_obj: object
+        varin: numpy.array
 
-            A Python object containing the radial interpolation and
-            filtering attributes.
+            A Python numpy.array variable containing the input
+            variable to be filtered.
 
-        tcevent: str
+        ncoeffs: int
 
-            A Python string defining the TC event identifier for which
-            the radial filtering application is being performed.
-
-        uplev: numpy.array
-
-            A Python array-type variable containing the zonal wind
-            interpolated to the pressure levels specified in `plevs`.
-
-        vplev: numpy.array
-
-            A Python array-type variable containing the meridional
-            wind interpolated to the pressure levels specified in
-            `plevs`.
+            A Python integer specifying the maximum singular value,
+            relative to 0, to set 0.0 prior to reconstrucing the
+            respective variable.
 
         Returns
         -------
 
-        uplev: numpy.array
+        varout: numpy.array
 
-            A Python array-type variable containing the respective TC
-            relative radially filtered zonal wind interpolated to the
-            pressure levels specified in `plevs`.
-
-        vplev: numpy.array
-
-            A Python array-type variable containing the respective TC
-            relative radially filtered meridional wind interpolated to
-            the pressure levels specified in `plevs`.
+            A Python numpy.array variable containing the deconstucted
+            variable `varin` that has been reconstructed using the
+            singular value spectrum defined by `noeff` upon entry.
 
         """
 
-        # Filter the TC event from the analysis using
-        # successive radial interpolations.
-        for idx in range(numpy.shape(uplev[:, 0, 0])[0]):
-            msg = (
-                f"Filtering zonal wind component for TC {tcevent} isobaric "
-                f"level {self.plevs[idx]}."
-            )
-            self.logger.info(msg=msg)
-            rdlintrp_obj.vararray = uplev[idx, :, :]
-            uplev[idx, :, :] = radial.interp(
-                interp_obj=rdlintrp_obj, method="linear")
+        # Deconstruct the variable using SVD and reconstruct as per
+        # the singular value spectrum defined by `ncoeffs`.
+        varout = numpy.zeros(numpy.shape(varin))
+        varout = svd.rebuild(varin=varin, ncoeffs=ncoeffs)
 
-            msg = (
-                f"Filtering meridional wind component for TC {tcevent} isobaric "
-                f"level {self.plevs[idx]}."
-            )
-            self.logger.info(msg=msg)
-            rdlintrp_obj.vararray = vplev[idx, :, :]
-            vplev[idx, :, :] = interp.radial.interp(
-                interp_obj=rdlintrp_obj, method="linear"
-            )
-
-        return (uplev, vplev)
+        return varout
 
     @privatemethod
-    def radial_dist(self: Metrics, rdlintrp_obj: object) -> object:
+    def tc_filter(self: Metrics) -> Tuple[numpy.array, numpy.array]:
         """
         Description
         -----------
 
-        This method computes the radial distance relative to a
-        reference geographical location defined by the tuple `loc`
-        attribute of `rdlintrp_obj`.
-
-        Parameter
-        ---------
-
-        rdlintrp_obj: object
-
-            A Python object containing the radial interpolation
-            attributes; the tuple `loc` is assumed to be defined prior
-            to entry.
+        This method defines a relaxation mask with respect to the
+        defined TC event locations; the SVD of the respective zonal-
+        and meridional-wind components is performed in order to
+        minimize the signal of the respective TC events in the wind
+        field and the relaxation mask is applied to reduce the signal
+        of the respective TC events in the respective wind component
+        analyses.
 
         Returns
         -------
 
-        rdlintrp_obj: object
+        uwind: numpy.array
 
-            A Python object now containing attribute `raddist` which
-            contains the radial distance relative to the reference
-            location defined by `loc`; units are meters.
+            A Python numpy.array variable containing the reconstructed
+            zonal wind component.
+
+        vwind: numpy.array
+
+            A Python numpy.array variable containing the reconstructed
+            meridional wind component.
 
         """
 
-        # Compute the radial distance.
-        rdlintrp_obj.raddist = numpy.reshape(
-            radial_distance(
-                refloc=rdlintrp_obj.loc, latgrid=self.latgrid, longrid=self.longrid
-            ),
-            numpy.shape(self.tcdiags_obj.inputs.latitude.values),
-        )
+        # Filter the TC event signal and reconstruct the respective
+        # zonal- and meridional-wind components.
+        mask = self.tc_mask()
+        uwind = self.tcdiags_obj.inputs.uwind.values._magnitude
+        vwind = self.tcdiags_obj.inputs.vwind.values._magnitude
+        for level in range(numpy.shape(uwind)[0]):
+            ufilt = self.filter_var(
+                varin=uwind[level, :, :], ncoeffs=self.options_obj.ncoeffs)
+            uwind[level, :, :] = (1.0 - mask)*(uwind[level, :, :] - ufilt) \
+                + mask*uwind[level, :, :]
+            vfilt = self.filter_var(
+                varin=vwind[level, :, :], ncoeffs=self.options_obj.ncoeffs)
+            vwind[level, :, :] = (1.0 - mask)*(vwind[level, :, :] - vfilt) \
+                + mask*vwind[level, :, :]
 
-        return rdlintrp_obj
+        return (uwind, vwind)
+
+    @privatemethod
+    def tc_mask(self: Metrics) -> numpy.array:
+        """
+        Description
+        -----------
+
+        This method defines a relaxation mask used to filter the
+        respective variables relative to the specified TC locations.
+
+        Returns
+        -------
+
+        mask: numpy.array
+
+            A Python numpy.array variable specifying the relaxation
+            mask relative to each TC event location.
+
+        """
+
+        # Initialize the relaxation mask.
+        latgrid = numpy.array(self.tcdiags_obj.inputs.latitude.values).ravel()
+        longrid = numpy.array(self.tcdiags_obj.inputs.longitude.values).ravel()
+        mask = numpy.zeros(numpy.shape(
+            self.tcdiags_obj.inputs.longitude.values))
+        mask[:, :] = 1.0
+
+        # Update the relaxation mask relative to the location of each
+        # TC event.
+        for tcevent in self.tcdiags_obj.tcinfo:
+            tcevent_obj = parser_interface.dict_toobject(
+                in_dict=parser_interface.dict_key_value(
+                    dict_in=self.tcdiags_obj.tcinfo, key=tcevent
+                )
+            )
+            msg = (
+                f"Computing the radial distance relative to TC {tcevent} "
+                f"centered at {tcevent_obj.lat_deg}, {tcevent_obj.lon_deg}."
+            )
+            self.logger.info(msg=msg)
+
+            # Compute the radial distance grid relative to the
+            # respective TC event location.
+            raddist = numpy.reshape(radial_distance(
+                refloc=(tcevent_obj.lat_deg, tcevent_obj.lon_deg),
+                latgrid=latgrid, longrid=longrid),
+                numpy.shape((self.tcdiags_obj.inputs.latitude.values)))
+
+            # Update the masked region relative to the respective TC
+            # event.
+            mask = numpy.where(raddist <= self.options_obj.distance, 0.0, mask)
+            mask = numpy.where((raddist > self.options_obj.distance) &
+                               (raddist < self.options_obj.relax_distance),
+                               (raddist - self.options_obj.distance) /
+                               (self.options_obj.relax_distance -
+                                self.options_obj.distance), mask)
+
+        return mask
 
     @privatemethod
     def write_output(self: Metrics) -> None:
@@ -441,7 +453,6 @@ class VL1991(Metrics):
         # Define the netCDF output object and write the respective
         # variables to the external netCDF-formatted file path.
         ncwrite = NCWrite(output_file=self.tcdiags_obj.tcsteering.output_file)
-
         ncwrite.write(
             var_obj=self.tcstrflw_obj,
             var_list=self.output_varlist,
@@ -453,6 +464,8 @@ class VL1991(Metrics):
         """
         Description
         -----------
+
+        # TODO
 
         This method performs the following tasks:
 
@@ -470,57 +483,13 @@ class VL1991(Metrics):
 
         """
 
-        # Compute/interpolate the respective wind-vector components to
-        # the specified vertical levels.
-        uplev = self.plev_interp(varin=self.tcdiags_obj.inputs.uwind.values)
-        vplev = self.plev_interp(varin=self.tcdiags_obj.inputs.vwind.values)
-
-        self.tcstrflw_obj.uwnd = uplev.assign_attrs(
-            {"units": "meter_per_second", "name": "zonal wind"}
-        )
-        self.tcstrflw_obj.vwnd = vplev.assign_attrs(
-            {"units": "meter_per_second", "name": "meridional wind"}
-        )
-
-        rdlintrp_obj = parser_interface.object_define()
-        rdlintrp_obj.ddist = self.tcdiags_obj.tcsteering.ddist
-        rdlintrp_obj.distance = self.tcdiags_obj.tcsteering.distance
-
-        # Check whether TC information has been provided via the
-        # experiment configuration; proceed accordingly.
-        if self.tcdiags_obj.tcinfo is not None:
-            for tcevent in self.tcdiags_obj.tcinfo:
-                # Compute the radial distance grid relative to the
-                # respective TC event position.
-                tcevent_obj = parser_interface.dict_toobject(
-                    in_dict=parser_interface.dict_key_value(
-                        dict_in=self.tcdiags_obj.tcinfo, key=tcevent
-                    )
-                )
-
-                msg = (
-                    f"Computing the radial distance relative to TC {tcevent} "
-                    f"centered at {tcevent_obj.lat_deg}, {tcevent_obj.lon_deg}."
-                )
-                self.logger.info(msg=msg)
-                rdlintrp_obj.loc = (tcevent_obj.lat_deg, tcevent_obj.lon_deg)
-                rdlintrp_obj = self.radial_dist(rdlintrp_obj)
-
-                # Filter the respective TC event from the wind
-                # analysis.
-                (uplev.values, vplev.values) = self.radial_filter(
-                    rdlintrp_obj=rdlintrp_obj,
-                    tcevent=tcevent,
-                    uplev=uplev.values,
-                    vplev=vplev.values,
-                )
-
-            # Update the filtered variables.
-            self.tcstrflw_obj.uwnd = uplev
-            self.tcstrflw_obj.vwnd = vplev
+        # Filter the respective vector wind components relative to the
+        # TC event locations and interpolate to the specified pressure
+        # levels.
+        (uwnd, vwnd) = self.tc_filter()
 
         # Compute the diagnostic variables.
-        self.compute_diags(vararr=self.tcstrflw_obj.uwnd)
+        self.compute_diags(uwnd=uwnd, vwnd=vwnd)
 
         # Write the results to the specifed netCDF-formatted file
         # path.

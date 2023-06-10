@@ -67,6 +67,10 @@ History
 
 # ----
 
+# pylint: disable=invalid-name
+
+# ----
+
 __author__ = "Henry R. Winterbottom"
 __maintainer__ = "Henry R. Winterbottom"
 __email__ = "henry.winterbottom@noaa.gov"
@@ -78,11 +82,11 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 import numpy
-from exceptions import TropCycWNMSIError
 from metpy.units import units
 from tabulate import tabulate
 from tcdiags.analysis.fft import forward_fft2d, inverse_fft2d
 from tcdiags.atmos import winds
+from tcdiags.exceptions import TropCycWNMSIError
 from tcdiags.geomets import bearing_geoloc
 from tcdiags.interp import interp_ll2ra, interp_vertical
 from tcdiags.io.inputs import VARRANGE_STRING
@@ -114,9 +118,10 @@ class WNMSI:
         path denoted by the `tcwnmsi` attribute in the experiment
         configuration.
 
-    inputs_obj: object
+    inputs_obj: SimpleNamespace
 
-        A Python object containing the mandatory input variables.
+        A Python SimpleNamespace object containing the mandatory input
+        variables.
 
     Raises
     ------
@@ -139,12 +144,14 @@ class WNMSI:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger()
+        self.logger = Logger(
+            caller_name=f"{__name__}.{self.__class__.__name__}")
         self.inputs_obj = inputs_obj
         self.yaml_dict = dict(yaml_dict)
         self.tcwnmsi_obj = parser_interface.object_define()
         self.tcv_dict = {}
 
+        # TODO: Add schema.
         # Define the experiment configuration variables.
         tcwnmsi_default_var_dict = {
             "dphi": 45.0,
@@ -157,12 +164,10 @@ class WNMSI:
         tcwnmsi_var_dict = parser_interface.update_dict(
             default_dict=tcwnmsi_default_var_dict, base_dict=self.yaml_dict
         )
-
         for tcwnmsi_var in tcwnmsi_var_dict:
             value = parser_interface.dict_key_value(
                 dict_in=tcwnmsi_var_dict, key=tcwnmsi_var, no_split=True
             )
-
             self.tcwnmsi_obj = parser_interface.object_setattr(
                 object_in=self.tcwnmsi_obj, key=tcwnmsi_var, value=value
             )
@@ -174,7 +179,6 @@ class WNMSI:
             for key in self.yaml_dict.keys()
             if key not in tcwnmsi_default_var_dict.keys()
         ]
-
         msg = (
             "The TC maximum intensity index will be computed for the following "
             f"TC events: {[tcid for tcid in tcid_list]}."
@@ -183,7 +187,6 @@ class WNMSI:
 
         for tcid in tcid_list:
             self.tcv_dict[tcid] = self.yaml_dict[tcid]
-
         if len(self.tcv_dict) <= 0:
             msg = (
                 "The TC attributes have not been specified within "
@@ -247,13 +250,10 @@ class WNMSI:
             zarr=(self.inputs_obj.hght),
             levs=numpy.array(10.0),
         )
-
         wndmag10m = self.tcwnmsi_obj.wndmag[0, :, :]
-
         self.tcwnmsi_obj = parser_interface.object_setattr(
             object_in=self.tcwnmsi_obj, key="wndmag10m", value=wndmag10m
         )
-
         msg = VARRANGE_STRING % (
             "10-meter wind speed",
             numpy.nanmin(numpy.array(self.tcwnmsi_obj.wndmag10m)),
@@ -282,7 +282,6 @@ class WNMSI:
             object_in=self.tcwnmsi_obj, key="total_wind"
         )
         vmax = units.Quantity(numpy.nanmax(total_wind), "mps")
-
         if vmax is None:
             msg = (
                 "The maximum wind speed could not be determined from "
@@ -290,7 +289,6 @@ class WNMSI:
                 "wavenumber spectra."
             )
             self.logger.warn(msg=msg)
-
             vmax = sum(
                 numpy.nanmax(wnd_wavenum[idx]) for idx in range(0, len(wnd_wavenum))
             )
@@ -339,13 +337,11 @@ class WNMSI:
             numpy.degrees(self.tcwnmsi_obj.azimuth[hidx]),
             numpy.array(self.tcwnmsi_obj.radial[didx]),
         )
-
         (lat_rmw, lon_rmw) = bearing_geoloc(
             loc1=(self.tcwnmsi_obj.lat_0_deg, self.tcwnmsi_obj.lon_0_deg),
             heading=heading,
             dist=dist,
         )
-
         msg = f"Maximum wind location {lat_rmw}N, {lon_rmw}E."
         self.logger.info(msg=msg)
 
@@ -356,21 +352,18 @@ class WNMSI:
         self.tcwnmsi_obj.dist_rmw_m = units.Quantity(
             self.tcwnmsi_obj.dist_rmw_m, "meters"
         )
-
         self.tcwnmsi_obj = parser_interface.object_setattr(
             object_in=self.tcwnmsi_obj, key="heading_rmw_deg", value=heading[0]
         )
         self.tcwnmsi_obj.heading_rmw_deg = units.Quantity(
             self.tcwnmsi_obj.heading_rmw_deg, "degrees"
         )
-
         self.tcwnmsi_obj = parser_interface.object_setattr(
             object_in=self.tcwnmsi_obj, key="lat_rmw_deg", value=lat_rmw
         )
         self.tcwnmsi_obj.lat_rmw_deg = units.Quantity(
             self.tcwnmsi_obj.lat_rmw_deg, "degrees"
         )
-
         self.tcwnmsi_obj = parser_interface.object_setattr(
             object_in=self.tcwnmsi_obj, key="lon_rmw_deg", value=lon_rmw
         )
@@ -434,7 +427,6 @@ class WNMSI:
         )
         self.tcwnmsi_obj.azimuth = units.Quantity(
             self.tcwnmsi_obj.azimuth, "degrees")
-
         self.tcwnmsi_obj = parser_interface.object_setattr(
             object_in=self.tcwnmsi_obj, key="lat_0_deg", value=lat_0
         )
@@ -447,13 +439,11 @@ class WNMSI:
         self.tcwnmsi_obj.lon_0_deg = units.Quantity(
             self.tcwnmsi_obj.lon_0_deg, "degrees"
         )
-
         self.tcwnmsi_obj = parser_interface.object_setattr(
             object_in=self.tcwnmsi_obj, key="radial", value=wnd10mpolar_obj.radial
         )
         self.tcwnmsi_obj.radial = units.Quantity(
             self.tcwnmsi_obj.radial, "meters")
-
         self.tcwnmsi_obj = parser_interface.object_setattr(
             object_in=self.tcwnmsi_obj, key="total_wind", value=wnd10mpolar_obj.varout
         )
@@ -495,8 +485,8 @@ class WNMSI:
 
         varin: numpy.complex_
 
-            A Python array-type complex variable; this is typically
-            the Fourier transformed 10-meter total wind-field.
+            A Python numpy.complex_ variable; this is typically the
+            Fourier transformed 10-meter total wind-field.
 
         ncoeffs: int
 
@@ -514,17 +504,16 @@ class WNMSI:
         wndrstrct_dict = {}
 
         for coeff in range(ncoeffs):
+            
             # Define the Fourier coefficients for the respective
             # wavenumber.
             msg = f"Computing the total wind-field components for wave-number {coeff}."
             self.logger.info(msg=msg)
-
             fftr = numpy.zeros(fftsave.shape, dtype=numpy.complex_)
             fftr[:, coeff] = fftsave[:, coeff]
 
             # Compute the inverse Fourier transform.
             ifftr = inverse_fft2d(varin=fftr)
-
             wndrstrct_dict[coeff] = units.Quantity(numpy.real(ifftr), "mps")
 
         # Update the base-class object accordingly.
@@ -552,8 +541,7 @@ class WNMSI:
 
         # Build the output variable list and object.
         ncoeffs = len(self.tcwnmsi_obj.wavenumbers)
-        var_list = self.output_varlist + \
-            [f"wn{idx}" for idx in range(0, ncoeffs)]
+        var_list = self.output_varlist + [f"wn{idx}" for idx in range(0, ncoeffs)]
 
         # Update the output variable object.
         wns_dict = parser_interface.object_getattr(
@@ -646,11 +634,11 @@ class WNMSI:
             Parameters
             ----------
 
-            header: list
+            header: List
 
                 A Python list containing the table header string(s).
 
-            table: list
+            table: List
 
                 A Python list containing the table row(s).
 
@@ -675,8 +663,7 @@ class WNMSI:
         table = []
 
         for idx in range(len(self.tcwnmsi_obj.wavenumbers)):
-            msg = [
-                f"{idx}", f"{numpy.nanmax(self.tcwnmsi_obj.wavenumbers[idx])}"]
+            msg = [f"{idx}", f"{numpy.nanmax(self.tcwnmsi_obj.wavenumbers[idx])}"]
             table.append(msg)
 
         __buildtbl__(header=header, table=table)

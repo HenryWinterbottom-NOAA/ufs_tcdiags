@@ -64,7 +64,14 @@ History
 
 # ----
 
+__author__ = "Henry R. Winterbottom"
+__maintainer__ = "Henry R. Winterbottom"
+__email__ = "henry.winterbottom@noaa.gov"
+
+# ----
+
 from dataclasses import dataclass
+from types import SimpleNamespace
 from typing import Dict, List
 
 import numpy
@@ -111,7 +118,7 @@ class NCWrite:
 
     def write(
         self: dataclass,
-        var_obj: object,
+        var_obj: SimpleNamespace,
         var_list: List,
         coords_3d: Dict = None,
         coords_2d: Dict = None,
@@ -129,10 +136,10 @@ class NCWrite:
         Parameters
         ----------
 
-        var_obj: object
+        var_obj: SimpleNamespace
 
-            A Python object containing all variables to be written to
-            the netCDF-formatteed output file path.
+            A Python SimpleNamespace object containing all variables
+            to be written to the netCDF-formatteed output file path.
 
         var_list: List
 
@@ -185,7 +192,6 @@ class NCWrite:
             varout = parser_interface.object_getattr(
                 object_in=var_obj, key=var, force=True
             )
-
             if varout is None:
                 msg = (
                     f"Variable {var} could not be determined from the input object "
@@ -193,22 +199,20 @@ class NCWrite:
                 )
                 self.logger.warn(msg=msg)
 
+            # Collect (any) attributes for the respective variable.
             if varout is not None:
-                # Collect (any) attributes for the respective variable.
                 try:
                     attributes = {
                         key: value
                         for (key, value) in varout.attrs.items()
                         if value is not None
                     }
-
                 except AttributeError:
                     msg = (
                         f"No attributes have been defined for variable {var}; attributes "
                         f"for variable will not be written to {self.output_file}."
                     )
                     self.logger.warn(msg=msg)
-
                     attributes = {}
 
                 # Build the data array for the respective variables
@@ -219,17 +223,14 @@ class NCWrite:
                 # variable.
                 if data.ndim == 2:
                     coords = coords_2d
-
                 elif data.ndim == 3:
                     coords = coords_3d
-
                 else:
                     msg = (
                         f"The coordinates for variable {var} could not be determined. "
                         "Aborting!!!"
                     )
                     raise IoNcWriteError(msg=msg)
-
                 dims = list(coords.keys())
 
                 # Build the xarray object corresponding to the

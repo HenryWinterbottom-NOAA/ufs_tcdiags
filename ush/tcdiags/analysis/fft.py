@@ -94,9 +94,9 @@ def forward_fft2d(varin: numpy.array) -> numpy.complex_:
     Parameters
     ----------
 
-    varin: array-type
+    varin: numpy.array
 
-        A Python array-type variable containing the 2-dimensional
+        A Python numpy.array variable containing the 2-dimensional
         real-values input array.
 
     Returns
@@ -104,7 +104,7 @@ def forward_fft2d(varin: numpy.array) -> numpy.complex_:
 
     varout: numpy.complex_
 
-        A Python array-type variable containing the 2-dimensional
+        A Python numpy.complex_ variable containing the 2-dimensional
         complex-values computed from the forward FFT.
 
     Raises
@@ -124,13 +124,11 @@ def forward_fft2d(varin: numpy.array) -> numpy.complex_:
             f"{len(varin.shape)} dimensions. Aborting!!!"
         )
         raise FFTError(msg=msg)
-
     msg = (
         "Computing the forward Fourier transform of input array dimension "
         f"({varin.shape[0]}, {varin.shape[1]})."
     )
     logger.info(msg=msg)
-
     varout = numpy.fft.fft2(varin)
 
     return varout
@@ -152,7 +150,7 @@ def inverse_fft2d(varin: numpy.complex_) -> numpy.complex_:
 
     varin: numpy.complex_
 
-        A Python array-type variable containing the 2-dimensional
+        A Python numpy.complex_ variable containing the 2-dimensional
         complex-values computed from the FFT.
 
     Returns
@@ -160,7 +158,7 @@ def inverse_fft2d(varin: numpy.complex_) -> numpy.complex_:
 
     varout: numpy.complex_
 
-        A Python array-type variable containing the 2-dimensional
+        A Python numpy.complex_ variable containing the 2-dimensional
         complex-values computed from the inverse FFT.
 
     Raises
@@ -180,13 +178,11 @@ def inverse_fft2d(varin: numpy.complex_) -> numpy.complex_:
             f"{len(varin.shape)} dimensions. Aborting!!!"
         )
         raise FFTError(msg=msg)
-
     msg = (
         "Computing the inverse Fourier transform of input array dimension "
         f"({varin.shape[0]}, {varin.shape[1]})."
     )
     logger.info(msg=msg)
-
     varout = numpy.fft.ifft2(varin)
 
     return varout

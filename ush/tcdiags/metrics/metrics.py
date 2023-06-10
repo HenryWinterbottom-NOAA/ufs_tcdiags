@@ -33,7 +33,7 @@ Classes
 
     Metrics(tcdiags_obj)
 
-         This is the base-class object for all Metrics sub-classes.
+        This is the base-class object for all Metrics sub-classes.
 
 Requirements
 ------------
@@ -61,8 +61,15 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 from dataclasses import dataclass
+from types import SimpleNamespace
+
+from utils import schema_interface
+
+from confs.yaml_interface import YAML
 
 from utils.logger_interface import Logger
+
+from typing import Dict
 
 # ----
 
@@ -87,7 +94,7 @@ class Metrics:
 
     """
 
-    def __init__(self: dataclass, tcdiags_obj: object):
+    def __init__(self: dataclass, tcdiags_obj: SimpleNamespace):
         """
         Description
         -----------
@@ -97,5 +104,17 @@ class Metrics:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(
+            caller_name=f"{__name__}.{self.__class__.__name__}")
         self.tcdiags_obj = tcdiags_obj
+
+    def schema(self: dataclass, cls_schema_file: str, cls_opts: Dict) -> None:
+        """ """
+
+        schema_def_dict = YAML().read_yaml(yaml_file=cls_schema_file)
+        cls_schema = schema_interface.build_schema(
+            schema_def_dict=schema_def_dict)
+        options_obj = schema_interface.validate_schema(
+            cls_schema=cls_schema, cls_opts=cls_opts, write_table=True)
+
+        return options_obj

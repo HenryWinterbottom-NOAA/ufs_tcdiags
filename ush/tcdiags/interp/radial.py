@@ -69,6 +69,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from types import SimpleNamespace
+
 import numpy
 from scipy.interpolate import griddata
 from tcdiags.exceptions import InterpRadialError
@@ -81,7 +83,7 @@ logger = Logger(caller_name=__name__)
 # ----
 
 
-def interp(interp_obj: object, method: str = "linear") -> numpy.array:
+def interp(interp_obj: SimpleNamespace, method: str = "linear") -> numpy.array:
     """
     Description
     -----------
@@ -92,10 +94,10 @@ def interp(interp_obj: object, method: str = "linear") -> numpy.array:
     Parameters
     ----------
 
-    interp_obj: object
+    interp_obj: SimpleNamespace
 
-        A Python object containing the radial interpolation
-        attributes.
+        A Python SimpleNamespace object containing the radial
+        interpolation attributes.
 
     Keywords
     --------
@@ -117,7 +119,7 @@ def interp(interp_obj: object, method: str = "linear") -> numpy.array:
 
     interp_var: numpy.array
 
-        A Python array-type variable containing the variable field
+        A Python numpy.array variable containing the variable field
         with the data-void region, included in the respective variable
         field upon entry, updated via the application within.
 
@@ -126,7 +128,6 @@ def interp(interp_obj: object, method: str = "linear") -> numpy.array:
     # Initialize the grid attributes.
     xgrid = numpy.arange(0, numpy.shape(interp_obj.vararray)[1], 1.0)
     ygrid = numpy.arange(0, numpy.shape(interp_obj.vararray)[0], 1.0)
-
     (xxgrid, yygrid) = numpy.meshgrid(xgrid, ygrid)
     max_dist = interp_obj.distance
     outer_dist = max_dist
@@ -147,11 +148,9 @@ def interp(interp_obj: object, method: str = "linear") -> numpy.array:
             varin = interp_var
             varin = numpy.where((interp_obj.raddist <= inner_dist), numpy.nan, varin)
             mask = numpy.ma.masked_invalid(varin)
-
             xf = xxgrid[~mask.mask]
             yf = yygrid[~mask.mask]
             invar = varin[~mask.mask]
-
             interp_var[:, :] = griddata(
                 (xf, yf), invar, (xxgrid, yygrid), method=method
             )
@@ -159,9 +158,7 @@ def interp(interp_obj: object, method: str = "linear") -> numpy.array:
             # Update the interpolation interval range.
             outer_dist = inner_dist
             inner_dist = outer_dist - interp_obj.ddist
-
     except Exception as errmsg:
-
         msg = (
             f"Interpolation application {__name__} failed with error {errmsg}. "
             "Aborting!!!"

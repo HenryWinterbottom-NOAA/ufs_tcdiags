@@ -63,6 +63,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from types import SimpleNamespace
+
 import numpy
 from metpy.calc import pressure_to_height_std
 from metpy.units import units
@@ -80,7 +82,7 @@ logger = Logger(caller_name=__name__)
 # ----
 
 
-def height_from_pressure(varobj: object) -> numpy.array:
+def height_from_pressure(varobj: SimpleNamespace) -> numpy.array:
     """
     Description
     -----------
@@ -91,17 +93,18 @@ def height_from_pressure(varobj: object) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the pressure levels
-        from which the height profile will be computed.
+        A Python SimpleNamespace object containing, at minimum, the
+        pressure levels from which the height profile will be
+        computed.
 
     Returns
     -------
 
     height: numpy.array
 
-        A Python array-type variable containing the geometric height
+        A Python numpy.array variable containing the geometric height
         profile.
 
     """
@@ -112,7 +115,6 @@ def height_from_pressure(varobj: object) -> numpy.array:
         f"{varobj.pressure.values.shape}."
     )
     logger.info(msg=msg)
-
     pressure = units.Quantity(varobj.pressure.values, "Pa")
     height = pressure_to_height_std(pressure=pressure)
 

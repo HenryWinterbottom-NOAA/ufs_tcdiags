@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Docker Recipe File: Docker/ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags.docker
+# Docker Recipe File: Docker/ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags.dockerfile
 
 # Email: henry.winterbottom@noaa.gov
 
@@ -34,9 +34,7 @@
 
 #    The Docker container image should be built as follows.
 
-#    user@host:$ docker build -f ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags.docker --tag ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags:<TAG> .
-
-#    user@host:$ docker tag ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags:<TAG> <DOCKER LOGIN>/ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags:<TAG>
+#    user@host:$ docker build -f ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags.docker --tag <DOCKER LOGIN>/ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags:<TAG> .
 
 #    user@host:$ docker push <DOCKER LOGIN>/ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags:<TAG>
 
@@ -72,7 +70,7 @@
 
 # Define the container base information.
 FROM noaaufsrnr/ubuntu20.04-miniconda-ufs_pyutils:latest
-MAINTAINER "Henry R. Winterbottom (Henry.Winterbottom@noaa.gov)"
+LABEL noaaufsrnr/ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags.image.authors="Henry.Winterbottom@noaa.gov"
 
 # ----
 
@@ -91,7 +89,6 @@ RUN /miniconda/bin/pip install jupyterlab && \
     /miniconda/bin/pip install pyspharm==1.0.9 && \
     /miniconda/bin/pip install metpy==1.4.0 && \
     /miniconda/bin/pip install tcpypi && \
-    /miniconda/bin/pip install tabulate==0.9.0 && \
     /miniconda/bin/pip install geopy==2.3.0
 
 # ----

@@ -72,6 +72,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from types import SimpleNamespace
+
 import numpy
 from metpy.calc import altimeter_to_sea_level_pressure as a2slp
 from utils.logger_interface import Logger
@@ -88,7 +90,7 @@ logger = Logger(caller_name=__name__)
 # ----
 
 
-def pressure_from_thickness(varobj: object) -> numpy.array:
+def pressure_from_thickness(varobj: SimpleNamespace) -> numpy.array:
     """
     Description
     -----------
@@ -101,18 +103,18 @@ def pressure_from_thickness(varobj: object) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the isobaric level
-        interface thicknesses and the surface pressure from which
-        pressure profile will be computed.
+        A Python SimpleNamespace object containing, at minimum, the
+        isobaric level interface thicknesses and the surface pressure
+        from which pressure profile will be computed.
 
     Returns
     -------
 
     pres: numpy.array
 
-        A Python array-type variable containing the pressure profile;
+        A Python numpy.array variable containing the pressure profile;
         units are Pascals.
 
     """
@@ -138,7 +140,7 @@ def pressure_from_thickness(varobj: object) -> numpy.array:
 # ----
 
 
-def pressure_to_sealevel(varobj: object) -> numpy.array:
+def pressure_to_sealevel(varobj: SimpleNamespace) -> numpy.array:
     """
     Description
     -----------
@@ -149,19 +151,19 @@ def pressure_to_sealevel(varobj: object) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the surface prssure,
-        the surface elevation, and the temperature profile from which
-        the sea-level pressure will be computed.
+        A Python SimpleNamespace object containing, at minimum, the
+        surface prssure, the surface elevation, and the temperature
+        profile from which the sea-level pressure will be computed.
 
     Returns
     -------
 
-    varobj: object # TODO
+    pslp: numpy.array
 
-        A Python object updated to contain the surface pressure
-        reduced to sea-level.
+        A Python numpy.array variable updated to contain the surface
+        pressure reduced to sea-level.
 
     """
 
