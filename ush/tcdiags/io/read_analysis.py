@@ -75,7 +75,7 @@ from typing import Generic
 from importlib import import_module
 import numpy
 from confs.yaml_interface import YAML
-from tcdiags.derived import derived
+from derived import derived
 from tcdiags.exceptions import ReadAnalysisError
 from tcdiags.io import vario
 from tools import parser_interface
@@ -296,7 +296,6 @@ class ReadAnalysis:
             inputs_obj = parser_interface.object_setattr(
                 object_in=inputs_obj, key=varname, value=varobj
             )
-
         inputs_obj = self.compute_derived(inputs_obj=inputs_obj)
 
         return inputs_obj

@@ -31,59 +31,16 @@ Description
 Classes
 -------
 
-    DerivedAtmosMoistureError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/derived/atmos/moisture module; it is a sub-class
-        of Error.
-
-    DerivedAtmosWindsError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/derived/atmos/winds module; it is a sub-class of
-        Error.
-
-    DerivedError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/derived module; it is a sub-class of Error.
-
-    FFTError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/analysis/fft module; it is a sub-class of Error.
-
     FilterVortexError(msg)
 
         This is the base-class for exceptions encountered within the
         ush/tcdiags/tc module FilterVortex class; it is a sub-class of
         Error.
 
-    GeoMetsError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/geomets module; it is a sub-class of Error.
-
     InputFieldsError(msg)
 
         This is the base-class for exceptions encounterd within the
         ush/tcdiags/io/inputs module.
-
-    InterpProjectionsError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/interp/projections module; it is a sub-class of
-        Error.
-
-    InterpRadialError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/interp/radial module; it is a sub-class of Error.
-
-    InterpVerticalError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/interp/vertical module; it is a sub-class of Error.
 
     IoNcWriteError(msg)
 
@@ -102,11 +59,6 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/io/read_analysis module; it is a sub-class of
         Error.
-
-    SVDError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/analysis/svd module; it is a sub-class of Error.
 
     TCDiagsError(msg)
 
@@ -167,84 +119,17 @@ from utils.error_interface import Error
 
 # Define all available attributes.
 __all__ = [
-    "DerivedAtmosMoistureError",
-    "DerivedAtmosWindsError",
-    "DerivedError",
-    "FFTError",
     "FilterVortexError",
-    "GeoMetsError",
     "InputFieldsError",
-    "InterpProjectionsError",
-    "InterpRadialError",
-    "InterpVerticalError",
     "IoNcWriteError",
     "MetricsVL1991Error",
     "ReadAnalysisError",
-    "SVDError",
     "TCDiagsError",
     "TCDiagsIOError",
     "TropCycMPIError",
     "TropCycWNMSIError",
     "VarIOError",
 ]
-
-# ----
-
-
-class DerivedAtmosMoistureError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/derived/atmos/moisture module; it is a sub-class of
-    Error.
-
-    """
-
-
-# ----
-
-
-class DerivedAtmosWindsError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/derived/atmos/winds module; it is a sub-class of
-    Error.
-
-    """
-
-
-# ----
-
-
-class DerivedError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/derived module; it is a sub-class of Error.
-
-    """
-
-
-# ----
-
-
-class FFTError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/analysis/fft module; it is a sub-class of Error.
-
-    """
-
 
 # ----
 
@@ -260,21 +145,6 @@ class FilterVortexError(Error):
 
     """
 
-
-# ----
-
-
-class GeoMetsError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/geomets module; it is a sub-class of Error.
-
-    """
-
-
 # ----
 
 
@@ -287,49 +157,6 @@ class InputFieldsError(Error):
     ush/tcdiags/io/inputs module; it is a sub-class of Error.
 
     """
-
-
-# ----
-
-
-class InterpProjectionsError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/interp/projections module; it is a sub-class of Error.
-
-    """
-
-
-# ----
-
-
-class InterpRadialError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/interp/radial module; it is a sub-class of Error.
-
-    """
-
-
-# ----
-
-
-class InterpVerticalError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/interp/vertical module; it is a sub-class of Error.
-
-    """
-
 
 # ----
 
@@ -372,21 +199,6 @@ class ReadAnalysisError(Error):
     ush/tcdiags/io/read_analysis module; it is a sub-class of Error.
 
     """
-
-
-# ----
-
-
-class SVDError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/analysis/svd module; it is a sub-class of Error.
-
-    """
-
 
 # ----
 

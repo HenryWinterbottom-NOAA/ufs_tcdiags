@@ -80,17 +80,17 @@ from typing import Tuple
 
 from confs.yaml_interface import YAML
 import numpy
-from tcdiags import interp
-from tcdiags.derived.atmos import winds
-from tcdiags.geomets import radial_distance
-from tcdiags.interp import radial, vertical
+
+from grids.radial_distance import radial_distance
+from derived.atmos import winds
+from interp import radial, vertical
 from tcdiags.io.nc_write import NCWrite
 from tcdiags.metrics.metrics import Metrics
 from tools import parser_interface
 from utils.decorator_interface import privatemethod
 from xarray import DataArray
 
-from tcdiags.analysis import svd
+from transforms import svd
 
 # ----
 
