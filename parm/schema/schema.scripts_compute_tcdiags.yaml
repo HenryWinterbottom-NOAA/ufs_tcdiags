@@ -1,0 +1,6 @@
+yaml_file:
+     description: |
+          "The YAML-formatted UFS tropical cyclone diagnostics application configuration file."
+     required: True
+     type: str
+     

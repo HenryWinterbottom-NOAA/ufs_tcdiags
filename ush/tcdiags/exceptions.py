@@ -145,6 +145,7 @@ class FilterVortexError(Error):
 
     """
 
+
 # ----
 
 
@@ -157,6 +158,7 @@ class InputFieldsError(Error):
     ush/tcdiags/io/inputs module; it is a sub-class of Error.
 
     """
+
 
 # ----
 
@@ -199,6 +201,7 @@ class ReadAnalysisError(Error):
     ush/tcdiags/io/read_analysis module; it is a sub-class of Error.
 
     """
+
 
 # ----
 

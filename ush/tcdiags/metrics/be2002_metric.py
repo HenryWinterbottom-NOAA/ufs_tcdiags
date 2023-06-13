@@ -89,7 +89,6 @@ from types import SimpleNamespace
 
 import numpy
 from metpy.units import units
-from tcdiags.io.nc_write import NCWrite
 from tcdiags.metrics.metrics import Metrics
 from tcpyPI import pi
 from tools import parser_interface
@@ -99,7 +98,7 @@ from utils.decorator_interface import privatemethod
 
 
 class BE2002(Metrics):
-    """ "
+    """
     Description
     -----------
 
@@ -147,62 +146,27 @@ class BE2002(Metrics):
         """
 
         # Define the base-class attributes.
-        super().__init__(tcdiags_obj=tcdiags_obj)
-
+        super().__init__(tcdiags_obj=tcdiags_obj, app_obj="tcpi")
+        self.output_varlist = list(self.options_obj.output_varlist.keys())
         self.tcpi_obj = parser_interface.object_define()
-
-        # TODO: /begin
-
-        # The following should be evaluated via the schema interface
-        # and updated accordingly.
-
-        # Define the experiment configuration variables.
-        self.tcmpi_var_dict = {
-            "mslp_max": 2000.0,
-            "output_file": "tcmpi.nc",
-            "zmax": 10.0,
-        }  # NEED TO UPDAT THIS USING DEFAULT DICTIONARY
-
-        # Define the local variables.
-        self.tcpi_obj.zmax = 10.0
-
-        # TODO: /end
-
-        # Define the array dimension attributes.
         (self.nx, self.ny) = [
             self.tcdiags_obj.inputs.latitude.values.shape[1],
             self.tcdiags_obj.inputs.latitude.values.shape[0],
         ]
         self.ndim = self.nx * self.ny
         self.nlevs = self.tcdiags_obj.inputs.temperature.values.shape[0]
-
-        lat = numpy.array(self.tcdiags_obj.inputs.latitude.values)[:, 0]
-        level = numpy.arange(0.0, self.nlevs)
-        lon = (
-            numpy.array(self.tcdiags_obj.inputs.longitude.values)[0, :]
-            - self.tcdiags_obj.inputs.longitude.scale_add
-        )
-
-        # Build and define the CF compliant dimensions.
-        self.tcpi_obj.dims2d = {"lat": (["lat"], lat), "lon": (["lon"], lon)}
-        self.tcpi_obj.dims3d = {
-            "lev": (["lev"], level),
-            "lat": (["lat"], lat),
-            "lon": (["lon"], lon),
+        self.tcpi_obj.dims = {
+            "lev": (["lev"], numpy.arange(0.0, float(self.nlevs))),
+            "lat": (
+                ["lat"],
+                numpy.array(self.tcdiags_obj.inputs.latitude.values)[:, 0],
+            ),
+            "lon": (
+                ["lon"],
+                numpy.array(self.tcdiags_obj.inputs.longitude.values)[0, :]
+                - self.tcdiags_obj.inputs.longitude.scale_add,
+            ),
         }
-
-        # Define the output variables list.
-        self.output_varlist = [
-            "mxrt",
-            "pmin",
-            "pout",
-            "pres",
-            "pslp",
-            "temp",
-            "tout",
-            "vmax",
-            "zsfc",
-        ]
 
     @privatemethod
     def compute(self: Metrics) -> None:
@@ -215,9 +179,8 @@ class BE2002(Metrics):
         """
 
         # Initialize the TC potential intensity metric arrays.
-        msg = "Computing the tropical cyclone maximum potential intensity metrics."
+        msg = "Computing the tropical cyclone potential intensity metrics."
         self.logger.info(msg=msg)
-
         (
             self.tcpi_obj.vmax,
             self.tcpi_obj.pmin,
@@ -247,10 +210,11 @@ class BE2002(Metrics):
 
         """
 
-        # Compute/define the input variables.
+        # Define the input variables.
         self.tcpi_obj.mxrt = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.mixing_ratio.values, (self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.mixing_ratio.values, (
+                    self.nlevs, self.ndim)
             ),
             "gram/gram",
         )
@@ -261,7 +225,7 @@ class BE2002(Metrics):
             "hectopascal",
         )
         self.tcpi_obj.pslp = units.Quantity(
-            self.tcdiags_obj.inputs.pslp.values.ravel(), "hectopascal"
+            self.tcdiags_obj.inputs.sea_level_pressure.values.ravel(), "hectopascal"
         )
         self.tcpi_obj.temp = units.Quantity(
             numpy.reshape(
@@ -269,6 +233,7 @@ class BE2002(Metrics):
             ),
             "celsius",
         )
+        # TODO: Define the SST at the I/O level;
         self.tcpi_obj.sstc = units.Quantity(
             self.tcdiags_obj.inputs.temperature.values[0, ...].ravel(), "celsius"
         )
@@ -301,14 +266,12 @@ class BE2002(Metrics):
         # `tcpi` contains the respective TC potential intensity
         # indices; proceed accordingly.
         zsfc = self.tcpi_obj.zsfc.magnitude[idx]
-        if zsfc <= self.tcpi_obj.zmax:
-
-            msl = self.tcpi_obj.pslp.magnitude[idx]
-            mxrt = self.tcpi_obj.mxrt.magnitude[:, idx]
-            pres = self.tcpi_obj.pres.magnitude[:, idx]
-            sstc = self.tcpi_obj.temp.magnitude[0, idx]
-            tempc = self.tcpi_obj.temp.magnitude[:, idx]
-
+        if zsfc <= self.options_obj.zmax:
+            msl = float(self.tcpi_obj.pslp.magnitude[idx])
+            mxrt = numpy.array(self.tcpi_obj.mxrt.magnitude[:, idx])
+            pres = numpy.array(self.tcpi_obj.pres.magnitude[:, idx])
+            sstc = numpy.array(self.tcpi_obj.temp.magnitude[0, idx])
+            tempc = numpy.array(self.tcpi_obj.temp.magnitude[:, idx])
             (
                 self.tcpi_obj.vmax.values[idx],
                 self.tcpi_obj.pmin.values[idx],
@@ -316,9 +279,7 @@ class BE2002(Metrics):
                 self.tcpi_obj.tout.values[idx],
                 self.tcpi_obj.pout.values[idx],
             ) = pi(SSTC=sstc, MSL=msl, P=pres, TC=tempc, R=mxrt)
-
         else:
-
             (
                 self.tcpi_obj.vmax.values[idx],
                 self.tcpi_obj.pmin.values[idx],
@@ -340,75 +301,35 @@ class BE2002(Metrics):
 
         # Update the respective TC potential intensity input and
         # output array units for output.
+        diagvars_obj = parser_interface.dict_toobject(
+            in_dict=self.options_obj.output_varlist
+        )
         self.tcpi_obj.pmin.values = units.Quantity(
             numpy.reshape(self.tcpi_obj.pmin.values, (self.ny, self.nx)), "pascal"
         )
-        self.tcpi_obj.pmin.attrs = {
-            "units": "pascal",
-            "name": "potential intensity sea-level pressure",
-        }
-
+        self.tcpi_obj.pmin.attrs = diagvars_obj.pmin
         self.tcpi_obj.pout.values = units.Quantity(
-            numpy.reshape(self.tcpi_obj.pout.values, (self.ny, self.nx)), "pascal"
+            numpy.reshape(self.tcpi_obj.pmin.values, (self.ny, self.nx)), "pascal"
         )
-        self.tcpi_obj.pout.attrs = {
-            "units": "pascal",
-            "name": "potential intensity outflow pressure level",
-        }
-
+        self.tcpi_obj.pout.attrs = diagvars_obj.pout
         self.tcpi_obj.tout.values = units.Quantity(
             numpy.reshape(self.tcpi_obj.tout.values, (self.ny, self.nx)), "kelvin"
         )
-        self.tcpi_obj.tout.attrs = {
-            "units": "kelvin",
-            "name": "potential intensity outflow temperature",
-        }
-
+        self.tcpi_obj.tout.attrs = diagvars_obj.tout
         self.tcpi_obj.vmax.values = units.Quantity(
             numpy.reshape(self.tcpi_obj.vmax.values, (self.ny, self.nx)), "mps"
         )
-        self.tcpi_obj.vmax.attrs = {
-            "units": "meter_per_second",
-            "name": "potential intensity surface wind speed",
-        }
-
-        self.tcpi_obj.mxrt = self.tcdiags_obj.inputs.mixing_ratio
-        self.tcpi_obj.mxrt.attrs = {"units": "kg/kg", "name": "mixing ratio"}
-
-        self.tcpi_obj.pres = self.tcdiags_obj.inputs.pressure
-        self.tcpi_obj.pres.attrs = {"units": "pascal", "name": "pressure"}
-
-        self.tcpi_obj.pslp = self.tcdiags_obj.inputs.pslp
-        self.tcpi_obj.pslp.attrs = {"units": "pascal", "name": "sea-level pressure"}
-
-        self.tcpi_obj.temp = self.tcdiags_obj.inputs.temperature
-        self.tcpi_obj.temp.attrs = {"units": "kelvin", "name": "temperature"}
-
-        self.tcpi_obj.zsfc = self.tcdiags_obj.inputs.surface_height
-        self.tcpi_obj.zsfc.attrs = {"units": "meter", "name": "surface height"}
-
-    @privatemethod
-    def write_output(self: Metrics) -> None:
-        """
-        Description
-        -----------
-
-        This method writes a netCDF-formatted file containing the TC
-        MPI computed values as well as the diagostics/inputs
-        quantities for the TC MPI application.
-
-        """
-
-        # Define the netCDF output object and write the respective
-        # variables to the external netCDF-formatted file path.
-        ncwrite = NCWrite(output_file=self.tcdiags_obj.tcmpi.output_file)
-
-        ncwrite.write(
-            var_obj=self.tcpi_obj,
-            var_list=self.output_varlist,
-            coords_3d=self.tcpi_obj.dims3d,
-            coords_2d=self.tcpi_obj.dims2d,
-        )
+        self.tcpi_obj.vmax.attrs = diagvars_obj.vmax
+        self.tcpi_obj.mxrt.values = self.tcdiags_obj.inputs.mixing_ratio.values
+        self.tcpi_obj.mxrt.attrs = diagvars_obj.mxrt
+        self.tcpi_obj.pres.values = self.tcdiags_obj.inputs.pressure.values
+        self.tcpi_obj.pres.attrs = diagvars_obj.pres
+        self.tcpi_obj.pslp.values = self.tcdiags_obj.inputs.sea_level_pressure.values
+        self.tcpi_obj.pslp.attrs = diagvars_obj.pslp
+        self.tcpi_obj.temp.values = self.tcdiags_obj.inputs.temperature.values
+        self.tcpi_obj.temp.attrs = diagvars_obj.temp
+        self.tcpi_obj.zsfc.values = self.tcdiags_obj.inputs.surface_height.values
+        self.tcpi_obj.zsfc.attrs = diagvars_obj.zsfc
 
     def run(self: Metrics) -> None:
         """
@@ -445,4 +366,13 @@ class BE2002(Metrics):
 
         # Write the computed values and diagnostics/inputs quantities
         # to the specified netCDF-formatted output file.
-        self.write_output()
+        self.write_output(
+            output_file=self.options_obj.output_file,
+            var_obj=self.tcpi_obj,
+            var_list=self.output_varlist,
+            coords_2d={
+                "lat": self.tcpi_obj.dims["lat"],
+                "lon": self.tcpi_obj.dims["lon"],
+            },
+            coords_3d=self.tcpi_obj.dims,
+        )

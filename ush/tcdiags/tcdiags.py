@@ -55,8 +55,11 @@ History
 
 # ----
 
-from dataclasses import dataclass
-from gc import collect
+# pylint: disable=import-error
+# pylint: disable=no-name-in-module
+
+# ----
+
 from importlib import import_module
 from types import SimpleNamespace
 from typing import Generic
@@ -214,8 +217,7 @@ class TCDiags:
 
         # Execute each application; proceed accordingly.
         for app in self.apps_list:
-            if (parser_interface.object_getattr(
-                    object_in=self.options_obj, key=app)):
+            if parser_interface.object_getattr(object_in=self.options_obj, key=app):
                 msg = f"Executing application {app}."
                 self.logger.critical(msg=msg)
                 app_obj = parser_interface.object_getattr(

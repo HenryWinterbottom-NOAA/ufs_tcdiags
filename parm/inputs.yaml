@@ -82,7 +82,7 @@ pressure:
      ncfile: /work/C96_era5anl_2016100100.nc
      derived: True
      method: pressure_from_thickness
-     module: tcdiags.derived.atmos.pressures
+     module: ufs_diags.derived.atmos.pressures
      flip_lat: True
      flip_z: True
      squeeze: True
@@ -94,7 +94,7 @@ pressure:
 height:
      derived: True
      method: height_from_pressure
-     module: tcdiags.derived.atmos.heights
+     module: ufs_diags.derived.atmos.heights
      name: hght
      units: m
 
@@ -103,11 +103,11 @@ sea_level_pressure:
      method: pressure_to_sealevel
      units: pascal
      name: pslp
-     module: tcdiags.derived.atmos.pressures
+     module: ufs_diags.derived.atmos.pressures
 
 mixing_ratio:
      derived: True
      method: spfh_to_mxrt
-     module: tcdiags.derived.atmos.moisture
+     module: ufs_diags.derived.atmos.moisture
      name: mxrt
      units: "kg/kg"

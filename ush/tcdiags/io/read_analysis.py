@@ -67,22 +67,17 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
-import os
-from dataclasses import dataclass
+from importlib import import_module
 from types import SimpleNamespace
 from typing import Generic
 
-from importlib import import_module
-import numpy
 from confs.yaml_interface import YAML
-from derived import derived
 from tcdiags.exceptions import ReadAnalysisError
 from tcdiags.io import vario
 from tools import parser_interface
+from utils import schema_interface
 from utils.decorator_interface import privatemethod
 from utils.logger_interface import Logger
-
-from utils import schema_interface
 
 # ----
 
@@ -124,24 +119,31 @@ class ReadAnalysis:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(
-            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
         self.variable_range_msg = "Variable %s range values: (%s, %s) %s."
 
         # Collect the variable attributes.
         try:
             self.inputs_obj = YAML().read_yaml(yaml_file=yaml_file, return_obj=True)
-            self.varname_list = [item for item in vars(self.inputs_obj) if
-                                 isinstance(parser_interface.object_getattr(
-                                     object_in=self.inputs_obj, key=item), dict)]
+            self.varname_list = [
+                item
+                for item in vars(self.inputs_obj)
+                if isinstance(
+                    parser_interface.object_getattr(
+                        object_in=self.inputs_obj, key=item
+                    ),
+                    dict,
+                )
+            ]
             if len(self.varname_list) <= 0:
                 msg = (
                     "The following mandatory input variables could not be identified from "
                     f"the experiment configuration {yaml_file}. Aborting!!!"
                 )
-                raise GFSReadError(msg=msg)
+                raise ReadAnalysisError(msg=msg)
             self.cls_schema = schema_interface.build_schema(
-                schema_def_dict=YAML().read_yaml(yaml_file=self.inputs_obj.schema))
+                schema_def_dict=YAML().read_yaml(yaml_file=self.inputs_obj.schema)
+            )
 
         except Exception as errmsg:
             msg = (
@@ -189,15 +191,18 @@ class ReadAnalysis:
         # accordingly.
         try:
             vardict = parser_interface.object_getattr(
-                object_in=self.inputs_obj, key=varname, force=True)
+                object_in=self.inputs_obj, key=varname, force=True
+            )
             varobj = parser_interface.dict_toobject(
                 in_dict=schema_interface.validate_schema(
-                    cls_schema=self.cls_schema, cls_opts=vardict,
-                    write_table=True))
+                    cls_schema=self.cls_schema, cls_opts=vardict, write_table=True
+                )
+            )
         except Exception as errmsg:
-            msg = (f"Defining the variable container object for variable {varname} "
-                   f"failed with error {errmsg}. Aborting!!!"
-                   )
+            msg = (
+                f"Defining the variable container object for variable {varname} "
+                f"failed with error {errmsg}. Aborting!!!"
+            )
             raise ReadAnalysisError(msg=msg) from errmsg
 
         return varobj
@@ -241,15 +246,15 @@ class ReadAnalysis:
 
         # Compute the specified analysis variables.
         for varname in self.varname_list:
-            varobj = parser_interface.object_getattr(
-                object_in=inputs_obj, key=varname)
+            varobj = parser_interface.object_getattr(object_in=inputs_obj, key=varname)
             if varobj.derived:
                 method_app = parser_interface.object_getattr(
-                    import_module(varobj.module), key=f"{varobj.method}",
-                    force=False)
+                    import_module(varobj.module), key=f"{varobj.method}", force=False
+                )
                 varobj.values = method_app(varobj=inputs_obj)
                 varobj.values = vario.define_units(
-                    varin=varobj.values, varunits=varobj.units)
+                    varin=varobj.values, varunits=varobj.units
+                )
                 inputs_obj = parser_interface.object_setattr(
                     object_in=inputs_obj, key=varname, value=varobj
                 )
@@ -279,7 +284,6 @@ class ReadAnalysis:
         # accordingly.
         inputs_obj = parser_interface.object_define()
         for varname in self.varname_list:
-
             # Collect the respective variable and scale as necessary.
             varobj = self.build_varobj(varname=varname)
             if varobj.ncfile is not None:
@@ -292,7 +296,8 @@ class ReadAnalysis:
                     scale_add=varobj.scale_add,
                 )
                 varobj.values = vario.define_units(
-                    varin=varobj.values, varunits=varobj.units)
+                    varin=varobj.values, varunits=varobj.units
+                )
             inputs_obj = parser_interface.object_setattr(
                 object_in=inputs_obj, key=varname, value=varobj
             )
