@@ -69,6 +69,8 @@ from tools import parser_interface
 from utils.decorator_interface import privatemethod
 from utils.logger_interface import Logger
 
+from utils import schema_interface
+
 from tcdiags.exceptions import TCDiagsError
 
 # ----
@@ -112,7 +114,7 @@ class TCDiags:
         self.yaml_obj = YAML().read_yaml(yaml_file=self.yaml_file, return_obj=True)
 
         # Define the available applications.
-        self.apps_list = ["tcfilter", "tcmsi", "tcpi", "tcsteering"]
+        self.apps_list = ["tcmsi", "tcpi", "tcsteering"]  # TODO
 
     @privatemethod
     def config(self: Generic) -> SimpleNamespace:
@@ -210,6 +212,14 @@ class TCDiags:
         (2) Launches the respective, and supported, TC diagnostics
             applications.
 
+        Raises
+        ------
+
+        TCDiagsError:
+
+            - raised if an exception is encountered while executing
+              the respective applications.
+
         """
 
         # Collect the configuration attributes.
@@ -217,26 +227,18 @@ class TCDiags:
 
         # Execute each application; proceed accordingly.
         for app in self.apps_list:
-            if parser_interface.object_getattr(object_in=self.options_obj, key=app):
-                msg = f"Executing application {app}."
-                self.logger.critical(msg=msg)
-                app_obj = parser_interface.object_getattr(
-                    object_in=tcdiags_obj, key=app, force=True
-                )
-
-            if (
-                not parser_interface.object_getattr(
-                    object_in=tcdiags_obj, key=app, force=True
-                )
-                is None
-            ):
-                msg = f"Executing application {app}."
-                self.logger.info(msg=msg)
-
-                app_obj = parser_interface.object_getattr(
-                    object_in=tcdiags_obj, key=app, force=True
-                )
-                app_method = parser_interface.object_getattr(
-                    import_module(app_obj.app_module), key=app_obj.app_class
-                )
-                app_method(tcdiags_obj=tcdiags_obj).run()
+            if parser_interface.object_getattr(
+                    object_in=self.options_obj, key=app, force=True) is not None:
+                try:
+                    msg = f"Executing application {app}."
+                    self.logger.status(msg=msg)
+                    tcdiag_obj = YAML().read_yaml(yaml_file=parser_interface.object_getattr(
+                        object_in=self.options_obj, key=app), return_obj=True)
+                    app_method = parser_interface.object_getattr(
+                        object_in=import_module(tcdiag_obj.app_module), key=tcdiag_obj.app_class)
+                    tcdiags_obj = parser_interface.object_setattr(
+                        object_in=tcdiags_obj, key=app, value=tcdiag_obj)
+                    app_method(tcdiags_obj=tcdiags_obj).run()
+                except Exception as errmsg:
+                    msg = f"{__name__} failed with error {errmsg}. Aborting!!!"
+                    raise TCDiagsError(msg=msg)

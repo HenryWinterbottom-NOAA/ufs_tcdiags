@@ -37,12 +37,6 @@ Functions
         This function defines the units for the respective variable
         array.
 
-    init_ncvar(varname, vardict)
-
-        This function initiates a Python object (e.g., container) to
-        contain the attributes for the respective netCDF-formatted
-        variable.
-
     read_ncvar(varname, varobj)
 
         This function reads a netCDF-formatted variable from a
@@ -92,13 +86,11 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 from types import SimpleNamespace
-from typing import Dict, Tuple, Union
+from typing import Tuple, Union
 
 import numpy
 from ioapps import netcdf4_interface
 from metpy.units import units
-from tcdiags.exceptions import VarIOError
-from tools import parser_interface
 from utils.logger_interface import Logger
 
 # ----
@@ -106,7 +98,6 @@ from utils.logger_interface import Logger
 # Define all available functions.
 __all__ = [
     "define_units",
-    "init_ncvar",
     "read_ncvar",
     "update_grid",
     "update_varattrs",
@@ -156,6 +147,7 @@ def define_units(varin: numpy.ndarray, varunits: Union[str, None]) -> units.Quan
         varout = units.Quantity(varout, varunits)
 
     return varout
+
 
 # ----
 

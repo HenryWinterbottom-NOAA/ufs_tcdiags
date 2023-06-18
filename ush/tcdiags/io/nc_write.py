@@ -112,8 +112,7 @@ class NCWrite:
         """
 
         # Define the base-class attributes
-        self.logger = Logger(
-            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
         self.output_file = output_file
 
     def write(
@@ -183,9 +182,7 @@ class NCWrite:
         # to build the netCDF-formatted output file.
         msg = f"Writing output file {self.output_file}."
         self.logger.info(msg=msg)
-
         dataout_list = []
-
         for var in var_list:
             # Define the output variable attributes; proceed
             # accordingly.
