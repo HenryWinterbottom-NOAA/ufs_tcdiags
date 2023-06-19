@@ -32,7 +32,7 @@ vmax_cmap = "jet"
 #### Compute and plot the tropical cyclone potential intensity metrics.
 
 
-```bash
+```{.bash}
 # Compute the TC potential intensity attributes.
 options_obj = parser_interface.object_define()
 options_obj.yaml_file = yaml_file
