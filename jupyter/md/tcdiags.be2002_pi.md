@@ -32,7 +32,7 @@ vmax_cmap = "jet"
 #### Compute and plot the tropical cyclone potential intensity metrics.
 
 
-```python
+```bash
 # Compute the TC potential intensity attributes.
 options_obj = parser_interface.object_define()
 options_obj.yaml_file = yaml_file
@@ -41,12 +41,12 @@ tcpi_obj = TCDiags(options_obj=options_obj)
 tcpi = tcpi_obj.run(write_output=False)
 ```
 
-   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-   [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
+   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
