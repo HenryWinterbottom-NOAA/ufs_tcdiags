@@ -13,8 +13,8 @@ from tools import parser_interface
 
 ```python
 # Define the path to the YAML-formatted TC-diagnostics configuration files.
-yaml_file = "/Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/tcdiags.demo.yaml"
-tcpi_file = "/Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/tcdiags.be2002_pi.yaml" 
+yaml_file = "/path/to/ufs_tcdiags/parm/tcdiags.demo.yaml"
+tcpi_file = "/path/to/ufs_tcdiags/parm/tcdiags.be2002_pi.yaml" 
 
 # Define the TC MPI metric plotting attributes.
 import cmocean
@@ -42,268 +42,268 @@ tcpi = tcpi_obj.run(write_output=False)
 ```
 
 ```console
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
+    
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |    units     |  str   |   False    |                 | kg/kg                              |
+    |   squeeze    |  bool  |    True    | False           | True                               |
+    |     name     |  str   |   False    |                 | spfh                               |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |  ncvarname   |  str   |    True    |                 | spfh                               |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |    flip_z    |  bool  |    True    | False           | True                               |
+    +--------------+--------+------------+-----------------+------------------------------------+
+    
+   
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable specific_humidity from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
+    
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |   squeeze    |  bool  |    True    | False           | True                               |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |    units     |  str   |   False    |                 | mps                                |
+    |  ncvarname   |  str   |    True    |                 | ugrd                               |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |    flip_z    |  bool  |    True    | False           | True                               |
+    |     name     |  str   |   False    |                 | uwnd                               |
+    +--------------+--------+------------+-----------------+------------------------------------+
+    
+   
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable uwind from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
+    
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |   squeeze    |  bool  |    True    | False           | True                               |
+    |     name     |  str   |   False    |                 | vwnd                               |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |    flip_z    |  bool  |    True    | False           | True                               |
+    |  ncvarname   |  str   |    True    |                 | vgrd                               |
+    |    units     |  str   |   False    |                 | mps                                |
+    +--------------+--------+------------+-----------------+------------------------------------+
+    
+   
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable vwind from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
+    
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |   squeeze    |  bool  |    True    | False           | True                               |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |    units     |  str   |   False    |                 | K                                  |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |  ncvarname   |  str   |    True    |                 | tmp                                |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |     name     |  str   |   False    |                 | temp                               |
+    |    flip_z    |  bool  |    True    | False           | True                               |
+    +--------------+--------+------------+-----------------+------------------------------------+
+    
+   
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable temperature from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
+    
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |   squeeze    |  bool  |    True    | False           | False                              |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |     name     |  str   |   False    |                 | lon                                |
+    |    units     |  str   |   False    |                 | degree                             |
+    |  ncvarname   |  str   |    True    |                 | lon                                |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | -360.0                             |
+    |    flip_z    |  bool  |    True    | False           | False                              |
+    +--------------+--------+------------+-----------------+------------------------------------+
+    
+   
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable longitude from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
     +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |    units     |  str   |   False    |                 | kg/kg                                                                     |
-    |   squeeze    |  bool  |    True    | False           | True                                                                      |
-    |     name     |  str   |   False    |                 | spfh                                                                      |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |  ncvarname   |  str   |    True    |                 | spfh                                                                      |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |    flip_z    |  bool  |    True    | False           | True                                                                      |
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |   squeeze    |  bool  |    True    | False           | False                              |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |     name     |  str   |   False    |                 | lat                                |
+    |    units     |  str   |   False    |                 | degree                             |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |  ncvarname   |  str   |    True    |                 | lat                                |
+    |    flip_z    |  bool  |    True    | False           | False                              |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
    
-   2023-06-19 16:09:32 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:32 :: INFO :: tcdiags.io.vario: Reading variable specific_humidity from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:32 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
-   2023-06-19 16:09:32 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable latitude from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |   squeeze    |  bool  |    True    | False           | True                                                                      |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |    units     |  str   |   False    |                 | mps                                                                       |
-    |  ncvarname   |  str   |    True    |                 | ugrd                                                                      |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |    flip_z    |  bool  |    True    | False           | True                                                                      |
-    |     name     |  str   |   False    |                 | uwnd                                                                      |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    
-   
-   2023-06-19 16:09:32 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:32 :: INFO :: tcdiags.io.vario: Reading variable uwind from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
-    
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |   squeeze    |  bool  |    True    | False           | True                                                                      |
-    |     name     |  str   |   False    |                 | vwnd                                                                      |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |    flip_z    |  bool  |    True    | False           | True                                                                      |
-    |  ncvarname   |  str   |    True    |                 | vgrd                                                                      |
-    |    units     |  str   |   False    |                 | mps                                                                       |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |  ncvarname   |  str   |    True    |                 | pressfc                            |
+    |     name     |  str   |   False    |                 | psfc                               |
+    |   squeeze    |  bool  |    True    | False           | True                               |
+    |    units     |  str   |   False    |                 | pascals                            |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |    flip_z    |  bool  |    True    | False           | False                              |
+    +--------------+--------+------------+-----------------+------------------------------------+
     
    
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable vwind from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable surface_pressure from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |   squeeze    |  bool  |    True    | False           | True                                                                      |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |    units     |  str   |   False    |                 | K                                                                         |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |  ncvarname   |  str   |    True    |                 | tmp                                                                       |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |     name     |  str   |   False    |                 | temp                                                                      |
-    |    flip_z    |  bool  |    True    | False           | True                                                                      |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    
-   
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable temperature from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
-    
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |   squeeze    |  bool  |    True    | False           | False                                                                     |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |     name     |  str   |   False    |                 | lon                                                                       |
-    |    units     |  str   |   False    |                 | degree                                                                    |
-    |  ncvarname   |  str   |    True    |                 | lon                                                                       |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | -360.0                                                                    |
-    |    flip_z    |  bool  |    True    | False           | False                                                                     |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  ncvarname   |  str   |    True    |                 | hgtsfc                             |
+    |   squeeze    |  bool  |    True    | False           | True                               |
+    |    units     |  str   |   False    |                 | gpm                                |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |  scale_mult  | float  |    True    | 1.0             | 0.98                               |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |   derived    |  bool  |    True    | False           | False                              |
+    |     name     |  str   |   False    |                 | zsfc                               |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |    flip_z    |  bool  |    True    | False           | False                              |
+    +--------------+--------+------------+-----------------+------------------------------------+
     
    
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable longitude from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable surface_height from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |   squeeze    |  bool  |    True    | False           | False                                                                     |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |     name     |  str   |   False    |                 | lat                                                                       |
-    |    units     |  str   |   False    |                 | degree                                                                    |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |  ncvarname   |  str   |    True    |                 | lat                                                                       |
-    |    flip_z    |  bool  |    True    | False           | False                                                                     |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
+    +--------------+--------+------------+-----------------+------------------------------------+
+    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                     |
+    +==============+========+============+=================+====================================+
+    |  scale_mult  | float  |    True    | 1.0             | 1.0                                |
+    |    module    |  str   |    True    |                 | ufs_diags.derived.atmos.pressures  |
+    |   squeeze    |  bool  |    True    | False           | True                               |
+    | squeeze_axis |  int   |    True    | 0               | 0                                  |
+    |  ncvarname   |  str   |    True    |                 | dpres                              |
+    |    units     |  str   |   False    |                 | pascals                            |
+    |   flip_lat   |  bool  |    True    | False           | True                               |
+    |   derived    |  bool  |    True    | False           | True                               |
+    |     name     |  str   |   False    |                 | pres                               |
+    |    ncfile    |  str   |    True    |                 | /path/to/C96_era5anl_2016100100.nc |
+    |  scale_add   | float  |    True    | 0.0             | 0.0                                |
+    |    flip_z    |  bool  |    True    | False           | True                               |
+    |    method    |  str   |    True    |                 | pressure_from_thickness            |
+    +--------------+--------+------------+-----------------+------------------------------------+
     
    
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable latitude from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
-    
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |  ncvarname   |  str   |    True    |                 | pressfc                                                                   |
-    |     name     |  str   |   False    |                 | psfc                                                                      |
-    |   squeeze    |  bool  |    True    | False           | True                                                                      |
-    |    units     |  str   |   False    |                 | pascals                                                                   |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |    flip_z    |  bool  |    True    | False           | False                                                                     |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    
-   
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable surface_pressure from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
-    
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  ncvarname   |  str   |    True    |                 | hgtsfc                                                                    |
-    |   squeeze    |  bool  |    True    | False           | True                                                                      |
-    |    units     |  str   |   False    |                 | gpm                                                                       |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |  scale_mult  | float  |    True    | 1.0             | 0.98                                                                      |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |   derived    |  bool  |    True    | False           | False                                                                     |
-    |     name     |  str   |   False    |                 | zsfc                                                                      |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |    flip_z    |  bool  |    True    | False           | False                                                                     |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    
-   
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable surface_height from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
-    
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
-    +==============+========+============+=================+===========================================================================+
-    |  scale_mult  | float  |    True    | 1.0             | 1.0                                                                       |
-    |    module    |  str   |    True    |                 | ufs_diags.derived.atmos.pressures                                         |
-    |   squeeze    |  bool  |    True    | False           | True                                                                      |
-    | squeeze_axis |  int   |    True    | 0               | 0                                                                         |
-    |  ncvarname   |  str   |    True    |                 | dpres                                                                     |
-    |    units     |  str   |   False    |                 | pascals                                                                   |
-    |   flip_lat   |  bool  |    True    | False           | True                                                                      |
-    |   derived    |  bool  |    True    | False           | True                                                                      |
-    |     name     |  str   |   False    |                 | pres                                                                      |
-    |    ncfile    |  str   |    True    |                 | /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc |
-    |  scale_add   | float  |    True    | 0.0             | 0.0                                                                       |
-    |    flip_z    |  bool  |    True    | False           | True                                                                      |
-    |    method    |  str   |    True    |                 | pressure_from_thickness                                                   |
-    +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
-    
-   
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable pressure from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
-   2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: Reading variable pressure from netCDF-formatted file path /path/to/C96_era5anl_2016100100.nc.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.
+   2000-01-01 00:00:00 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                  |
@@ -322,16 +322,16 @@ tcpi = tcpi_obj.run(write_output=False)
     +--------------+--------+------------+-----------------+---------------------------------+
     
    
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+-----------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                    |
@@ -350,16 +350,16 @@ tcpi = tcpi_obj.run(write_output=False)
     +--------------+--------+------------+-----------------+-----------------------------------+
     
    
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
-   2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.
+   2000-01-01 00:00:00 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+----------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                   |
@@ -378,13 +378,13 @@ tcpi = tcpi_obj.run(write_output=False)
     +--------------+--------+------------+-----------------+----------------------------------+
     
    
-   2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: The geographical coordinate arrays are projected to 2-dimensions; doing nothing.
-   2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.pressures: Computing pressure profile array of dimension (127, 192, 384).
-   2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.heights: Computing the geometric height profile array of dimension (127, 192, 384).
-   2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.moisture: Computing the mixing ratio array of dimension (127, 192, 384).
-   2023-06-19 16:09:34 :: INFO :: tcdiags.tcdiags.TCDiags: Beginning application tcpi.
-   2023-06-19 16:09:34 :: INFO :: utils.schema_interface: 
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.io.vario: The geographical coordinate arrays are projected to 2-dimensions; doing nothing.
+   2000-01-01 00:00:00 :: INFO :: ufs_diags.derived.atmos.pressures: Computing pressure profile array of dimension (127, 192, 384).
+   2000-01-01 00:00:00 :: INFO :: ufs_diags.derived.atmos.heights: Computing the geometric height profile array of dimension (127, 192, 384).
+   2000-01-01 00:00:00 :: INFO :: ufs_diags.derived.atmos.moisture: Computing the mixing ratio array of dimension (127, 192, 384).
+   2000-01-01 00:00:00 :: INFO :: tcdiags.tcdiags.TCDiags: Beginning application tcpi.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: 
     
     +-------------+--------+------------+-----------------+----------------------------+
     |  Variable   |  Type  |  Optional  | Default Value   | Assigned Value             |
@@ -395,9 +395,9 @@ tcpi = tcpi_obj.run(write_output=False)
     +-------------+--------+------------+-----------------+----------------------------+
     
    
-   2023-06-19 16:09:34 :: INFO :: utils.schema_interface: Schema successfully validated.
-   2023-06-19 16:09:34 :: INFO :: tcdiags.diagnostics.BE2002: Computing the tropical cyclone potential intensity metrics.
-   2023-06-19 16:09:58 :: INFO :: tcdiags.tcdiags.TCDiags: Completed application tcpi.
+   2000-01-01 00:00:00 :: INFO :: utils.schema_interface: Schema successfully validated.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.diagnostics.BE2002: Computing the tropical cyclone potential intensity metrics.
+   2000-01-01 00:00:00 :: INFO :: tcdiags.tcdiags.TCDiags: Completed application tcpi.
 
 ```
 
