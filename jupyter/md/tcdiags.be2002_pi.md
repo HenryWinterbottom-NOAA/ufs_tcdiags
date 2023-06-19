@@ -30,7 +30,7 @@ vmax_cmin = 0.0
 vmax_cmap = "jet"
 ```
 
-#### Compute and plot the tropical cyclone potential intensity metrics.
+#### Compute tropical cyclone potential intensity metrics.
 
 
 ```python
@@ -400,6 +400,8 @@ tcpi = tcpi_obj.run(write_output=False)
    2000-01-01 00:00:00 :: INFO :: tcdiags.tcdiags.TCDiags: Completed application tcpi.
 
 ```
+
+#### Plot tropical cyclone potential intensity metrics.
 
 ```python
 levels = numpy.linspace(mslp_cmin, mslp_cmax, 255)
