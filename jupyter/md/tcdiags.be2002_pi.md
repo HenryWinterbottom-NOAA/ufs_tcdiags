@@ -41,12 +41,12 @@ tcpi_obj = TCDiags(options_obj=options_obj)
 tcpi = tcpi_obj.run(write_output=False)
 ```
 
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -64,17 +64,17 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | True                                                                      |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:32 :: INFO :: tcdiags.io.vario: Reading variable specific_humidity from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:32 :: INFO :: tcdiags.io.vario: Reading variable specific_humidity from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -92,17 +92,17 @@ tcpi = tcpi_obj.run(write_output=False)
     |     name     |  str   |   False    |                 | uwnd                                                                      |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:32 :: INFO :: tcdiags.io.vario: Reading variable uwind from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:32 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:32 :: INFO :: tcdiags.io.vario: Reading variable uwind from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -120,17 +120,17 @@ tcpi = tcpi_obj.run(write_output=False)
     |    units     |  str   |   False    |                 | mps                                                                       |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable vwind from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable vwind from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -148,19 +148,19 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | True                                                                      |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable temperature from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable temperature from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -178,19 +178,19 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | False                                                                     |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable longitude from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable longitude from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -208,17 +208,17 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | False                                                                     |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable latitude from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable latitude from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -236,16 +236,16 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | False                                                                     |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable surface_pressure from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable surface_pressure from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -263,13 +263,13 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | False                                                                     |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable surface_height from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable surface_height from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                                                            |
@@ -289,20 +289,20 @@ tcpi = tcpi_obj.run(write_output=False)
     |    method    |  str   |    True    |                 | pressure_from_thickness                                                   |
     +--------------+--------+------------+-----------------+---------------------------------------------------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable pressure from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: Reading variable pressure from netCDF-formatted file path /Users/henry.winterbottom/work/UFS/ufs_tcdiags//C96_era5anl_2016100100.nc.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the vertical axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: tcdiags.io.vario: Flipping array along the latitudinal axis.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+---------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                  |
@@ -320,17 +320,17 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | False                           |
     +--------------+--------+------------+-----------------+---------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+-----------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                    |
@@ -348,17 +348,17 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | False                             |
     +--------------+--------+------------+-----------------+-----------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
-    [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_lat has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value flip_z has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncfile has not been defined; setting to default value None.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_mult has not been defined; setting to default value 1.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value scale_add has not been defined; setting to default value 0.0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze has not been defined; setting to default value False.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value squeeze_axis has not been defined; setting to default value 0.[0m
+   [38;5;226m2023-06-19 16:09:33 :: WARNING :: utils.schema_interface: Schema optional value ncvarname has not been defined; setting to default value None.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: 
     
     +--------------+--------+------------+-----------------+----------------------------------+
     |   Variable   |  Type  |  Optional  | Default Value   | Assigned Value                   |
@@ -376,14 +376,14 @@ tcpi = tcpi_obj.run(write_output=False)
     |    flip_z    |  bool  |    True    | False           | False                            |
     +--------------+--------+------------+-----------------+----------------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: The geographical coordinate arrays are projected to 2-dimensions; doing nothing.[0m
-    [37;21m2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.pressures: Computing pressure profile array of dimension (127, 192, 384).[0m
-    [37;21m2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.heights: Computing the geometric height profile array of dimension (127, 192, 384).[0m
-    [37;21m2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.moisture: Computing the mixing ratio array of dimension (127, 192, 384).[0m
-    [1;36m2023-06-19 16:09:34 :: INFO :: tcdiags.tcdiags.TCDiags: Beginning application tcpi.[0m
-    [37;21m2023-06-19 16:09:34 :: INFO :: utils.schema_interface: 
+   [0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:33 :: INFO :: tcdiags.io.vario: The geographical coordinate arrays are projected to 2-dimensions; doing nothing.[0m
+   [37;21m2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.pressures: Computing pressure profile array of dimension (127, 192, 384).[0m
+   [37;21m2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.heights: Computing the geometric height profile array of dimension (127, 192, 384).[0m
+   [37;21m2023-06-19 16:09:34 :: INFO :: ufs_diags.derived.atmos.moisture: Computing the mixing ratio array of dimension (127, 192, 384).[0m
+   [1;36m2023-06-19 16:09:34 :: INFO :: tcdiags.tcdiags.TCDiags: Beginning application tcpi.[0m
+   [37;21m2023-06-19 16:09:34 :: INFO :: utils.schema_interface: 
     
     +-------------+--------+------------+-----------------+----------------------------+
     |  Variable   |  Type  |  Optional  | Default Value   | Assigned Value             |
@@ -393,10 +393,10 @@ tcpi = tcpi_obj.run(write_output=False)
     | output_file |  str   |   False    |                 | /work/tcdiags.be2002_pi.nc |
     +-------------+--------+------------+-----------------+----------------------------+
     
-    [0m
-    [37;21m2023-06-19 16:09:34 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
-    [37;21m2023-06-19 16:09:34 :: INFO :: tcdiags.diagnostics.BE2002: Computing the tropical cyclone potential intensity metrics.[0m
-    [1;36m2023-06-19 16:09:58 :: INFO :: tcdiags.tcdiags.TCDiags: Completed application tcpi.[0m
+   [0m
+   [37;21m2023-06-19 16:09:34 :: INFO :: utils.schema_interface: Schema successfully validated.[0m
+   [37;21m2023-06-19 16:09:34 :: INFO :: tcdiags.diagnostics.BE2002: Computing the tropical cyclone potential intensity metrics.[0m
+   [1;36m2023-06-19 16:09:58 :: INFO :: tcdiags.tcdiags.TCDiags: Completed application tcpi.[0m
 
 
 
