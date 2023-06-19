@@ -42,7 +42,7 @@ Compute and plot the tropical cyclone potential intensity metrics.
     tcpi = tcpi_obj.run(write_output=False)
 
 
-.. code_block:: bash
+.. code:: bash
 
     [38;5;226m 2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.[0m
     [38;5;226m2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.[0m
