@@ -1,0 +1,19 @@
+# The respective application attributes.
+app_module: tcdiags.be2002_pi
+app_class: BE2002
+schema: /ufs_tcdiags/parm/schema/tcdiags.be2002_pi.yaml
+
+# ----
+
+# Define the configuration values for the respective application.
+zmax: 0.0
+mslp_max: 2000.0
+
+# ----
+
+# Define the application output file information.
+output_file: /work/tcdiags.be2002_pi.nc
+output_varlist: !INC /ufs_tcdiags/parm/io/tcdiags.be2002_pi.yaml
+
+
+     

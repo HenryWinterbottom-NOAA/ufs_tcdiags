@@ -140,7 +140,7 @@ class VL1991(Metrics):
         """
 
         # Define the base-class attributes.
-        super().__init__(tcdiags_obj=tcdiags_obj, app_obj="tcsteering")
+        super().__init__(tcdiags_obj=tcdiags_obj, app_obj="tcstrflw")
         self.output_varlist = list(self.options_obj.output_varlist.keys())
         self.tcstrflw_obj = parser_interface.object_define()
         self.plevs = numpy.array(list(self.options_obj.isolevels))

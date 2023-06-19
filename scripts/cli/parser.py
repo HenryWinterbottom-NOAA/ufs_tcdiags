@@ -156,10 +156,9 @@ class Parser:
             yaml_file.required = True
             yaml_file.nargs = "?"
             yaml_file.type = str
-            yaml_file.help = ("YAML-formatted tropical cyclone diagnostics "
-                              "configuration file."
-                              )
-
+            yaml_file.help = (
+                "YAML-formatted tropical cyclone diagnostics configuration file."
+            )
             args_objs = (yaml_file,)
         except Exception as errmsg:
             msg = (
@@ -207,7 +206,34 @@ class Parser:
             schema.type = str
             schema.help = "YAML-formatted file containing the CLI argument(s) schema."
 
-            args_objs = (schema,)
+            tcmsi = parser_interface.object_define()
+            tcmsi.longname = "tcmsi"
+            tcmsi.required = False
+            tcmsi.nargs = "?"
+            tcmsi.type = str
+            tcmsi.help = ("YAML-formatted file containing the TC multi-scale "
+                          "intensity application configuration."
+                          )
+
+            tcpi = parser_interface.object_define()
+            tcpi.longname = "tcpi"
+            tcpi.required = False
+            tcpi.nargs = "?"
+            tcpi.type = str
+            tcpi.help = ("YAML-formatted file containing the TC potential intensity "
+                         "application configuration."
+                         )
+
+            tcstrflw = parser_interface.object_define()
+            tcstrflw.longname = "tcstrflw"
+            tcstrflw.required = False
+            tcstrflw.nargs = "?"
+            tcstrflw.type = str
+            tcstrflw.help = ("YAML-formatted file containing the TC steering "
+                             "application configuration."
+                             )
+
+            args_objs = (schema, tcpi, tcstrflw)
         except Exception as errmsg:
             msg = (
                 f"Defining the optional arguments failed with error {errmsg}. "
@@ -247,35 +273,7 @@ class Parser:
         # Build the SimpleNamespace objects for each task application
         # argument.
         try:
-            tcfilter = parser_interface.object_define()
-            tcfilter.longname = "tcfilter"
-            tcfilter.action = "store_true"
-            tcfilter.help = ("Run the tropical clone filtering application described by "
-                             "Winterbottom and Chassignet [2011]"
-                             )
-
-            tcpi = parser_interface.object_define()
-            tcpi.longname = "tcpi"
-            tcpi.action = "store_true"
-            tcpi.help = ("Run supported tropical cyclone potential intensity metric "
-                         "applications."
-                         )
-
-            tcsteering = parser_interface.object_define()
-            tcsteering.longname = "tcsteering"
-            tcsteering.action = "store_true"
-            tcsteering.help = ("Run supported tropical cyclone potential environmental "
-                               "steering applications."
-                               )
-
-            tcmsi = parser_interface.object_define()
-            tcmsi.longname = "tcmsi"
-            tcmsi.action = "store_true"
-            tcmsi.help = ("Run the tropical cyclone multi-scale intensity index application "
-                          "described by Vukicevic et al., [2014]."
-                          )
-
-            args_objs = (tcfilter, tcpi, tcsteering, tcmsi)
+            args_objs = ()
         except Exception as errmsg:
             msg = (
                 f"Defining the task application arguments failed with error {errmsg}. "

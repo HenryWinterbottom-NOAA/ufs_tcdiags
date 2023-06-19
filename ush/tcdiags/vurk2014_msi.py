@@ -238,8 +238,10 @@ class VURK2014(Diagnostics):
         # wavenumber component.
         table_obj = parser_interface.object_define()
         var_units = UnitRegistry().get_symbol(str(tcinfo_obj.wndspec.wn0.u))
-        table_obj.header = [f"TC {tcid} Wave Number",
-                            f"Maximum Wind Speed ({var_units})"]
+        table_obj.header = [
+            f"TC {tcid} Wave Number",
+            f"Maximum Wind Speed ({var_units})",
+        ]
         table_obj.table = []
         for coeff in range(tcinfo_obj.ncoeffs):
             value = numpy.nanmax(
@@ -336,8 +338,7 @@ class VURK2014(Diagnostics):
         """
 
         # Compute the 10-meter wind speed MSI attributes.
-        vmax = units.Quantity(numpy.nanmax(
-            tcinfo_obj.wnds10m.varout), self.wnd_units)
+        vmax = units.Quantity(numpy.nanmax(tcinfo_obj.wnds10m.varout), self.wnd_units)
         if vmax is None:
             vmax = sum(
                 numpy.nanmax(
@@ -349,8 +350,7 @@ class VURK2014(Diagnostics):
             )
         tcinfo_obj.vmax = vmax
         wn0p1 = tcinfo_obj.wndspec.wn0 + tcinfo_obj.wndspec.wn1
-        tcinfo_obj.wn0p1_msi = units.Quantity(
-            numpy.nanmax(wn0p1), self.wnd_units)
+        tcinfo_obj.wn0p1_msi = units.Quantity(numpy.nanmax(wn0p1), self.wnd_units)
         tcinfo_obj.wn0_msi = units.Quantity(
             numpy.nanmax(tcinfo_obj.wndspec.wn0), self.wnd_units
         )
@@ -512,8 +512,7 @@ class VURK2014(Diagnostics):
 
         # Update the spectral analysis attributes accordingly.
         ncoeffs = min(
-            self.options_obj.max_wn, int(
-                tcinfo_obj.wnds10m.varout.shape[1] / 2)
+            self.options_obj.max_wn, int(tcinfo_obj.wnds10m.varout.shape[1] / 2)
         )
         if ncoeffs != self.options_obj.max_wn:
             msg = (
@@ -587,8 +586,7 @@ class VURK2014(Diagnostics):
         # Update the netCDF-formatted file global-attributes.
         attrs_dict = {}
         for ncvar in vars(tcinfo_obj).keys():
-            attr_info = parser_interface.object_getattr(
-                object_in=tcinfo_obj, key=ncvar)
+            attr_info = parser_interface.object_getattr(object_in=tcinfo_obj, key=ncvar)
             if not isinstance(attr_info, SimpleNamespace):
                 try:
                     attrs_dict[f"{ncvar}"] = attr_info._magnitude

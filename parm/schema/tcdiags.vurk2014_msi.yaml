@@ -1,0 +1,24 @@
+dphi:
+     required: False
+     type: float
+     default: 45.0
+drho:
+     required: False
+     type: float
+     default: 40000.0
+max_radius:
+     required: False
+     type: float
+     default: 200000.0
+max_wn:
+     required: False
+     type: int
+     default: 3
+output_file:
+     required: True
+     type: str
+output_varlist: 
+     required: True
+     type: dict
+
+

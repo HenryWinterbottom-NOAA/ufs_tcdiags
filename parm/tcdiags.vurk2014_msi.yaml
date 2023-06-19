@@ -1,0 +1,18 @@
+# The respective application attributes.
+app_module: tcdiags.vurk2014_msi
+app_class: VURK2014
+schema: /ufs_tcdiags/parm/schema/tcdiags.vurk2014_msi.yaml
+
+# ----
+
+# Define the optional values for the respective application.
+drho: 10000.0
+dphi: 30.0
+max_radius: 200000.0
+max_wn: 50
+
+# ----
+
+# Define the application output file information.
+output_file: /work/tcdiags.vurk2014_msi.%s.nc
+output_varlist: !INC /ufs_tcdiags/parm/io/tcdiags.vurk2014_msi.yaml

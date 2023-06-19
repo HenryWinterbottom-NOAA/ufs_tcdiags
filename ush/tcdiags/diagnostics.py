@@ -37,6 +37,11 @@ Classes
         This is the base-class object for all tropical cyclone (TC)
         diagnostics/analysis applications.
 
+    Metrics(tcdiags_obj, apps_obj, *args, **kwargs)
+
+        This is the base-class object for all Metrics sub-classes; it
+        is a sub-class of diagnostics.
+
 Requirements
 ------------
 
@@ -70,12 +75,13 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Dict, List, Tuple
 
-from tcdiags.io.nc_write import NCWrite
 from confs.yaml_interface import YAML
 from tools import parser_interface
 from utils import schema_interface
 from utils.decorator_interface import privatemethod
 from utils.logger_interface import Logger
+
+from tcdiags.io.nc_write import NCWrite
 
 # ----
 
@@ -135,8 +141,7 @@ class Diagnostics:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(
-            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
         self.tcdiags_obj = tcdiags_obj
         cls_opts = parser_interface.object_todict(
             object_in=parser_interface.object_getattr(
@@ -187,8 +192,7 @@ class Diagnostics:
         # Evaluate the schema and define the configuration for the
         # respective application.
         schema_def_dict = YAML().read_yaml(yaml_file=cls_schema_file)
-        cls_schema = schema_interface.build_schema(
-            schema_def_dict=schema_def_dict)
+        cls_schema = schema_interface.build_schema(schema_def_dict=schema_def_dict)
         options_obj = parser_interface.dict_toobject(
             in_dict=schema_interface.validate_schema(
                 cls_schema=cls_schema, cls_opts=cls_opts, write_table=True
@@ -197,16 +201,55 @@ class Diagnostics:
 
         return options_obj
 
+
 # ----
 
 
 class Metrics(Diagnostics):
     """
+    Description
+    -----------
 
+    This is the base-class object for all Metrics sub-classes; it is a
+    sub-class of diagnostics.
+
+    Parameters
+    ----------
+
+    tcdiags_obj: SimpleNamespace
+
+        A Python SimpleNamespace object containing all configuration
+        attributes for the respective application including inputs
+        (i.e., `inputs` and `tcinfo`) as well as the remaining
+        (supported) applications.
+
+    app_obj: SimpleNamespace
+
+        A Python SimpleNamespace object containing the attributes for
+        the respective sub-class application.
+
+    Other Parameters
+    ----------------
+
+    args: Tuple
+
+        A Python tuple containing additional arguments passed to the
+        constructor.
+
+    kwargs: Dict
+
+        A Python dictionary containing additional key and value pairs
+        to be passed to the constructor.
 
     """
 
-    def __init__(self: Diagnostics, tcdiags_obj: SimpleNamespace, app_obj: SimpleNamespace):
+    def __init__(
+        self: Diagnostics,
+        tcdiags_obj: SimpleNamespace,
+        app_obj: SimpleNamespace,
+        *args: Tuple,
+        **kwargs: Dict,
+    ):
         """
         Description
         -----------

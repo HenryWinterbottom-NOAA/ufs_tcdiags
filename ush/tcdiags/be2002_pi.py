@@ -319,8 +319,7 @@ class BE2002(Metrics):
         )
         self.tcpi_obj.pout.attrs = diagvars_obj.pout
         self.tcpi_obj.tout.values = units.Quantity(
-            numpy.reshape(self.tcpi_obj.tout.values,
-                          (self.ny, self.nx)), "kelvin"
+            numpy.reshape(self.tcpi_obj.tout.values, (self.ny, self.nx)), "kelvin"
         )
         self.tcpi_obj.tout.attrs = diagvars_obj.tout
         self.tcpi_obj.vmax.values = units.Quantity(
@@ -338,7 +337,7 @@ class BE2002(Metrics):
         self.tcpi_obj.zsfc.values = self.tcdiags_obj.inputs.surface_height.values
         self.tcpi_obj.zsfc.attrs = diagvars_obj.zsfc
 
-    def run(self: Metrics) -> None:
+    def run(self: Metrics) -> SimpleNamespace:
         """
         Description
         -----------
@@ -357,6 +356,14 @@ class BE2002(Metrics):
 
         (4) Writes the TC MPI attributes to the specified output
             netCDF-formatted file path.
+
+        Returns
+        -------
+
+        tcpi_obj: SimpleNamespace
+
+            A Python SimpleNamespace object containing the relevant TC
+            potential intensity attributes.
 
         """
 
@@ -383,3 +390,5 @@ class BE2002(Metrics):
             },
             coords_3d=self.tcpi_obj.dims,
         )
+
+        return self.tcpi_obj

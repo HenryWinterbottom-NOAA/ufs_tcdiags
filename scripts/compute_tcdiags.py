@@ -19,8 +19,7 @@
 
 # =========================================================================
 
-"""
-Script
+"""Script
 ------
 
     compute_tcdiags.py
@@ -49,7 +48,9 @@ Functions
 Usage
 -----
 
-    user@host:$ python compute_tcdiags.py --yaml_file /path/to/yaml_file [--tcfilt True] [--tcmpi True] [--tcwnmsi True]
+    user@host:$ python compute_tcdiags.py --help
+
+
 
 Parameters
 ----------
@@ -60,30 +61,26 @@ Parameters
         configuration file for the tropical cyclone (TC) diagnostics
         applications.
 
-Directives
-----------
+Keywords
+--------
 
-    tcfilt: bool, optional
+    tcpi: str, optional
 
-        A Python boolean valued variable specifying whether to apply
-        the tropical cyclone (TC) filtering application described in
-        Winterbottom and Chassignet [2011] to the TCs defined within
-        the syndat-formatted filepath defined in the experiment
-        configuration; if not specified the attribute defaults to
-        NoneType.
+        A Python string specifying the path to the YAML-formatted
+        configuration file for the tropical cyclone (TC) potential
+        intensity applications.
 
-    tcmpi: None
+    tcmsi: str, optional
 
-        A Python boolean valued variable specifying whether to compute
-        the tropical cyclone (TC) (maximum) potential intensity
-        following the methodlogy of Bister and Emanuel [2002].
+        A Python string specifying the path to the YAML-formatted
+        configuration file for the tropical cyclone (TC) multi-scale
+        intensity applications.
 
-    tcwnmsi: None
+    tcstrflw: str, optional
 
-        A Python boolean valued variable specifying whether to compute
-        the wave-number decomposition and the tropical cyclone (TC)
-        multi-scale intensity (MSI) indice values following Vukicevic
-        et al., [2014].
+        A Python string specifying the path to the YAML-formatted
+        configuration file for the tropical cyclone (TC) steering flow
+        applications.
 
 Requirements
 ------------
@@ -110,20 +107,16 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
-from argparse import ArgumentParser
 import os
 import time
-
-from tools import fileio_interface
-
-from tools import parser_interface
-
-from cli.parser import Parser
-from utils import cli_interface
+from argparse import ArgumentParser
 
 from tcdiags.tcdiags import TCDiags
-
+from tools import fileio_interface
+from utils import cli_interface
 from utils.logger_interface import Logger
+
+from cli.parser import Parser
 
 # ----
 
@@ -133,17 +126,18 @@ logger = Logger(caller_name=__name__)
 
 # Define the default schema; values specified for the `--schema`
 # argument will override this value.
-schema_path = os.path.join(os.path.dirname(os.getcwd()),
-                           "parm",
-                           "schema",
-                           "schema.scripts_compute_tcdiags.yaml",
-                           )
+schema_path = os.path.join(
+    os.path.dirname(os.getcwd()),
+    "parm",
+    "schema",
+    "schema.scripts_compute_tcdiags.yaml",
+)
 if not fileio_interface.fileexist(path=schema_path):
-    msg = (
+    errmsg = (
         f"The YAML-formatted default schema file {schema_path} does not exist. "
         "Aborting!!!"
     )
-    logger.error(msg=msg)
+    logger.error(msg=errmsg)
     raise FileNotFoundError()
 
 # ----
@@ -174,10 +168,12 @@ def __getparser__() -> ArgumentParser:
     parser = cli_interface.init(
         args_objs=args_objs,
         description="Experiment script for UFS tropical cyclone "
-        "diagnostics applications.", prog="compute_tcdiags.py",
+        "diagnostics applications.",
+        prog="compute_tcdiags.py",
     )
 
     return parser
+
 
 # ----
 
@@ -196,7 +192,7 @@ def main() -> None:
     script_name = os.path.basename(__file__)
     start_time = time.time()
     msg = f"Beginning application {script_name}."
-    logger.info(msg=msg)
+    logger.status(msg=msg)
     parser = __getparser__()
     options_obj = cli_interface.options(
         parser=parser, validate_schema=True, schema_path=schema_path
@@ -205,13 +201,12 @@ def main() -> None:
     # Launch the task.
     task = TCDiags(options_obj=options_obj)
     task.run()
-
     stop_time = time.time()
     msg = f"Completed application {script_name}."
-    logger.info(msg=msg)
+    logger.status(msg=msg)
     total_time = stop_time - start_time
     msg = f"Total Elapsed Time: {total_time} seconds."
-    logger.info(msg=msg)
+    logger.status(msg=msg)
 
 
 # ----
