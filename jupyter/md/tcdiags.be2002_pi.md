@@ -1,5 +1,6 @@
+#### Python Environment
+
 ```python
-# Load the Python environment.
 import matplotlib.pyplot as plt
 import numpy
 from tcdiags.tcdiags import TCDiags
@@ -12,11 +13,11 @@ from tools import parser_interface
 
 
 ```python
-# Define the path to the YAML-formatted TC-diagnostics configuration files.
+# YAML-formatted configuration files.
 yaml_file = "/path/to/ufs_tcdiags/parm/tcdiags.demo.yaml"
 tcpi_file = "/path/to/ufs_tcdiags/parm/tcdiags.be2002_pi.yaml" 
 
-# Define the TC MPI metric plotting attributes.
+# Plotting attributes.
 import cmocean
 mslp_cint = 25.0
 mslp_cmax = 1025.0
@@ -33,7 +34,6 @@ vmax_cmap = "jet"
 
 
 ```python
-# Compute the TC potential intensity attributes.
 options_obj = parser_interface.object_define()
 options_obj.yaml_file = yaml_file
 options_obj.tcpi = tcpi_file
@@ -402,7 +402,6 @@ tcpi = tcpi_obj.run(write_output=False)
 ```
 
 ```python
-# Plot the TC PI minimum sea-level pressure metric.
 levels = numpy.linspace(mslp_cmin, mslp_cmax, 255)
 (basemap, x, y) = build_basemap(lat=tcpi.lats, lon=tcpi.lons)
 draw_basemap(basemap=basemap)
@@ -414,7 +413,6 @@ plt.colorbar(orientation="horizontal", ticks=ticks, pad=0.1,
 plt.savefig("tcpi.pmin.png", dpi=500, transparent=True, bbox_inches="tight")
 plt.show()   
 
-# Plot the TC PI maximum wind speed metric.
 levels = numpy.linspace(vmax_cmin, vmax_cmax, 255)
 (basemap, x, y) = build_basemap(lat=tcpi.lats, lon=tcpi.lons)
 draw_basemap(basemap=basemap)
