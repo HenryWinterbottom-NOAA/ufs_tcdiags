@@ -41,7 +41,7 @@ tcpi_obj = TCDiags(options_obj=options_obj)
 tcpi = tcpi_obj.run(write_output=False)
 ```
 
-```bash
+```sh
    2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value derived has not been defined; setting to default value False.
    2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value method has not been defined; setting to default value None.
    2023-06-19 16:09:32 :: WARNING :: utils.schema_interface: Schema optional value module has not been defined; setting to default value None.
