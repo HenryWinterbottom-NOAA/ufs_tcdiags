@@ -8,9 +8,7 @@ from plottools.build_basemap import build_basemap
 from plottools.draw_basemap import draw_basemap
 from tools import parser_interface
 ```
-
-#### User Configuration
-
+### User Configuration
 
 ```python
 # YAML-formatted configuration files.
@@ -30,8 +28,7 @@ vmax_cmin = 0.0
 vmax_cmap = "jet"
 ```
 
-#### Compute tropical cyclone potential intensity metrics.
-
+### Compute tropical cyclone potential intensity metrics.
 
 ```python
 options_obj = parser_interface.object_define()
@@ -401,7 +398,7 @@ tcpi = tcpi_obj.run(write_output=False)
 
 ```
 
-#### Plot tropical cyclone potential intensity metrics.
+### Plot tropical cyclone potential intensity metrics.
 
 ```python
 levels = numpy.linspace(mslp_cmin, mslp_cmax, 255)
