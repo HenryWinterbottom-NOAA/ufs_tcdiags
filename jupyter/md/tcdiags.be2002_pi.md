@@ -1,4 +1,4 @@
-#### Python Environment
+### Python Environment
 
 ```python
 import matplotlib.pyplot as plt
