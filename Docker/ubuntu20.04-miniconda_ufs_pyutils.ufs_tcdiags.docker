@@ -71,7 +71,7 @@
 # ----
 
 # Define the container base information.
-FROM noaaufsrnr/ubuntu20.04-miniconda-ufs_pyutils:latest
+FROM noaaufsrnr/ubuntu20.04.ufs_pyutils:latest
 MAINTAINER "Henry R. Winterbottom (Henry.Winterbottom@noaa.gov)"
 
 # ----
