@@ -1,20 +1,9 @@
 # =========================================================================
-
-# Module: ush/tcdiags/be2002_pi.py
-
+# File: ush/tcdiags/be2002_pi.py
 # Author: Henry R. Winterbottom
-
-# Email: henry.winterbottom@noaa.gov
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the respective public license published by the
-# Free Software Foundation and included with the repository within
-# which this application is contained.
-
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
+# Date: 26 August 2023
+# Version: 0.0.1
+# License: LGPL v2.1
 # =========================================================================
 
 """
@@ -54,7 +43,7 @@ References
     interdecadal variability". Journal of Geophysical Research 107
     (2002): 4801.
 
-    Gifford, D. M., "pyPI(v1.3): Tropical cyclone potential intensity
+    Gifford, D. M., "pyPI (v1.3): Tropical cyclone potential intensity
     calculations in Python". Geoscientific Model Development 14
     (2020): 2351-2369.
 
@@ -93,7 +82,7 @@ from tcpyPI import pi
 from tools import parser_interface
 from utils.decorator_interface import privatemethod
 
-from tcdiags.diagnostics import Diagnostics  # , Metrics  # TODO
+from tcdiags.diagnostics import Diagnostics
 
 # ----
 
@@ -215,15 +204,13 @@ class BE2002(Diagnostics):
         # Define the input variables.
         self.tcpi_obj.mxrt = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.mixing_ratio.values, (
-                    self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.mixing_ratio.values, (self.nlevs, self.ndim)
             ),
             "gram/gram",
         )
         self.tcpi_obj.pres = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.pressure.values, (
-                    self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.pressure.values, (self.nlevs, self.ndim)
             ),
             "hectopascal",
         )
@@ -232,23 +219,23 @@ class BE2002(Diagnostics):
         )
         self.tcpi_obj.temp = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.temperature.values, (
-                    self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.temperature.values, (self.nlevs, self.ndim)
             ),
             "celsius",
         )
         # TODO: Define the SST at the I/O level;
         self.tcpi_obj.sstc = units.Quantity(
-            self.tcdiags_obj.inputs.temperature.values[0, ...].ravel(
-            ), "celsius"
+            self.tcdiags_obj.inputs.temperature.values[0, ...].ravel(), "celsius"
         )
         self.tcpi_obj.zsfc = units.Quantity(
             self.tcdiags_obj.inputs.surface_height.values.ravel(), "meters"
         )
         self.tcpi_obj.lats = units.Quantity(
-            self.tcdiags_obj.inputs.latitude.values, "degrees")
+            self.tcdiags_obj.inputs.latitude.values, "degrees"
+        )
         self.tcpi_obj.lons = units.Quantity(
-            self.tcdiags_obj.inputs.longitude.values, "degrees")
+            self.tcdiags_obj.inputs.longitude.values, "degrees"
+        )
 
     def tcpi(self: Diagnostics, idx: int) -> None:
         """
@@ -315,18 +302,15 @@ class BE2002(Diagnostics):
         )
 
         self.tcpi_obj.pmin.values = units.Quantity(
-            numpy.reshape(self.tcpi_obj.pmin.values,
-                          (self.ny, self.nx)), "pascal"
+            numpy.reshape(self.tcpi_obj.pmin.values, (self.ny, self.nx)), "pascal"
         )
         self.tcpi_obj.pmin.attrs = diagvars_obj.pmin
         self.tcpi_obj.pout.values = units.Quantity(
-            numpy.reshape(self.tcpi_obj.pout.values,
-                          (self.ny, self.nx)), "pascal"
+            numpy.reshape(self.tcpi_obj.pout.values, (self.ny, self.nx)), "pascal"
         )
         self.tcpi_obj.pout.attrs = diagvars_obj.pout
         self.tcpi_obj.tout.values = units.Quantity(
-            numpy.reshape(self.tcpi_obj.tout.values,
-                          (self.ny, self.nx)), "kelvin"
+            numpy.reshape(self.tcpi_obj.tout.values, (self.ny, self.nx)), "kelvin"
         )
         self.tcpi_obj.tout.attrs = diagvars_obj.tout
         self.tcpi_obj.vmax.values = units.Quantity(
