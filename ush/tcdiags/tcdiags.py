@@ -21,7 +21,7 @@
 Module
 ------
 
-    __init__.py
+    tcdiags.py
 
 Description
 -----------
@@ -103,8 +103,9 @@ class TCDiags:
 
         # Define the base-class attributes.
         self.options_obj = options_obj
-        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
-        self.yaml_file = self.options_obj.yaml_file
+        self.logger = Logger(
+            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.yaml_file = self.options_obj.yaml
 
         # Collect the experiment attributes from the YAML-formatted
         # configuration file; proceed accordingly.
@@ -113,7 +114,6 @@ class TCDiags:
         # Define the available applications.
         self.apps_list = ["tcmsi", "tcpi", "tcstrflw"]
 
-    @privatemethod
     def config(self: Generic) -> SimpleNamespace:
         """
         Description
@@ -178,22 +178,24 @@ class TCDiags:
         # Collect the information and configuration attributes for the
         # respective (supported) applications.
         for app in self.apps_list:
-            if parser_interface.object_hasattr(object_in=self.yaml_obj, key=app):
-                yaml_obj = YAML().read_yaml(
-                    yaml_file=parser_interface.object_getattr(
-                        object_in=self.yaml_obj, key=app, force=True
-                    ),
-                    return_obj=True,
-                )
-                if yaml_obj is None:
-                    msg = (
-                        "No configuration attributes have been specified for application "
-                        f"{app}."
+            if parser_interface.object_getattr(
+                    object_in=self.options_obj, key=app, force=True):
+                if parser_interface.object_hasattr(object_in=self.yaml_obj, key=app):
+                    yaml_obj = YAML().read_yaml(
+                        yaml_file=parser_interface.object_getattr(
+                            object_in=self.yaml_obj, key=app, force=True
+                        ),
+                        return_obj=True,
                     )
-                    self.logger.warn(msg=msg)
-                tcdiags_obj = parser_interface.object_setattr(
-                    object_in=tcdiags_obj, key=app, value=yaml_obj
-                )
+                    if yaml_obj is None:
+                        msg = (
+                            "No configuration attributes have been specified for application "
+                            f"{app}."
+                        )
+                        self.logger.warn(msg=msg)
+                    tcdiags_obj = parser_interface.object_setattr(
+                        object_in=tcdiags_obj, key=app, value=yaml_obj
+                    )
 
         return tcdiags_obj
 
@@ -224,29 +226,19 @@ class TCDiags:
 
         # Execute each application; proceed accordingly.
         for app in self.apps_list:
-            if (
-                parser_interface.object_getattr(
-                    object_in=self.options_obj, key=app, force=True
-                )
-                is not None
-            ):
+            if parser_interface.object_getattr(
+                    object_in=self.options_obj, key=app, force=True):
                 try:
                     msg = f"Executing application {app}."
                     self.logger.status(msg=msg)
                     tcdiag_obj = YAML().read_yaml(
                         yaml_file=parser_interface.object_getattr(
-                            object_in=self.options_obj, key=app
-                        ),
-                        return_obj=True,
-                    )
-                    app_method = parser_interface.object_getattr(
+                            object_in=self.yaml_obj, key=app, force=True),
+                        return_obj=True)
+                    app_class = parser_interface.object_getattr(
                         object_in=import_module(tcdiag_obj.app_module),
-                        key=tcdiag_obj.app_class,
-                    )
-                    tcdiags_obj = parser_interface.object_setattr(
-                        object_in=tcdiags_obj, key=app, value=tcdiag_obj
-                    )
-                    app_method(tcdiags_obj=tcdiags_obj).run()
+                        key=tcdiag_obj.app_class, force=True)
+                    app_class(tcdiags_obj=tcdiags_obj).run()
                 except Exception as errmsg:
                     msg = f"{__name__} failed with error {errmsg}. Aborting!!!"
                     raise TCDiagsError(msg=msg) from errmsg

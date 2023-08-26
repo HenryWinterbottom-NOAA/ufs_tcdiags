@@ -119,7 +119,8 @@ class ReadAnalysis:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(
+            caller_name=f"{__name__}.{self.__class__.__name__}")
         self.variable_range_msg = "Variable %s range values: (%s, %s) %s."
 
         # Collect the variable attributes.
@@ -207,7 +208,6 @@ class ReadAnalysis:
 
         return varobj
 
-    @privatemethod
     def compute_derived(self: Generic, inputs_obj: SimpleNamespace) -> SimpleNamespace:
         """
         Description
@@ -246,7 +246,8 @@ class ReadAnalysis:
 
         # Compute the specified analysis variables.
         for varname in self.varname_list:
-            varobj = parser_interface.object_getattr(object_in=inputs_obj, key=varname)
+            varobj = parser_interface.object_getattr(
+                object_in=inputs_obj, key=varname)
             if varobj.derived:
                 method_app = parser_interface.object_getattr(
                     import_module(varobj.module), key=f"{varobj.method}", force=False

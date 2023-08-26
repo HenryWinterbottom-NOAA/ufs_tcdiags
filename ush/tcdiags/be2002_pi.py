@@ -93,12 +93,12 @@ from tcpyPI import pi
 from tools import parser_interface
 from utils.decorator_interface import privatemethod
 
-from tcdiags.diagnostics import Metrics
+from tcdiags.diagnostics import Diagnostics  # , Metrics  # TODO
 
 # ----
 
 
-class BE2002(Metrics):
+class BE2002(Diagnostics):
     """
     Description
     -----------
@@ -137,7 +137,7 @@ class BE2002(Metrics):
 
     """
 
-    def __init__(self: Metrics, tcdiags_obj: SimpleNamespace):
+    def __init__(self: Diagnostics, tcdiags_obj: SimpleNamespace):
         """
         Description
         -----------
@@ -147,7 +147,7 @@ class BE2002(Metrics):
         """
 
         # Define the base-class attributes.
-        super().__init__(tcdiags_obj=tcdiags_obj, app_obj="tcpi")
+        super().__init__(tcdiags_obj=tcdiags_obj, app="tcpi")
         self.output_varlist = list(self.options_obj.output_varlist.keys())
         self.tcpi_obj = parser_interface.object_define()
         (self.nx, self.ny) = [
@@ -168,9 +168,10 @@ class BE2002(Metrics):
                 - self.tcdiags_obj.inputs.longitude.scale_add,
             ),
         }
+        self.ncio = self.write_output
 
     @privatemethod
-    def compute(self: Metrics) -> None:
+    def compute(self: Diagnostics) -> None:
         """
         Description
         -----------
@@ -200,7 +201,7 @@ class BE2002(Metrics):
         [self.tcpi(idx=idx) for idx in range(self.ndim)]
 
     @privatemethod
-    def get_inputs(self: Metrics) -> None:
+    def get_inputs(self: Diagnostics) -> None:
         """
         Description
         -----------
@@ -244,8 +245,12 @@ class BE2002(Metrics):
         self.tcpi_obj.zsfc = units.Quantity(
             self.tcdiags_obj.inputs.surface_height.values.ravel(), "meters"
         )
+        self.tcpi_obj.lats = units.Quantity(
+            self.tcdiags_obj.inputs.latitude.values, "degrees")
+        self.tcpi_obj.lons = units.Quantity(
+            self.tcdiags_obj.inputs.longitude.values, "degrees")
 
-    def tcpi(self: Metrics, idx: int) -> None:
+    def tcpi(self: Diagnostics, idx: int) -> None:
         """
         Description
         -----------
@@ -292,7 +297,7 @@ class BE2002(Metrics):
             ) = [numpy.nan for idx in range(4)]
 
     @privatemethod
-    def update_units(self: Metrics) -> None:
+    def update_units(self: Diagnostics) -> None:
         """
         Description
         -----------
@@ -308,24 +313,30 @@ class BE2002(Metrics):
         diagvars_obj = parser_interface.dict_toobject(
             in_dict=self.options_obj.output_varlist
         )
+
         self.tcpi_obj.pmin.values = units.Quantity(
             numpy.reshape(self.tcpi_obj.pmin.values,
                           (self.ny, self.nx)), "pascal"
         )
         self.tcpi_obj.pmin.attrs = diagvars_obj.pmin
         self.tcpi_obj.pout.values = units.Quantity(
-            numpy.reshape(self.tcpi_obj.pmin.values,
+            numpy.reshape(self.tcpi_obj.pout.values,
                           (self.ny, self.nx)), "pascal"
         )
         self.tcpi_obj.pout.attrs = diagvars_obj.pout
         self.tcpi_obj.tout.values = units.Quantity(
-            numpy.reshape(self.tcpi_obj.tout.values, (self.ny, self.nx)), "kelvin"
+            numpy.reshape(self.tcpi_obj.tout.values,
+                          (self.ny, self.nx)), "kelvin"
         )
         self.tcpi_obj.tout.attrs = diagvars_obj.tout
         self.tcpi_obj.vmax.values = units.Quantity(
             numpy.reshape(self.tcpi_obj.vmax.values, (self.ny, self.nx)), "mps"
         )
         self.tcpi_obj.vmax.attrs = diagvars_obj.vmax
+        self.tcpi_obj.lats.values = self.tcdiags_obj.inputs.latitude.values
+        self.tcpi_obj.lats.attr = diagvars_obj.lats
+        self.tcpi_obj.lons.values = self.tcdiags_obj.inputs.longitude.values
+        self.tcpi_obj.lons.attr = diagvars_obj.lons
         self.tcpi_obj.mxrt.values = self.tcdiags_obj.inputs.mixing_ratio.values
         self.tcpi_obj.mxrt.attrs = diagvars_obj.mxrt
         self.tcpi_obj.pres.values = self.tcdiags_obj.inputs.pressure.values
@@ -337,7 +348,7 @@ class BE2002(Metrics):
         self.tcpi_obj.zsfc.values = self.tcdiags_obj.inputs.surface_height.values
         self.tcpi_obj.zsfc.attrs = diagvars_obj.zsfc
 
-    def run(self: Metrics) -> SimpleNamespace:
+    def run(self: Diagnostics) -> SimpleNamespace:
         """
         Description
         -----------
@@ -356,6 +367,15 @@ class BE2002(Metrics):
 
         (4) Writes the TC MPI attributes to the specified output
             netCDF-formatted file path.
+
+        Keywords
+        --------
+
+        write_output: bool, optional
+
+            A Python boolean valued variable specifying whether to
+            write the output from the computed metric(s) to the
+            specified external netCDF-formatted file path.
 
         Returns
         -------
@@ -380,15 +400,16 @@ class BE2002(Metrics):
 
         # Write the computed values and diagnostics/inputs quantities
         # to the specified netCDF-formatted output file.
-        self.write_output(
-            output_file=self.options_obj.output_file,
-            var_obj=self.tcpi_obj,
-            var_list=self.output_varlist,
-            coords_2d={
-                "lat": self.tcpi_obj.dims["lat"],
-                "lon": self.tcpi_obj.dims["lon"],
-            },
-            coords_3d=self.tcpi_obj.dims,
-        )
+        if self.options_obj.write_output:
+            self.ncio(
+                output_file=self.options_obj.output_file,
+                var_obj=self.tcpi_obj,
+                var_list=self.output_varlist,
+                coords_2d={
+                    "lat": self.tcpi_obj.dims["lat"],
+                    "lon": self.tcpi_obj.dims["lon"],
+                },
+                coords_3d=self.tcpi_obj.dims,
+            )
 
         return self.tcpi_obj
