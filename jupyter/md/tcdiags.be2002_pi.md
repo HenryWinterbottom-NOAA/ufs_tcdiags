@@ -419,7 +419,7 @@ basemap.contourf(x, y, tcpi.vmax.values, levels=levels, cmap=vmax_cmap)
 ticks = numpy.arange(vmax_cmin, (vmax_cmax + 0.01), vmax_cint)
 plt.colorbar(orientation="horizontal", ticks=ticks, pad=0.1,
             aspect=50, 
-            label="Potential Intensity Wind Speed (mps)")
+            label="Potential Intensity :: Wind Speed (mps)")
 plt.savefig("tcpi.vmax.png", dpi=500, transparent=True, bbox_inches="tight")
 plt.show()
 ```
