@@ -12,5 +12,8 @@ output_file:
 output_varlist:
      required: True
      type: dict
-
+write_output:
+     required: False
+     type: bool
+     default: False
 

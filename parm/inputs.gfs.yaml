@@ -1,6 +1,6 @@
 io_module: tcdiags.io.read_analysis
 io_class: ReadAnalysis
-schema: /ufs_tcdiags/parm/schema/tcdiags.read_analysis.gfs.yaml
+schema: /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/schema/tcdiags.read_analysis.gfs.yaml
 
 # ----
 
@@ -8,7 +8,7 @@ schema: /ufs_tcdiags/parm/schema/tcdiags.read_analysis.gfs.yaml
 specific_humidity:
      flip_lat: True
      flip_z: True
-     ncfile: /work/C96_era5anl_2016100100.nc
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
      ncvarname: spfh
      squeeze: True
      squeeze_axis: 0
@@ -17,7 +17,7 @@ specific_humidity:
 uwind:
      flip_lat: True
      flip_z: True
-     ncfile: /work/C96_era5anl_2016100100.nc
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
      ncvarname: ugrd
      squeeze: True
      squeeze_axis: 0
@@ -26,7 +26,7 @@ uwind:
 vwind:
      flip_lat: True
      flip_z: True
-     ncfile: /work/C96_era5anl_2016100100.nc
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
      ncvarname: vgrd
      squeeze: True
      squeeze_axis: 0
@@ -35,7 +35,7 @@ vwind:
 temperature:
      flip_lat: True
      flip_z: True
-     ncfile: /work/C96_era5anl_2016100100.nc
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
      ncvarname: tmp
      squeeze: True
      squeeze_axis: 0
@@ -43,20 +43,20 @@ temperature:
      units: K     
 longitude:
      flip_lat: True
-     ncfile: /work/C96_era5anl_2016100100.nc     
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc     
      ncvarname: lon
      scale_add: -360.0
      name: lon
      units: degree
 latitude:
      flip_lat: True
-     ncfile: /work/C96_era5anl_2016100100.nc     
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc     
      ncvarname: lat
      name: lat
      units: degree
 surface_pressure:
      flip_lat: True
-     ncfile: /work/C96_era5anl_2016100100.nc
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
      ncvarname: pressfc
      squeeze: True
      squeeze_axis: 0
@@ -64,7 +64,7 @@ surface_pressure:
      units: pascals
 surface_height:
      flip_lat: True
-     ncfile: /work/C96_era5anl_2016100100.nc
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
      ncvarname: hgtsfc
      squeeze: True
      squeeze_axis: 0
@@ -76,7 +76,7 @@ surface_height:
 
 # Define derived variable attributes.
 pressure:
-     ncfile: /work/C96_era5anl_2016100100.nc
+     ncfile: /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
      derived: True
      method: pressure_from_thickness
      module: ufs_diags.derived.atmos.pressures

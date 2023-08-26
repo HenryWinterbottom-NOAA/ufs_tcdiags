@@ -43,3 +43,13 @@ zsfc:
      name: orography height
      units: meter
      description: "Analysis orography height."
+
+lats:
+     name: lats
+     units: degrees
+     description: "Latitude coordinates."
+
+lons:
+     name: lons
+     units: degrees
+     description: "Longitude coordinates."
