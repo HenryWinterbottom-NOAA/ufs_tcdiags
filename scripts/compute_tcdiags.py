@@ -1,25 +1,15 @@
 #!/usr/bin/env python3
 
 # =========================================================================
-
-# Script: scripts/compute_tcdiags.py
-
+# File: scripts/compute_tcdiags.py
 # Author: Henry R. Winterbottom
-
-# Email: henry.winterbottom@noaa.gov
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the respective public license published by the
-# Free Software Foundation and included with the repository within
-# which this application is contained.
-
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
+# Date: 03 March 2023
+# Version: 0.0.1
+# License: LGPL v2.1
 # =========================================================================
 
-"""Script
+"""
+Script
 ------
 
     compute_tcdiags.py
@@ -109,71 +99,17 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 import os
 import time
-from argparse import ArgumentParser
-
 from tcdiags.tcdiags import TCDiags
-from tools import fileio_interface
+from tools import fileio_interface, parser_interface
 from utils import cli_interface
+from utils.cli_interface import CLIParser
+from utils.logger_interface import Logger
 from utils.logger_interface import Logger
 
-from cli.parser import Parser
 
 # ----
 
 logger = Logger(caller_name=__name__)
-
-# ----
-
-# Define the default schema; values specified for the `--schema`
-# argument will override this value.
-schema_path = os.path.join(
-    os.path.dirname(os.getcwd()),
-    "parm",
-    "schema",
-    "schema.scripts_compute_tcdiags.yaml",
-)
-if not fileio_interface.fileexist(path=schema_path):
-    errmsg = (
-        f"The YAML-formatted default schema file {schema_path} does not exist. "
-        "Aborting!!!"
-    )
-    logger.error(msg=errmsg)
-    raise FileNotFoundError()
-
-# ----
-
-
-def __getparser__() -> ArgumentParser:
-    """
-    Description
-    -----------
-
-    This function collect the command-line arguments; optional
-    arguments maybe pass as specified within the YAML formatted file
-    containing the schema description.
-
-    Returns
-    -------
-
-    parser: ArgumentParser
-
-        A Python ArgumentParser object containing the specified
-        command line arguments/attributes.
-
-    """
-
-    # Collect the command-line arguments and define the CLI argument
-    # parser.
-    args_objs = Parser().build()
-    parser = cli_interface.init(
-        args_objs=args_objs,
-        description="Experiment script for UFS tropical cyclone "
-        "diagnostics applications.",
-        prog="compute_tcdiags.py",
-    )
-
-    return parser
-
 
 # ----
 
@@ -193,10 +129,18 @@ def main() -> None:
     start_time = time.time()
     msg = f"Beginning application {script_name}."
     logger.status(msg=msg)
-    parser = __getparser__()
-    options_obj = cli_interface.options(
-        parser=parser, validate_schema=True, schema_path=schema_path
+    parser_interface.enviro_set(
+        envvar="CLI_SCHEMA",
+        value=os.path.join(os.getcwd(), "schema",
+                           "compute_tcdiags.schema.yaml"),
     )
+    args_objs = CLIParser().build()
+    parser = cli_interface.init(
+        args_objs=args_objs,
+        description="Tropical cyclone diagnostics computation(s) application interface.",
+        prog=os.path.basename(__file__),
+    )
+    options_obj = cli_interface.options(parser=parser)
 
     # Launch the task.
     task = TCDiags(options_obj=options_obj)
