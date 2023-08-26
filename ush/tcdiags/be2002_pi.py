@@ -333,10 +333,6 @@ class BE2002(Diagnostics):
             numpy.reshape(self.tcpi_obj.vmax.values, (self.ny, self.nx)), "mps"
         )
         self.tcpi_obj.vmax.attrs = diagvars_obj.vmax
-        self.tcpi_obj.lats.values = self.tcdiags_obj.inputs.latitude.values
-        self.tcpi_obj.lats.attr = diagvars_obj.lats
-        self.tcpi_obj.lons.values = self.tcdiags_obj.inputs.longitude.values
-        self.tcpi_obj.lons.attr = diagvars_obj.lons
         self.tcpi_obj.mxrt.values = self.tcdiags_obj.inputs.mixing_ratio.values
         self.tcpi_obj.mxrt.attrs = diagvars_obj.mxrt
         self.tcpi_obj.pres.values = self.tcdiags_obj.inputs.pressure.values
@@ -347,6 +343,8 @@ class BE2002(Diagnostics):
         self.tcpi_obj.temp.attrs = diagvars_obj.temp
         self.tcpi_obj.zsfc.values = self.tcdiags_obj.inputs.surface_height.values
         self.tcpi_obj.zsfc.attrs = diagvars_obj.zsfc
+        self.tcpi_obj.lats = self.tcpi_obj.dims["lat"][1]
+        self.tcpi_obj.lons = self.tcpi_obj.dims["lon"][1]
 
     def run(self: Diagnostics) -> SimpleNamespace:
         """
@@ -406,8 +404,8 @@ class BE2002(Diagnostics):
                 var_obj=self.tcpi_obj,
                 var_list=self.output_varlist,
                 coords_2d={
-                    "lat": self.tcpi_obj.dims["lat"],
-                    "lon": self.tcpi_obj.dims["lon"],
+                    "lat": self.tcpi_obj.lats,
+                    "lon": self.tcpi_obj.lons,
                 },
                 coords_3d=self.tcpi_obj.dims,
             )

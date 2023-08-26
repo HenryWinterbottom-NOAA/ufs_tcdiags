@@ -225,6 +225,7 @@ class TCDiags:
         tcdiags_obj = self.config()
 
         # Execute each application; proceed accordingly.
+        app_obj = parser_interface.object_define()
         for app in self.apps_list:
             if parser_interface.object_getattr(
                     object_in=self.options_obj, key=app, force=True):
@@ -238,7 +239,11 @@ class TCDiags:
                     app_class = parser_interface.object_getattr(
                         object_in=import_module(tcdiag_obj.app_module),
                         key=tcdiag_obj.app_class, force=True)
-                    app_class(tcdiags_obj=tcdiags_obj).run()
+                    tcdiag_app_obj = app_class(tcdiags_obj=tcdiags_obj).run()
+                    app_obj = parser_interface.object_setattr(
+                        object_in=app_obj, key=app, value=tcdiag_app_obj)
                 except Exception as errmsg:
                     msg = f"{__name__} failed with error {errmsg}. Aborting!!!"
                     raise TCDiagsError(msg=msg) from errmsg
+
+        return app_obj
