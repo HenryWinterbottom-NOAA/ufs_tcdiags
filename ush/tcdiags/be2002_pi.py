@@ -204,7 +204,8 @@ class BE2002(Diagnostics):
         # Define the input variables.
         self.tcpi_obj.mxrt = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.mixing_ratio.values, (self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.mixing_ratio.values, (
+                    self.nlevs, self.ndim)
             ),
             "gram/gram",
         )

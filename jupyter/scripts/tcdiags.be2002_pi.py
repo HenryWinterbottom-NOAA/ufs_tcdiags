@@ -70,10 +70,9 @@ import time
 from types import SimpleNamespace
 from typing import Generic
 
-from cmocean.cm import haline
 import matplotlib.pyplot as plt
 import numpy
-
+from cmocean.cm import haline
 from plottools.build_basemap import build_basemap
 from plottools.draw_basemap import draw_basemap
 from tcdiags.tcdiags import TCDiags
@@ -182,7 +181,7 @@ class BE2002:
         levels = numpy.linspace(mslp_cmin, mslp_cmax, 255)
         (basemap, x, y) = build_basemap(lat=tcpi_obj.lats, lon=tcpi_obj.lons)
         draw_basemap(basemap=basemap)
-        plt.contourf(x, y, tcpi_obj.pmin.values, levels=levels, cmap=mslp_cmap)
+        basemap.contourf(x, y, tcpi_obj.pmin.values, levels=levels, cmap=mslp_cmap)
         ticks = numpy.arange(mslp_cmin, (mslp_cmax + 0.01), mslp_cint)
         plt.colorbar(
             orientation="horizontal",
@@ -191,7 +190,7 @@ class BE2002:
             aspect=50,
             label="Potential Intensity :: Sea-Level Pressure (hPa)",
         )
-        plt.savefig("tcpi.pmin.png", dpi=500, transparent=True, bbox_inches="tight")
+        plt.tight_layout()
         plt.show()
 
         # Plot the wind speed potential intensity.
@@ -209,7 +208,7 @@ class BE2002:
             aspect=50,
             label="Potential Intensity :: Wind Speed (mps)",
         )
-        plt.savefig("tcpi.vmax.png", dpi=500, transparent=True, bbox_inches="tight")
+        plt.tight_layout()
         plt.show()
 
     def run(self: Generic) -> None:

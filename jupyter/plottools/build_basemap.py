@@ -1,5 +1,5 @@
 # =========================================================================
-# File: scripts/compute_tcdiags.py
+# File: jupyter/plottools/build_basemap.py
 # Author: Henry R. Winterbottom
 # Date: 03 March 2023
 # Version: 0.0.1
@@ -61,6 +61,11 @@ from typing import Tuple
 
 import numpy
 from mpl_toolkits.basemap import Basemap
+
+# ----
+
+# Define all available functions.
+__all__ = ["build_basemap"]
 
 # ----
 
