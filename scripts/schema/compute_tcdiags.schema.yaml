@@ -1,32 +1,25 @@
 ---
 yaml:
-     help: |
-          YAML-formatted tropical cyclone diagnostics configuration file.
-     longname: yaml
-     shortname: y
-     required: True
-     type: str
-
+  help: |
+    YAML-formatted tropical cyclone diagnostics configuration file.
+  longname: yaml
+  shortname: y
+  required: true
+  type: str
 tcmsi:
-     help: |
-          YAML-formatted file containing the TC multi-scale intensity application configuration.
-     longname: tcmsi
-     action: store_true
-
+  help: >
+    YAML-formatted file containing the TC multi-scale intensity application
+    configuration.
+  longname: tcmsi
+  action: store_true
 tcpi:
-     help: |
-          YAML-formatted file containing the TC potential intensity application configuration.
-     longname: tcpi
-     action: store_true
-
+  help: >
+    YAML-formatted file containing the TC potential intensity application
+    configuration.
+  longname: tcpi
+  action: store_true
 tcstrflw:
-     help: |
-          YAML-formatted file containing the TC steering application configuration.
-     longname: tcstrflw
-     action: store_true
-
-write_output:
-     help: |
-          TODO
-     longname: write_output
-     action: store_true
+  help: |
+    YAML-formatted file containing the TC steering application configuration.
+  longname: tcstrflw
+  action: store_true
