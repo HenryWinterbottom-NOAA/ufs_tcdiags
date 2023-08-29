@@ -44,6 +44,7 @@ RUN $(which pip) install jupyterlab && \
 
 RUN cd /opt && \
     $(which git) clone --recursive ${UFS_DIAGS_GIT_URL} --branch ${UFS_DIAGS_GIT_BRANCH} && \
+    cd /home && \
     $(which git) clone --recursive ${UFS_TCDIAGS_GIT_URL} --branch ${UFS_TCDIAGS_GIT_BRANCH}
 
-ENV PYTHONPATH=/opt/ufs_tcdiags/ush:/opt/ufs_diags/sorc/:${PYTHONPATH}
+ENV PYTHONPATH=/home/ufs_tcdiags/ush:/opt/ufs_diags/sorc/:${PYTHONPATH}

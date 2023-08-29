@@ -1,27 +1,16 @@
 # =========================================================================
-
-# Module: ush/tcdiags/vurk2014_msi.py
-
+# File: ush/tcdiags/vurk2014_msi.py
 # Author: Henry R. Winterbottom
-
-# Email: henry.winterbottom@noaa.gov
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the respective public license published by the
-# Free Software Foundation and included with the repository within
-# which this application is contained.
-
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
+# Date: 27 August 2023
+# Version: 0.0.1
+# License: LGPL v2.1
 # =========================================================================
 
 """
 Module
 ------
 
-    vurt2014_tc.py
+    vurk2014_msi.py
 
 Description
 -----------
@@ -133,7 +122,6 @@ class VURK2014(Diagnostics):
             "epsi_msi": "Residual wind speed",
         },
     )
-
     NCOUT_ATTRS = {
         "name": "wavenumber spectra for the 10-meter wind field",
         "description":
@@ -150,12 +138,12 @@ class VURK2014(Diagnostics):
         """
 
         # Define the base-class attributes.
-        super().__init__(tcdiags_obj=tcdiags_obj, app_obj="tcmsi")
+        super().__init__(tcdiags_obj=tcdiags_obj, app="tcmsi")
         self.output_varlist = list(self.options_obj.output_varlist.keys())
+        self.tcmsi_obj = parser_interface.object_define()
         self.diagsvar_obj = parser_interface.dict_toobject(
             in_dict=self.options_obj.output_varlist
         )
-        self.tcmsi_obj = parser_interface.object_define()
         self.wnd_units = "meter_per_second"
 
     @privatemethod
@@ -196,16 +184,18 @@ class VURK2014(Diagnostics):
         coords_2d = OrderedDict(
             {
                 "radial": (["radial"], tcinfo_obj.wnds10m.radial),
-                "azimuth": (["azimuth"], numpy.degrees(tcinfo_obj.wnds10m.azimuth)),
+                "azimuth": (["azimuth"], tcinfo_obj.wnds10m.azimuth),
             }
         )
         coords_3d = OrderedDict(
             {
                 "wavenumber": (["wavenumber"], numpy.arange(0, tcinfo_obj.ncoeffs)),
-                "radial": (["radial"], tcinfo_obj.wnds10m.radial),
-                "azimuth": (["azimuth"], numpy.degrees(tcinfo_obj.wnds10m.azimuth)),
-            }
+                **coords_2d}
         )
+        #    "radial": (["radial"], tcinfo_obj.wnds10m.radial),
+        #    "azimuth": (["azimuth"], tcinfo_obj.wnds10m.azimuth),
+        # }
+        # )
 
         return (coords_2d, coords_3d)
 
@@ -338,7 +328,8 @@ class VURK2014(Diagnostics):
         """
 
         # Compute the 10-meter wind speed MSI attributes.
-        vmax = units.Quantity(numpy.nanmax(tcinfo_obj.wnds10m.varout), self.wnd_units)
+        vmax = units.Quantity(numpy.nanmax(
+            tcinfo_obj.wnds10m.varout), self.wnd_units)
         if vmax is None:
             vmax = sum(
                 numpy.nanmax(
@@ -350,7 +341,8 @@ class VURK2014(Diagnostics):
             )
         tcinfo_obj.vmax = vmax
         wn0p1 = tcinfo_obj.wndspec.wn0 + tcinfo_obj.wndspec.wn1
-        tcinfo_obj.wn0p1_msi = units.Quantity(numpy.nanmax(wn0p1), self.wnd_units)
+        tcinfo_obj.wn0p1_msi = units.Quantity(
+            numpy.nanmax(wn0p1), self.wnd_units)
         tcinfo_obj.wn0_msi = units.Quantity(
             numpy.nanmax(tcinfo_obj.wndspec.wn0), self.wnd_units
         )
@@ -512,7 +504,8 @@ class VURK2014(Diagnostics):
 
         # Update the spectral analysis attributes accordingly.
         ncoeffs = min(
-            self.options_obj.max_wn, int(tcinfo_obj.wnds10m.varout.shape[1] / 2)
+            self.options_obj.max_wn, int(
+                tcinfo_obj.wnds10m.varout.shape[1] / 2)
         )
         if ncoeffs != self.options_obj.max_wn:
             msg = (
@@ -586,7 +579,8 @@ class VURK2014(Diagnostics):
         # Update the netCDF-formatted file global-attributes.
         attrs_dict = {}
         for ncvar in vars(tcinfo_obj).keys():
-            attr_info = parser_interface.object_getattr(object_in=tcinfo_obj, key=ncvar)
+            attr_info = parser_interface.object_getattr(
+                object_in=tcinfo_obj, key=ncvar)
             if not isinstance(attr_info, SimpleNamespace):
                 try:
                     attrs_dict[f"{ncvar}"] = attr_info._magnitude
