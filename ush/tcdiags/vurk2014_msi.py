@@ -1,7 +1,7 @@
 # =========================================================================
 # File: ush/tcdiags/vurk2014_msi.py
 # Author: Henry R. Winterbottom
-# Date: 27 August 2023
+# Date: 15 June 2023
 # Version: 0.0.1
 # License: LGPL v2.1
 # =========================================================================
@@ -32,7 +32,7 @@ Requirements
 
 - ufs_diags; https://github.com/HenryWinterbottom-NOAA/ufs_diags
 
-- ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
+- ufs_pyutils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
 References
 ----------
@@ -75,15 +75,16 @@ import xarray
 from metpy.units import units
 from pint import UnitRegistry
 from tools import parser_interface
-from ufs_diags.derived.atmos import winds
-from ufs_diags.grids.bearing_geoloc import bearing_geoloc
-from ufs_diags.interp.ll2ra import ll2ra
-from ufs_diags.interp.vertical import interp
-from ufs_diags.transforms.fft import forward_fft2d, inverse_fft2d
+from diags.derived.atmos import winds
+from diags.grids.bearing_geoloc import bearing_geoloc
+from diags.interp.ll2ra import ll2ra
+from diags.interp.vertical import interp
+from diags.transforms.fft import forward_fft2d, inverse_fft2d
 from utils import table_interface
 from utils.decorator_interface import privatemethod
 
 from tcdiags.diagnostics import Diagnostics
+from tcdiags import exceptions
 
 # ----
 
@@ -116,6 +117,7 @@ class VURK2014(Diagnostics):
             "rmw": "Radius of maximum wind",
             "lat_rmw": "Maximum wind latitude",
             "lon_rmw": "Maximum wind longitude",
+            "head_rmw": "Azimuth of radius of maximum wind",
             "wn0_msi": "Wavenumber 0 Maximum Wind Speed",
             "wn1_msi": "Wavenumber 1 Maximum Wind Speed",
             "wn0p1_msi": "Wavenumber (0 + 1) Maximum Wind Speed",
@@ -192,10 +194,6 @@ class VURK2014(Diagnostics):
                 "wavenumber": (["wavenumber"], numpy.arange(0, tcinfo_obj.ncoeffs)),
                 **coords_2d}
         )
-        #    "radial": (["radial"], tcinfo_obj.wnds10m.radial),
-        #    "azimuth": (["azimuth"], tcinfo_obj.wnds10m.azimuth),
-        # }
-        # )
 
         return (coords_2d, coords_3d)
 
@@ -356,21 +354,36 @@ class VURK2014(Diagnostics):
         # Compute the 10-meter wind speed MSI location attributes.
         wn0p1 = numpy.absolute(tcinfo_obj.wndspec.wn0 + tcinfo_obj.wndspec.wn1)
         (ridx, aidx) = numpy.where(
-            wn0p1._magnitude == numpy.absolute(tcinfo_obj.wn0p1_msi._magnitude)
+            wn0p1._magnitude == numpy.max(
+                numpy.absolute(tcinfo_obj.wn0p1_msi._magnitude))
         )
-        tcinfo_obj.rmw = units.Quantity(
-            numpy.float(tcinfo_obj.wnds10m.radial[ridx[0]]), "meter"
-        )
-        tcinfo_obj.head_rmw = tcinfo_obj.wnds10m.azimuth[aidx[0]]
+        tcinfo_obj.rmw_azimuth = numpy.degrees(
+            tcinfo_obj.wnds10m.azimuth[aidx])[0]
+        tcinfo_obj.rmw_radius = (tcinfo_obj.wnds10m.radial[ridx])[0]
+        tcinfo_obj.rmw = units.Quantity(tcinfo_obj.rmw_radius, "meters")
+        tcinfo_obj.head_rmw = numpy.degrees(tcinfo_obj.rmw_azimuth)
         (tcinfo_obj.lat_rmw, tcinfo_obj.lon_rmw) = bearing_geoloc(
             loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
             heading=tcinfo_obj.head_rmw,
-            dist=tcinfo_obj.rmw._magnitude,
+            dist=tcinfo_obj.rmw_radius,
         )
+        tcinfo_obj.head_rmw = units.Quantity(tcinfo_obj.rmw_azimuth, "degree")
         (tcinfo_obj.lat_rmw, tcinfo_obj.lon_rmw) = (
             units.Quantity(tcinfo_obj.lat_rmw, "degree"),
             units.Quantity(tcinfo_obj.lon_rmw, "degree"),
         )
+        (_, tcinfo_obj.lon_llcrnr) = bearing_geoloc(
+            loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
+            heading=270.0, dist=self.options_obj.max_radius)
+        (_, tcinfo_obj.lon_urcrnr) = bearing_geoloc(
+            loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
+            heading=90.0, dist=self.options_obj.max_radius)
+        (tcinfo_obj.lat_urcrnr, _) = bearing_geoloc(
+            loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
+            heading=0.0, dist=self.options_obj.max_radius)
+        (tcinfo_obj.lat_llcrnr, _) = bearing_geoloc(
+            loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
+            heading=180.0, dist=self.options_obj.max_radius)
 
         return tcinfo_obj
 
@@ -522,7 +535,7 @@ class VURK2014(Diagnostics):
         return tcinfo_obj
 
     @privatemethod
-    def write_output(self: Diagnostics, tcinfo_obj: SimpleNamespace, tcid: str) -> None:
+    def write_polar_output(self: Diagnostics, tcinfo_obj: SimpleNamespace, tcid: str) -> None:
         """
         Description
         -----------
@@ -618,7 +631,10 @@ class VURK2014(Diagnostics):
         """
 
         # Compute the 10-meter wind field.
+        self.tcmsi_obj.lats = self.tcdiags_obj.inputs.latitude.values._magnitude
+        self.tcmsi_obj.lons = self.tcdiags_obj.inputs.longitude.values._magnitude
         self.compute_inputs()
+        self.tcmsi_obj.wnds = self.tcmsi_obj.wnds10m.values
         self.tcmsi_obj = parser_interface.object_setattr(
             object_in=self.tcmsi_obj,
             key="tcids",
@@ -641,7 +657,8 @@ class VURK2014(Diagnostics):
             # netCDF-formatted output file for the respective TC
             # event.
             self.build_tables(tcinfo_obj=tcinfo_obj, tcid=tcid)
-            self.write_output(tcinfo_obj=tcinfo_obj, tcid=tcid)
+            if self.options_obj.write_output:
+                self.write_polar_output(tcinfo_obj=tcinfo_obj, tcid=tcid)
             self.tcmsi_obj = parser_interface.object_setattr(
                 object_in=self.tcmsi_obj, key=tcid, value=tcinfo_obj
             )
