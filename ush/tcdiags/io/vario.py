@@ -91,6 +91,7 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from types import SimpleNamespace
 from typing import Dict, Tuple, Union
 
 import numpy
@@ -130,7 +131,7 @@ def define_units(varin: numpy.ndarray, varunits: Union[str, None]) -> units.Quan
 
     varin: numpy.ndarray
 
-        A Python array-type variable containing the array for the
+        A Python numpy.ndarray variable containing the array for the
         respective variable.
 
     varunits: str
@@ -143,7 +144,7 @@ def define_units(varin: numpy.ndarray, varunits: Union[str, None]) -> units.Quan
 
     varout: units.Quantity
 
-        A Python array-type variable now containing the specified
+        A Python units.Quantity variable now containing the specified
         units quantity for the respective variable.
 
     """
@@ -156,95 +157,10 @@ def define_units(varin: numpy.ndarray, varunits: Union[str, None]) -> units.Quan
 
     return varout
 
-
 # ----
 
 
-def init_ncvar(varname: str, vardict: Dict) -> object:
-    """
-    Description
-    -----------
-
-    This function initiates a Python object (e.g., container) to
-    contain the attributes for the respective netCDF-formatted
-    variable.
-
-    Parameters
-    ----------
-
-    varname: str
-
-        A Python string specifying the variable name.
-
-    vardict: Dict
-
-        A Python dictionary containing the respective variable
-        attributes.
-
-    Returns
-    -------
-
-    varobj: object
-
-        A Python object containing the initialized netCDF-formatted
-        variable container.
-
-    Raises
-    ------
-
-    VarIOError:
-
-        - raised if an attribute is Nonetype (e.g., undefined) via
-          either the input attribute Python dictionary (`vardict`) or
-          the default value Python dictionary (`varin_attrs_dict`).
-
-    """
-
-    # Define the default netCDF-formatted variable attributes.
-    varin_attrs_dict = {
-        "flip_lat": False,
-        "flip_z": False,
-        "method": -99,
-        "ncfile": None,
-        "ncvarname": None,
-        "scale_add": 0.0,
-        "scale_mult": 1.0,
-        "squeeze": False,
-        "squeeze_axis": 0,
-    }
-
-    # Build the netCDF-formatted variable container object; proceed
-    # accordingly.
-    varobj = parser_interface.object_define()
-
-    for varin_attr in varin_attrs_dict:
-        value = parser_interface.dict_key_value(
-            dict_in=vardict, key=varin_attr, force=True, no_split=True
-        )
-
-        if value is None:
-            value = parser_interface.dict_key_value(
-                dict_in=varin_attrs_dict, key=varin_attr, force=True, no_split=True
-            )
-
-        if value is None:
-            msg = (
-                f"The attribute {varin_attr} for netCDF-formatted variable {varname} "
-                "cannot be NoneType. Aborting!!!"
-            )
-            raise VarIOError(msg=msg)
-
-        varobj = parser_interface.object_setattr(
-            object_in=varobj, key=varin_attr, value=value
-        )
-
-    return varobj
-
-
-# ----
-
-
-def read_ncvar(varname: str, varobj: object) -> numpy.ndarray:
+def read_ncvar(varname: str, varobj: SimpleNamespace) -> numpy.ndarray:
     """
     Description
     -----------
@@ -260,17 +176,17 @@ def read_ncvar(varname: str, varobj: object) -> numpy.ndarray:
 
         A Python string specifying the variable name.
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing the initialized netCDF-formatted
-        variable container.
+        A Python SimpleNamespace object containing the initialized
+        netCDF-formatted variable container.
 
     Returns
     -------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object updated and now containing the
+        A Python SimpleNamespace object updated and now containing the
         netCDF-formatted variable array.
 
     """
@@ -278,7 +194,6 @@ def read_ncvar(varname: str, varobj: object) -> numpy.ndarray:
     # Collect the respective variable and update as necessary.
     msg = f"Reading variable {varname} from netCDF-formatted file path {varobj.ncfile}."
     logger.info(msg=msg)
-
     varobj.values = netcdf4_interface.ncreadvar(
         ncfile=varobj.ncfile,
         ncvarname=varobj.ncvarname,
@@ -309,12 +224,12 @@ def update_grid(
 
     xlat_in: units.Quantity
 
-        A Python array type variable containing the latitude
+        A Python units.Quantity variable containing the latitude
         geographical coordinate.
 
     xlon_in: units.Quantity
 
-        A Python array type variable containing the longitude
+        A Python units.Quantity variable containing the longitude
         geographical coordinate.
 
     Returns
@@ -322,12 +237,12 @@ def update_grid(
 
     xlat_out: units.Quantity
 
-        A Python array-type variable containing a 2-dimensional
+        A Python units.Quantity variable containing a 2-dimensional
         projection of the latitude geographical coordinate.
 
     xlon_out: units.Quantity
 
-        A Python array-type variable containing a 2-dimensional
+        A Python units.Quantity variable containing a 2-dimensional
         projection of the longitude geographical coordinate.
 
     """
@@ -342,14 +257,12 @@ def update_grid(
         logger.warn(msg=msg)
 
         (xlon_out, xlat_out) = numpy.meshgrid(xlon_in, xlat_in)
-
     else:
         msg = (
             "The geographical coordinate arrays are projected to "
             "2-dimensions; doing nothing."
         )
         logger.info(msg=msg)
-
         xlat_out = xlat_in
         xlon_out = xlon_in
 
@@ -379,8 +292,8 @@ def update_varattrs(
 
     varin: units.Quantity
 
-         A Python array-type variable containing an array for which
-         the respective attributes will be evaluated.
+         A Python units.Quantity variable containing an array for
+         which the respective attributes will be evaluated.
 
     Keywords
     --------
@@ -411,20 +324,18 @@ def update_varattrs(
 
     varout: units.Quantity
 
-         A Python array-type variable containing the array about which
-         the attributes have been assessed/changed.
+         A Python units.Quantity variable containing the array about
+         which the attributes have been assessed/changed.
 
     """
 
     # Check whether the respective variable is to be flipped along the
     # z-axis; proceed accordingly.
     varout = varin
-
     if flip_z:
         if varin.ndim == 3:
             msg = "Flipping array along the vertical axis."
             logger.warn(msg=msg)
-
             varout = numpy.flip(varout[:, :, :], axis=0)
 
             # Check whether the respective variable is to be flipped along the
@@ -433,7 +344,6 @@ def update_varattrs(
                 msg = "Flipping array along the latitudinal axis."
                 logger.warn(msg=msg)
                 varout = numpy.flip(varout[:, :, :], axis=1)
-
     else:
         # Check whether the respective variable is to be flipped along the
         # y-axis; proceed accordingly.

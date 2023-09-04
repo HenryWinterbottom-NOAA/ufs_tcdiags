@@ -102,13 +102,13 @@ def interp(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.array:
 
     varin: numpy.array
 
-        A Python array for the 3-dimensional variable to be
+        A Python numpy.array 3-dimensional variable to be
         interpolated.
 
     zarr: numpy.array
 
-        A Python array for the vertical level type; this array must be
-        of the same dimension as varin.
+        A Python numpy.array for the respective vertical level type;
+        this array must be of the same dimension as varin.
 
     levs: List
 
@@ -120,8 +120,8 @@ def interp(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.array:
 
     varout: numpy.array
 
-        A Python array containing the 3-dimensional variable
-        interpolated to the specified vertical levels.
+        A Python numpy.array variable containing the 3-dimensional
+        variable interpolated to the specified vertical levels.
 
     Raises
     ------
@@ -137,7 +137,6 @@ def interp(varin: numpy.array, zarr: numpy.array, levs: List) -> numpy.array:
     # the specified vertical-type levels.
     try:
         varout = interplevel(varin.T, zarr.T, levs)
-
     except Exception as errmsg:
         msg = f"The vertical interpolation failed with error {errmsg}. Aborting!!!"
         raise InterpVerticalError(msg=msg) from errmsg

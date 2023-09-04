@@ -32,7 +32,7 @@ Description
 Functions
 ---------
 
-    _get_module(module, method)
+    __get_module__(module, method)
 
         This method returns the function corresponding to the
         specified method (`method`) within the respective specified
@@ -79,6 +79,7 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 from importlib import import_module
+from types import SimpleNamespace
 from typing import Callable
 
 import numpy
@@ -98,7 +99,7 @@ logger = Logger(caller_name=__name__)
 # ----
 
 
-def _get_module(module: str, method: str) -> Callable:
+def __get_module__(module: str, method: str) -> Callable:
     """
     Description
     -----------
@@ -134,7 +135,6 @@ def _get_module(module: str, method: str) -> Callable:
         compute_method = parser_interface.object_getattr(
             object_in=import_module(module), key=f"{method}", force=True
         )
-
     except Exception as errmsg:
         msg = (
             f"Collecting method {method} from module {module} failed with "
@@ -148,7 +148,7 @@ def _get_module(module: str, method: str) -> Callable:
 # ----
 
 
-def compute_height(varobj: object, method: str) -> numpy.array:
+def compute_height(varobj: SimpleNamespace, method: str) -> numpy.array:
     """
     Description
     -----------
@@ -159,10 +159,11 @@ def compute_height(varobj: object, method: str) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the variables required
-        for the respective height diagnostic computation.
+        A Python SimpleNamespace object containing, at minimum, the
+        variables required for the respective height diagnostic
+        computation.
 
     method: str
 
@@ -177,15 +178,14 @@ def compute_height(varobj: object, method: str) -> numpy.array:
 
     height: numpy.array
 
-        A Python array-type variable containing the computed height
+        A Python numpy.array variable containing the computed height
         values.
 
     """
 
     # Compute the respective height type from the specified method.
     compute_module = "tcdiags.derived.atmos.heights"
-
-    compute_method = _get_module(module=compute_module, method=method)
+    compute_method = __get_module__(module=compute_module, method=method)
     height = compute_method(varobj=varobj)
 
     return height
@@ -194,7 +194,7 @@ def compute_height(varobj: object, method: str) -> numpy.array:
 # ----
 
 
-def compute_moisture(varobj: object, method: str) -> numpy.array:
+def compute_moisture(varobj: SimpleNamespace, method: str) -> numpy.array:
     """
     Description
     -----------
@@ -205,10 +205,11 @@ def compute_moisture(varobj: object, method: str) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the variables required
-        for the respective moisture type computation.
+        A Python SimpleNamespace object containing, at minimum, the
+        variables required for the respective moisture type
+        computation.
 
     method: str
 
@@ -223,15 +224,14 @@ def compute_moisture(varobj: object, method: str) -> numpy.array:
 
     moisture: numpy.array
 
-        A Python array-type variable containing the computed
+        A Python numpy.array variable containing the computed
         moisture-type values.
 
     """
 
     # Compute the respective moisture type from the specified method.
     compute_module = "tcdiags.derived.atmos.moisture"
-
-    compute_method = _get_module(module=compute_module, method=method)
+    compute_method = __get_module__(module=compute_module, method=method)
     moisture = compute_method(varobj=varobj)
 
     return moisture
@@ -240,7 +240,7 @@ def compute_moisture(varobj: object, method: str) -> numpy.array:
 # ----
 
 
-def compute_pressure(varobj: object, method: str) -> numpy.array:
+def compute_pressure(varobj: SimpleNamespace, method: str) -> numpy.array:
     """
     Description
     -----------
@@ -250,10 +250,10 @@ def compute_pressure(varobj: object, method: str) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the variables required
-        for the respective pressure computation.
+        A Python SimpleNamespace object containing, at minimum, the
+        variables required for the respective pressure computation.
 
     method: str
 
@@ -270,15 +270,14 @@ def compute_pressure(varobj: object, method: str) -> numpy.array:
 
     pressure: numpy.array
 
-        A Python array-type variable containing the computed pressure
+        A Python numpy.array variable containing the computed pressure
         values.
 
     """
 
     # Compute the respective pressure type from the specified method.
     compute_module = "tcdiags.derived.atmos.pressures"
-
-    compute_method = _get_module(module=compute_module, method=method)
+    compute_method = __get_module__(module=compute_module, method=method)
     pressure = compute_method(varobj=varobj)
 
     return pressure
@@ -287,7 +286,7 @@ def compute_pressure(varobj: object, method: str) -> numpy.array:
 # ----
 
 
-def compute_wind(varobj: object, method: str) -> numpy.array:
+def compute_wind(varobj: SimpleNamespace, method: str) -> numpy.array:
     """
     Description
     -----------
@@ -298,10 +297,11 @@ def compute_wind(varobj: object, method: str) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the variables required
-        for the respective wind-diagnostic computation.
+        A Python SimpleNamespace object containing, at minimum, the
+        variables required for the respective wind-diagnostic
+        computation.
 
     method: str
 
@@ -330,8 +330,7 @@ def compute_wind(varobj: object, method: str) -> numpy.array:
     # Compute the respective wind-diagnostic type from the specified
     # method.
     compute_module = "tcdiags.derived.atmos.winds"
-
-    compute_method = _get_module(module=compute_module, method=method)
+    compute_method = __get_module__(module=compute_module, method=method)
     wind = compute_method(varobj=varobj)
 
     return wind

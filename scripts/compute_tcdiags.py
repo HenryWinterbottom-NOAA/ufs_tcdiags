@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # =========================================================================
 
 # Script: scripts/compute_tcdiags.py
@@ -58,8 +60,8 @@ Parameters
         configuration file for the tropical cyclone (TC) diagnostics
         applications.
 
-Keywords
---------
+Directives
+----------
 
     tcfilt: bool, optional
 
@@ -70,13 +72,13 @@ Keywords
         configuration; if not specified the attribute defaults to
         NoneType.
 
-    tcmpi: bool, optional
+    tcmpi: None
 
         A Python boolean valued variable specifying whether to compute
         the tropical cyclone (TC) (maximum) potential intensity
         following the methodlogy of Bister and Emanuel [2002].
 
-    tcwnmsi: bool, optional
+    tcwnmsi: None
 
         A Python boolean valued variable specifying whether to compute
         the wave-number decomposition and the tropical cyclone (TC)
@@ -85,8 +87,6 @@ Keywords
 
 Requirements
 ------------
-
-- schema; https://github.com/keleshev/schema
 
 - ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
@@ -110,79 +110,74 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from argparse import ArgumentParser
 import os
 import time
-from dataclasses import dataclass
 
-from schema import Optional
-from tcdiags import TCDiags
-from utils.arguments_interface import Arguments
+from tools import fileio_interface
+
+from tools import parser_interface
+
+from cli.parser import Parser
+from utils import cli_interface
+
+from tcdiags.tcdiags import TCDiags
+
 from utils.logger_interface import Logger
 
 # ----
 
-# Specify whether to evaluate the format for the respective parameter
-# values.
-EVAL_SCHEMA = True
+logger = Logger(caller_name=__name__)
 
-# TODO: Only YAML-formatted file should be passed; from that information the application/compuations should be decided.
-# Define the schema attributes.
-CLS_SCHEMA = {
-    "yaml_file": str,
-    Optional("tcfilt", default=False): bool,
-    Optional("tcmpi", default=False): bool,
-    Optional("tcsteering", default=False): bool,
-    Optional("tcwnmsi", default=False): bool
-}
+# ----
+
+# Define the default schema; values specified for the `--schema`
+# argument will override this value.
+schema_path = os.path.join(os.path.dirname(os.getcwd()),
+                           "parm",
+                           "schema",
+                           "schema.scripts_compute_tcdiags.yaml",
+                           )
+if not fileio_interface.fileexist(path=schema_path):
+    msg = (
+        f"The YAML-formatted default schema file {schema_path} does not exist. "
+        "Aborting!!!"
+    )
+    logger.error(msg=msg)
+    raise FileNotFoundError()
 
 # ----
 
 
-@dataclass
-class ComputeTCDiags:
+def __getparser__() -> ArgumentParser:
     """
     Description
     -----------
 
-    This is the base-class object for all tcdiags applications.
+    This function collect the command-line arguments; optional
+    arguments maybe pass as specified within the YAML formatted file
+    containing the schema description.
 
-    Parameters
-    ----------
+    Returns
+    -------
 
-    options_obj: object
+    parser: ArgumentParser
 
-        A Python object containing the command line argument
-        attributes.
+        A Python ArgumentParser object containing the specified
+        command line arguments/attributes.
 
     """
 
-    def __init__(self: dataclass, options_obj: object):
-        """
-        Description
-        -----------
+    # Collect the command-line arguments and define the CLI argument
+    # parser.
+    args_objs = Parser().build()
+    parser = cli_interface.init(
+        args_objs=args_objs,
+        description="Experiment script for UFS tropical cyclone "
+        "diagnostics applications.", prog="compute_tcdiags.py",
+    )
 
-        Creates a new ComputeTCDiags object.
-
-        """
-
-        # Define the base-class attributes.
-        self.options_obj = options_obj
-        self.tcdiags = TCDiags(options_obj=self.options_obj)
-
-    def run(self: dataclass) -> None:
-        """
-        Description
-        -----------
-
-        This method performs the following tasks:
-
-        (1) Executes the tcdiags application to compute and output
-            tropical cyclone (TC) related diagnostics.
-
-        """
-
-        self.tcdiags.run()
-
+    return parser
 
 # ----
 
@@ -198,23 +193,25 @@ def main() -> None:
     """
 
     # Collect the command line arguments.
-    caller_name = __name__
     script_name = os.path.basename(__file__)
     start_time = time.time()
     msg = f"Beginning application {script_name}."
-    Logger(caller_name=caller_name).info(msg=msg)
-    options_obj = Arguments().run(eval_schema=EVAL_SCHEMA, cls_schema=CLS_SCHEMA)
+    logger.info(msg=msg)
+    parser = __getparser__()
+    options_obj = cli_interface.options(
+        parser=parser, validate_schema=True, schema_path=schema_path
+    )
 
     # Launch the task.
-    task = ComputeTCDiags(options_obj=options_obj)
+    task = TCDiags(options_obj=options_obj)
     task.run()
 
     stop_time = time.time()
     msg = f"Completed application {script_name}."
-    Logger(caller_name=caller_name).info(msg=msg)
+    logger.info(msg=msg)
     total_time = stop_time - start_time
     msg = f"Total Elapsed Time: {total_time} seconds."
-    Logger(caller_name=caller_name).info(msg=msg)
+    logger.info(msg=msg)
 
 
 # ----

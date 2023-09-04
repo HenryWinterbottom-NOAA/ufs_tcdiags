@@ -70,6 +70,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from types import SimpleNamespace
+
 import numpy
 from tcdiags.geomets import haversine
 from tools import parser_interface
@@ -96,7 +98,7 @@ def ll2ra(
     max_radius: float,
     drho: float,
     dphi: float,
-) -> object:
+) -> SimpleNamespace:
     """
     Description
     -----------
@@ -110,19 +112,19 @@ def ll2ra(
 
     varin: numpy.array
 
-        A Python array-type variable containing the 2-dimensional
+        A Python numpy.array variable containing the 2-dimensional
         variable defined along the respective Cartesian grid.
 
     lats: numpy.array
 
-        A Python array-type variable containing the 2-dimensional grid
-        of latitude coordinate values; the coordinate values are
+        A Python numpy.array variable containing the 2-dimensional
+        grid of latitude coordinate values; the coordinate values are
         assumed order south to north; units are degrees.
 
     lons: numpy.array
 
-        A Python array-type variable containing the 2-dimensional grid
-        of longitude coordinate values; the coordinate values are
+        A Python numpy.array variable containing the 2-dimensional
+        grid of longitude coordinate values; the coordinate values are
         assumed to be within in the range[-180.0 to 180.0]; units are
         degrees.
 
@@ -157,10 +159,10 @@ def ll2ra(
     Returns
     -------
 
-    varout_obj: object
+    varout_obj: SimpleNamespace
 
-        A Python object containing the interpolated variable as well
-        as the attributes of the polar projection.
+        A Python SimpleNamespace object containing the interpolated
+        variable as well as the attributes of the polar projection.
 
     """
 
@@ -176,20 +178,17 @@ def ll2ra(
     rho = numpy.array(
         [haversine(fix, (lats[idx], lons[idx])) for idx in range(len(lats))]
     )
-
     xx = numpy.array([haversine(fix, (lat_0, lons[idx])) for idx in range(len(lats))])
     xx = numpy.where(lons < lon_0, -1.0 * xx, xx)
 
     yy = numpy.array([haversine(fix, (lats[idx], lon_0)) for idx in range(len(lats))])
     yy = numpy.where(lats < lat_0, -1.0 * yy, yy)
-
     phi = numpy.arctan2(yy, xx)
 
     # Interpolate the Cartesian grid to the defined polar coordinate
     # grid.
     radial = numpy.arange(0.0, (max_radius + drho), drho)
     azimuth = numpy.arange((-1.0 * numpy.pi), (numpy.pi + dphi), dphi)
-
     msg = (
         f"Defining polar projection grid of resolution {drho} meters "
         f"and {dphi} radians centered at longitude coordinate {lon_0} "
@@ -227,12 +226,10 @@ def ll2ra(
 
     # Interpolate in order to fill and missing (i.e., NaN) values.
     interp_var = numpy.array(var)
-
     check = numpy.logical_not(numpy.isnan(interp_var))
     xp = check.ravel().nonzero()[0]
     fp = interp_var[numpy.logical_not(numpy.isnan(interp_var))]
     x = numpy.isnan(interp_var).ravel().nonzero()[0]
-
     interp_var[numpy.isnan(var)] = numpy.interp(x, xp, fp)
     (nrho, nphi) = [len(radial), len(azimuth)]
 
@@ -252,9 +249,7 @@ def ll2ra(
 
     msg = f"Output variable has radial dimension {nrho} and azimuthal dimension {nphi}."
     logger.info(msg=msg)
-
     varout_obj = parser_interface.object_define()
-
     for varout_attr in varout_dict:
         value = parser_interface.dict_key_value(
             dict_in=varout_dict, key=varout_attr, no_split=True

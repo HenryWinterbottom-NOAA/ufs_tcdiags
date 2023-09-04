@@ -1,94 +1,113 @@
-specific_humidity:
+io_module: tcdiags.io.read_analysis
+io_class: ReadAnalysis
+schema: /ufs_tcdiags/parm/schema/schema.tcdiags.io.gfs_read.yaml
 
+specific_humidity:
      flip_lat: True
      flip_z: True
-     
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc
-     
+     ncfile: /work/C96_era5anl_2016100100.nc
      ncvarname: spfh
-
      squeeze: True
      squeeze_axis: 0
+     name: spfh
+     units: "kg/kg"
 
 uwind:
-
      flip_lat: True
      flip_z: True
-     
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc
-     
+     ncfile: /work/C96_era5anl_2016100100.nc
      ncvarname: ugrd
-
      squeeze: True
      squeeze_axis: 0
+     name: uwnd
+     units: mps
 
 vwind:
-
      flip_lat: True
      flip_z: True
-     
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc
-     
+     ncfile: /work/C96_era5anl_2016100100.nc
      ncvarname: vgrd
-
      squeeze: True
      squeeze_axis: 0
-
+     name: vwnd
+     units: mps
+     
 temperature:
-
      flip_lat: True
      flip_z: True
-     
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc
-     
+     ncfile: /work/C96_era5anl_2016100100.nc
      ncvarname: tmp
-
      squeeze: True
      squeeze_axis: 0
-
+     name: temp
+     units: K
+     
 longitude:
-
      flip_lat: True
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc     
+     ncfile: /work/C96_era5anl_2016100100.nc     
      ncvarname: lon
      scale_add: -360.0
+     name: lon
+     units: degree
      
 latitude:
-
      flip_lat: True
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc     
+     ncfile: /work/C96_era5anl_2016100100.nc     
      ncvarname: lat
+     name: lat
+     units: degree
 
 surface_pressure:
-
      flip_lat: True
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc
+     ncfile: /work/C96_era5anl_2016100100.nc
      ncvarname: pressfc
      squeeze: True
      squeeze_axis: 0
-
+     name: psfc
+     units: pascals
+     
 surface_height:
-
      flip_lat: True
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc
+     ncfile: /work/C96_era5anl_2016100100.nc
      ncvarname: hgtsfc
      squeeze: True
      squeeze_axis: 0
      scale_mult: 0.98
+     name: zsfc
+     units: gpm
 
+# ----
+     
 pressure:
-
-     method: 1 # pressure thickness
-
-     ncfile: /work/tcdiags/C96_era5anl_2016100100.nc 
+     ncfile: /work/C96_era5anl_2016100100.nc
+     derived: True
+     method: pressure_from_thickness
+     module: tcdiags.derived.atmos.pressures
      flip_lat: True
      flip_z: True
      squeeze: True
      squeeze_axis: 0
-     ncvarname: dpres     
+     ncvarname: dpres
+     name: pres
+     units: pascals
 
-#     psfc_ncfile: /work/tcdiags/C96_era5anl_2016100100.nc 
-#     psfc_flip_lat: True
-#     psfc_squeeze: True
-#     psfc_squeeze_axis: 0
-#     psfc_ncvarname: pressfc  
+height:
+     derived: True
+     method: height_from_pressure
+     module: tcdiags.derived.atmos.heights
+     name: hght
+     units: m
+
+sea_level_pressure:
+     derived: True
+     method: pressure_to_sealevel
+     units: pascal
+     name: pslp
+     module: tcdiags.derived.atmos.pressures
+
+mixing_ratio:
+     derived: True
+     method: spfh_to_mxrt
+     module: tcdiags.derived.atmos.moisture
+     name: mxrt
+     units: "kg/kg"

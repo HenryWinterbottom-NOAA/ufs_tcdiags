@@ -1,0 +1,4 @@
+inputs_yaml: !INC /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/inputs.notebook.yaml
+
+tcmpi: !INC /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/tcmpi.notebook.yaml 
+

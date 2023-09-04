@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/__init__.py
+# Module: ush/tcdiags/tcdiags.py
 
 # Author: Henry R. Winterbottom
 
@@ -58,6 +58,8 @@ History
 from dataclasses import dataclass
 from gc import collect
 from importlib import import_module
+from types import SimpleNamespace
+from typing import Generic
 
 from confs.yaml_interface import YAML
 from tools import parser_interface
@@ -69,7 +71,6 @@ from tcdiags.exceptions import TCDiagsError
 # ----
 
 
-@dataclass
 class TCDiags:
     """
     Description
@@ -81,14 +82,14 @@ class TCDiags:
     Parameters
     ----------
 
-    options_obj: object
+    options_obj: SimpleNamespace
 
-        A Python object containing the command line argument
-        attributes.
+        A Python SimpleNamespace object containing the command line
+        argument attributes.
 
     """
 
-    def __init__(self: dataclass, options_obj: object):
+    def __init__(self: Generic, options_obj: SimpleNamespace):
         """
         Description
         -----------
@@ -99,7 +100,8 @@ class TCDiags:
 
         # Define the base-class attributes.
         self.options_obj = options_obj
-        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(
+            caller_name=f"{__name__}.{self.__class__.__name__}")
         self.yaml_file = self.options_obj.yaml_file
 
         # Collect the experiment attributes from the YAML-formatted
@@ -107,10 +109,10 @@ class TCDiags:
         self.yaml_obj = YAML().read_yaml(yaml_file=self.yaml_file, return_obj=True)
 
         # Define the available applications.
-        self.apps_list = ["tcmpi", "tcsteering", "tcwnmsi"]
+        self.apps_list = ["tcfilter", "tcmsi", "tcpi", "tcsteering"]
 
     @privatemethod
-    def config(self: dataclass) -> object:
+    def config(self: Generic) -> SimpleNamespace:
         """
         Description
         -----------
@@ -123,13 +125,13 @@ class TCDiags:
         Returns
         -------
 
-        tcdiags_obj: object
+        tcdiags_obj: SimpleNamespace
 
-            A Python object containing all configuration attributes
-            for the respective application including inputs (i.e.,
-            `inputs` and `tcinfo`) as well as the remaining
-            (supported) applications (see base-class attribute
-            `apps_list`).
+            A Python SimpleNamespace object containing all
+            configuration attributes for the respective application
+            including inputs (i.e., `inputs` and `tcinfo`) as well as
+            the remaining (supported) applications (see base-class
+            attribute `apps_list`).
 
         Raises
         ------
@@ -144,9 +146,7 @@ class TCDiags:
         # Collect the mandatory/standard variables and attributes for
         # the respective input type.
         tcdiags_obj = parser_interface.object_define()
-
         yaml_obj = YAML().read_yaml(yaml_file=self.yaml_obj.inputs, return_obj=True)
-
         try:
             io_obj = parser_interface.object_getattr(
                 import_module(yaml_obj.io_module),
@@ -159,14 +159,12 @@ class TCDiags:
                 "Aborting!!!"
             )
             raise TCDiagsError(msg=msg) from errmsg
-
         tcdiags_obj.inputs = io_obj(yaml_file=self.yaml_obj.inputs).read()
 
         # Check whether the TC information file has been provided;
         # proceed accordingly.
         if parser_interface.object_hasattr(object_in=self.yaml_obj, key="tcinfo"):
             tcdiags_obj.tcinfo = YAML().read_yaml(yaml_file=self.yaml_obj.tcinfo)
-
         else:
             msg = (
                 "No TC-information attribute `tcvitals` was found in experiment "
@@ -185,21 +183,19 @@ class TCDiags:
                     ),
                     return_obj=True,
                 )
-
                 if yaml_obj is None:
                     msg = (
                         "No configuration attributes have been specified for application "
                         f"{app}."
                     )
                     self.logger.warn(msg=msg)
-
                 tcdiags_obj = parser_interface.object_setattr(
                     object_in=tcdiags_obj, key=app, value=yaml_obj
                 )
 
         return tcdiags_obj
 
-    def run(self: dataclass) -> None:
+    def run(self: Generic) -> None:
         """
         Description
         -----------
@@ -218,6 +214,14 @@ class TCDiags:
 
         # Execute each application; proceed accordingly.
         for app in self.apps_list:
+            if (parser_interface.object_getattr(
+                    object_in=self.options_obj, key=app)):
+                msg = f"Executing application {app}."
+                self.logger.critical(msg=msg)
+                app_obj = parser_interface.object_getattr(
+                    object_in=tcdiags_obj, key=app, force=True
+                )
+
             if (
                 not parser_interface.object_getattr(
                     object_in=tcdiags_obj, key=app, force=True

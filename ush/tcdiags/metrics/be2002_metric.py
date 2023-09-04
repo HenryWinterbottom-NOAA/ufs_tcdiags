@@ -1,6 +1,6 @@
 # =========================================================================
 
-# Module: ush/tcdiags/metrics/tropcycmpi.py
+# Module: ush/tcdiags/metrics/be2002_metric.py
 
 # Author: Henry R. Winterbottom
 
@@ -85,6 +85,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from types import SimpleNamespace
+
 import numpy
 from metpy.units import units
 from tcdiags.io.nc_write import NCWrite
@@ -97,24 +99,25 @@ from utils.decorator_interface import privatemethod
 
 
 class BE2002(Metrics):
-    """
+    """ "
     Description
     -----------
 
-    This is the base-class object for all tropical cyclone (TC)
-    potential intensity (PI) computations following Bister and Emanuel
+    This is the base-class object for all tropical cyclone(TC)
+    potential intensity(PI) computations following Bister and Emanuel
     [2002] and via the software provided by Gifford, D. M., [2020]; it
     is a sub-class of Metrics.
 
     Parameters
     ----------
 
-    tcdiags_obj: object
+    tcdiags_obj: SimpleNamespace
 
-        A Python object containing all configuration attributes for
-        the respective application including inputs (i.e., `inputs`
-        and `tcinfo`) as well as the remaining (supported)
-        applications (see base-class attribute `apps_list`).
+        A Python SimpleNamespace object containing all configuration
+        attributes for the respective application including inputs
+        (i.e., `inputs` and `tcinfo`) as well as the remaining
+        (supported) applications (see base-class attribute
+        `apps_list`).
 
     References
     ----------
@@ -134,7 +137,7 @@ class BE2002(Metrics):
 
     """
 
-    def __init__(self: Metrics, tcdiags_obj: object):
+    def __init__(self: Metrics, tcdiags_obj: SimpleNamespace):
         """
         Description
         -----------
@@ -247,15 +250,13 @@ class BE2002(Metrics):
         # Compute/define the input variables.
         self.tcpi_obj.mxrt = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.mixing_ratio.values, (
-                    self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.mixing_ratio.values, (self.nlevs, self.ndim)
             ),
             "gram/gram",
         )
         self.tcpi_obj.pres = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.pressure.values, (
-                    self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.pressure.values, (self.nlevs, self.ndim)
             ),
             "hectopascal",
         )
@@ -264,8 +265,7 @@ class BE2002(Metrics):
         )
         self.tcpi_obj.temp = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.temperature.values, (
-                    self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.temperature.values, (self.nlevs, self.ndim)
             ),
             "celsius",
         )
@@ -388,7 +388,7 @@ class BE2002(Metrics):
         self.tcpi_obj.zsfc.attrs = {"units": "meter", "name": "surface height"}
 
     @privatemethod
-    def write_output(self) -> None:
+    def write_output(self: Metrics) -> None:
         """
         Description
         -----------

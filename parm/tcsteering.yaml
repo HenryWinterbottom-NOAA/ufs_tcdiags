@@ -1,0 +1,96 @@
+# TODO: Further parition; designate method (e.g., Velden and Leslie)
+# such that additional techniques (if available) may be added at a
+# future time.
+
+app_module: tcdiags.metrics.vl1991_metric
+app_class: VL1991
+schema: /ufs_tcdiags/parm/schema/schema.tcdiags.metrics.tcsteering_vl1991.yaml
+
+# Define the isobaric-levels for the steering flow diagnostic; units
+# are Pascals.
+isolevels: [100000., 90000.0, 80000., 70000., 60000.0, 50000., 40000., 30000., 20000., 10000.,]
+
+# Define the default radial distance, relative to the TC location,
+# across which to isolate and remove the TC wind field; this is used
+# if the radius of the outer-most closed isobar is not included in the
+# given TC-vitals attributes; units are meters.
+distance: 1600000.
+
+# Define the radial interval at which to perform the successive radial
+# interpolation; units are meters.
+ddist: 100000.
+
+output_file: /work/tcenvstr.full.nc
+
+output_varlist:
+     chi:
+          name: velocity potential
+          units: "meters^2/second"
+          description: |
+               "The velocity potential field."
+
+     divg:
+          name: divergence
+          units: "1/second"
+          description: |
+               "The total divergence field."
+
+     psi:
+          name: streamfunction
+          units: "meters^2/second"
+          description: |
+               "The streamfunction field."
+
+     udiv:
+          name: divergent zonal wind
+          units: "meter_per_second"
+          description:
+               "The zonal component of the divergent wind field."
+
+     uhrm:
+          name: harmonic zonal wind
+          units: "meter_per_second"
+          description:
+               "The zonal component of the harmonic wind field."
+
+     urot:
+          name: rotational zonal wind
+          units: "meter_per_second"
+          description:
+               "The zonal component of the rotational wind field."
+
+     uwnd:
+          name: total zonal wind
+          units: "meter_per_second"
+          description:
+               "The zonal component of the total wind field."
+               
+     vdiv:
+          name: divergent meridional wind
+          units: "meter_per_second"
+          description:
+               "The meridional component of the divergent wind field."
+
+     vhrm:
+          name: harmonic meridional wind
+          units: "meter_per_second"
+          description:
+               "The meridional component of the harmonic wind field."
+
+     vort:
+          name: vorticity
+          units: "1/second"
+          description: |
+               "The total vorticity field."
+               
+     vrot:
+          name: rotational meridional wind
+          units: "meter_per_second"
+          description:
+               "The meridional component of the rotational wind field."
+
+     vwnd:
+          name: total meridional wind
+          units: "meter_per_second"
+          description:
+               "The meridional component of the total wind field."

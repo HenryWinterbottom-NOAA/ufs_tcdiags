@@ -64,6 +64,8 @@ __email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
+from types import SimpleNamespace
+
 import numpy
 from metpy.calc import mixing_ratio_from_specific_humidity as mxrt_from_spfh
 from utils.logger_interface import Logger
@@ -80,7 +82,7 @@ logger = Logger(caller_name=__name__)
 # ----
 
 
-def spfh_to_mxrt(varobj: object) -> numpy.array:
+def spfh_to_mxrt(varobj: SimpleNamespace) -> numpy.array:
     """
     Description
     -----------
@@ -91,18 +93,18 @@ def spfh_to_mxrt(varobj: object) -> numpy.array:
     Parameters
     ----------
 
-    inputs_obj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the specific humidity
-        profile (`specific_humidity`) from which the mixing ratio will
-        be computed.
+        A Python SimpleNamespace object containing, at minimum, the
+        specific humidity profile (`specific_humidity`) from which the
+        mixing ratio will be computed.
 
     Returns
     -------
 
     mxrt: numpy.array
 
-        A Python array-type variable containing the mixing-ratio
+        A Python numpy.array variable containing the mixing-ratio
         profile.
 
     """
@@ -114,7 +116,6 @@ def spfh_to_mxrt(varobj: object) -> numpy.array:
         f"{varobj.specific_humidity.values.shape}."
     )
     logger.info(msg=msg)
-
     mxrt = mxrt_from_spfh(specific_humidity=varobj.specific_humidity.values)
 
     return mxrt

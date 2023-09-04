@@ -113,6 +113,7 @@ __email__ = "henry.winterbottom@noaa.gov"
 # ----
 
 import gc
+from types import SimpleNamespace
 from typing import Tuple
 
 import numpy
@@ -124,7 +125,8 @@ from utils.logger_interface import Logger
 # ----
 
 # Define all available functions.
-__all__ = ["global_divg", "global_psichi", "global_vort", "global_wind_part", "wndmag"]
+__all__ = ["global_divg", "global_psichi",
+           "global_vort", "global_wind_part", "wndmag"]
 
 # ----
 
@@ -133,7 +135,7 @@ logger = Logger(caller_name=__name__)
 # ----
 
 
-def _cleanup(xspharm: spharm.Spharmt) -> None:
+def __cleanup__(xspharm: spharm.Spharmt) -> None:
     """
     Description
     -----------
@@ -147,8 +149,8 @@ def _cleanup(xspharm: spharm.Spharmt) -> None:
 
     xspharm: spharm.Spharmt
 
-        A Python object containing the initialized spherical harmonic
-        transform object.
+        A Python spharm.Spharmt object containing the initialized
+        spherical harmonic transform object.
 
     """
 
@@ -160,7 +162,9 @@ def _cleanup(xspharm: spharm.Spharmt) -> None:
 # ----
 
 
-def _get_lev_uv(varobj: object, lev: int) -> Tuple[numpy.array, numpy.array]:
+def __get_lev_uv__(
+    varobj: SimpleNamespace, lev: int
+) -> Tuple[numpy.array, numpy.array]:
     """
     Description
     -----------
@@ -173,8 +177,8 @@ def _get_lev_uv(varobj: object, lev: int) -> Tuple[numpy.array, numpy.array]:
 
     varobj: object
 
-        A Python object containing, at minimum, the zonal and
-        meridional total wind components.
+        A Python SimpleNamespace object containing, at minimum, the
+        zonal and meridional total wind components.
 
     lev: int
 
@@ -186,12 +190,12 @@ def _get_lev_uv(varobj: object, lev: int) -> Tuple[numpy.array, numpy.array]:
 
     xuwnd: numpy.array
 
-        A Python array-type variable containing the zonal wind
+        A Python numpy.array variable containing the zonal wind
         component collected for the specified vertical level.
 
     xvwnd: numpy.array
 
-        A Python array-type variable containing the meridional wind
+        A Python numpy.array variable containing the meridional wind
         component collected for the specified vertical level.
 
     """
@@ -206,10 +210,8 @@ def _get_lev_uv(varobj: object, lev: int) -> Tuple[numpy.array, numpy.array]:
     # respective/specified vertical level; proceed accordingly.
     if uwnd.ndim == 3 and vwnd.ndim == 3:
         (xuwnd, xvwnd) = [uwnd.values[lev, :, :], vwnd.values[lev, :, :]]
-
     elif uwnd.ndim == 2 and vwnd.ndim == 2:
         (xuwnd, xvwnd) = [uwnd.values[:, :], vwnd.values[:, :]]
-
     else:
         msg = (
             "The wind vector components could not be parsed and/or "
@@ -223,7 +225,7 @@ def _get_lev_uv(varobj: object, lev: int) -> Tuple[numpy.array, numpy.array]:
 # ----
 
 
-def _init_spharm(array_in: numpy.array) -> spharm.Spharmt:
+def __init_spharm__(array_in: numpy.array) -> spharm.Spharmt:
     """
     Description
     -----------
@@ -235,7 +237,7 @@ def _init_spharm(array_in: numpy.array) -> spharm.Spharmt:
 
     array_in: numpy.array
 
-        A Python array-type variable; the shape of the respective
+        A Python numpy.array variable; the shape of the respective
         array will be used to initialize the spherical harmonic
         transform object.
 
@@ -244,18 +246,16 @@ def _init_spharm(array_in: numpy.array) -> spharm.Spharmt:
 
     xspharm: spharm.Spharmt
 
-        A Python object containing the initialized spherical harmonic
-        transform object.
+        A Python spharm.Spharmt object containing the initialized
+        spherical harmonic transform object.
 
     """
 
     # Initialize the spherical harmonic transform object accordingly.
     if array_in.ndim == 3:
         (nx, ny) = (array_in.shape[2], array_in.shape[1])
-
     else:
         (nx, ny) = (array_in.shape[1], array_in.shape[2])
-
     xspharm = spharm.Spharmt(nx, ny)
 
     return xspharm
@@ -264,7 +264,7 @@ def _init_spharm(array_in: numpy.array) -> spharm.Spharmt:
 # ----
 
 
-def _reset_nan(vararr: numpy.array, ref_vararr: numpy.array) -> numpy.array:
+def __reset_nan__(vararr: numpy.array, ref_vararr: numpy.array) -> numpy.array:
     """
     Description
     -----------
@@ -277,19 +277,19 @@ def _reset_nan(vararr: numpy.array, ref_vararr: numpy.array) -> numpy.array:
 
     vararr: numpy.array
 
-        A Python array-type variable.
+        A Python numpy.array variable.
 
     ref_vararr: numpy.array
 
-        A Python array-type variable (possibly) containing `numpy.nan`
-        values.
+        A Python numpy.array variable (possibly) containing
+        `numpy.nan` values.
 
     Returns
     -------
 
     vararr: numpy.array
 
-        A Python array-type variable with values replaced with
+        A Python numpy.array variable with values replaced with
         `numpy.nan` relative to the reference variable `ref_vararr`.
 
     """
@@ -303,7 +303,7 @@ def _reset_nan(vararr: numpy.array, ref_vararr: numpy.array) -> numpy.array:
 # ----
 
 
-def _reset_nan2zero(vararr: numpy.array) -> numpy.array:
+def __reset_nan2zero__(vararr: numpy.array) -> numpy.array:
     """
     Description
     -----------
@@ -316,16 +316,16 @@ def _reset_nan2zero(vararr: numpy.array) -> numpy.array:
 
     vararr: numpy.array
 
-        A Python array-type variable (possibly) containing `numpy.nan`
-        values.
+        A Python numpy.array variable (possibly) containing
+        `numpy.nan` values.
 
     Returns
     -------
 
     vararr: numpy.array
 
-        A Python array-type variable where any `numpy.nan` values have
-        been reset to `0.0`.
+        A Python numpy.array variable where any `numpy.nan` values
+        have been reset to `0.0`.
 
     """
 
@@ -338,7 +338,7 @@ def _reset_nan2zero(vararr: numpy.array) -> numpy.array:
 # ----
 
 
-def global_divg(varobj: object) -> numpy.array:
+def global_divg(varobj: SimpleNamespace) -> numpy.array:
     """
     Description
     -----------
@@ -349,24 +349,25 @@ def global_divg(varobj: object) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the zonal and
-        meridional wind components; units are meters per second.
+        A Python SimpleNamespace object containing, at minimum, the
+        zonal and meridional wind components; units are meters per
+        second.
 
     Returns
     -------
 
     divg: numpy.array
 
-        A Python array-type variable containing the global divergence
+        A Python numpy.array variable containing the global divergence
         values.
 
     """
 
     # Initialize the local variable and objects.
     divg = numpy.zeros(varobj.uwnd.values.shape)
-    xspharm = _init_spharm(array_in=divg)
+    xspharm = __init_spharm__(array_in=divg)
     nlevs = divg.shape[0]
 
     # Compute the divergence field; proceed accordingly.
@@ -376,18 +377,19 @@ def global_divg(varobj: object) -> numpy.array:
     for lev in range(nlevs):
 
         # Define the wind vector components.
-        (uwnd, vwnd) = _get_lev_uv(varobj=varobj, lev=lev)
-        xuwnd = _reset_nan2zero(vararr=uwnd)
-        xvwnd = _reset_nan2zero(vararr=vwnd)
+        (uwnd, vwnd) = __get_lev_uv__(varobj=varobj, lev=lev)
+        xuwnd = __reset_nan2zero__(vararr=uwnd)
+        xvwnd = __reset_nan2zero__(vararr=vwnd)
 
         # Compute the divergence and reset the output values
         # accordingly.
         (_, dataspec) = xspharm.getvrtdivspec(ugrid=xuwnd, vgrid=xvwnd)
         divg[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
-        divg[lev, :, :] = _reset_nan(vararr=divg[lev, :, :], ref_vararr=uwnd)
+        divg[lev, :, :] = __reset_nan__(
+            vararr=divg[lev, :, :], ref_vararr=uwnd)
 
     # Deallocate memory for the spherical harmonic transform object.
-    _cleanup(xspharm=xspharm)
+    __cleanup__(xspharm=xspharm)
 
     return divg
 
@@ -395,7 +397,7 @@ def global_divg(varobj: object) -> numpy.array:
 # ----
 
 
-def global_psichi(varobj: object) -> Tuple[numpy.array, numpy.array]:
+def global_psichi(varobj: SimpleNamespace) -> Tuple[numpy.array, numpy.array]:
     """
     Description
     -----------
@@ -406,54 +408,54 @@ def global_psichi(varobj: object) -> Tuple[numpy.array, numpy.array]:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the zonal and
-        meridional wind components; units are meters per second.
+        A Python SimpleNamespace object containing, at minimum, the
+        zonal and meridional wind components; units are meters per
+        second.
 
     Returns
     -------
 
     chi: numpy.array
 
-        A Python array-type variable containing the global velocity
+        A Python numpy.array variable containing the global velocity
         potential values.
 
     psi: numpy.array
 
-        A Python array-type variable containing the global
+        A Python numpy.array variable containing the global
         streamfunction values.
 
     """
 
-    # Initialize the local variable and objects.
-    chi = numpy.zeros(varobj.uwnd.shape)
-    psi = numpy.zeros(varobj.uwnd.shape)
-    xspharm = _init_spharm(array_in=chi)
-    nlevs = chi.shape[0]
-
     # Compute the streamfunction and velocity potential fields;
     # proceed accordingly.
+    chi = numpy.zeros(varobj.uwnd.shape)
+    psi = numpy.zeros(varobj.uwnd.shape)
+    xspharm = __init_spharm__(array_in=chi)
+    nlevs = chi.shape[0]
     msg = (
-        f"Computing global streamfunction and velocity arrays of dimension {chi.shape}."
+        "Computing global streamfunction and velocity potential arrays "
+        f"of dimension {chi.shape}."
     )
     logger.info(msg=msg)
 
     for lev in range(nlevs):
 
         # Define the wind vector components.
-        (uwnd, vwnd) = _get_lev_uv(varobj=varobj, lev=lev)
-        xuwnd = _reset_nan2zero(vararr=uwnd)
-        xvwnd = _reset_nan2zero(vararr=vwnd)
+        (uwnd, vwnd) = __get_lev_uv__(varobj=varobj, lev=lev)
+        xuwnd = __reset_nan2zero__(vararr=uwnd)
+        xvwnd = __reset_nan2zero__(vararr=vwnd)
 
         # Compute the streamfunction and velocity potential and reset
         # the output values accordingly.
         (psi[lev, :, :], chi[lev, :, :]) = xspharm.getpsichi(ugrid=xuwnd, vgrid=xvwnd)
-        chi[lev, :, :] = _reset_nan(vararr=chi[lev, :, :], ref_vararr=uwnd)
-        psi[lev, :, :] = _reset_nan(vararr=psi[lev, :, :], ref_vararr=uwnd)
+        chi[lev, :, :] = __reset_nan__(vararr=chi[lev, :, :], ref_vararr=uwnd)
+        psi[lev, :, :] = __reset_nan__(vararr=psi[lev, :, :], ref_vararr=uwnd)
 
     # Deallocate memory for the spherical harmonic transform object.
-    _cleanup(xspharm=xspharm)
+    __cleanup__(xspharm=xspharm)
 
     return (chi, psi)
 
@@ -461,7 +463,7 @@ def global_psichi(varobj: object) -> Tuple[numpy.array, numpy.array]:
 # ----
 
 
-def global_vort(varobj: object) -> numpy.array:
+def global_vort(varobj: SimpleNamespace) -> numpy.array:
     """
     Description
     -----------
@@ -474,24 +476,24 @@ def global_vort(varobj: object) -> numpy.array:
 
     varobj: object
 
-        A Python object containing, at minimum, the zonal and
-        meridional wind components; units are meters per second.
+        A Python SimpleNamespace object containing, at minimum, the
+        zonal and meridional wind components; units are meters per
+        second.
 
     Returns
     -------
 
     vort: numpy.array
 
-        A Python array-type variable containing the global vorticity
+        A Python numpy.array variable containing the global vorticity
         values.
 
     """
 
     # Initialize the local variable and objects.
     vort = numpy.zeros(varobj.uwnd.shape)
-    xspharm = _init_spharm(array_in=vort)
+    xspharm = __init_spharm__(array_in=vort)
     nlevs = vort.shape[0]
-
     msg = f"Computing global vorticity array of dimension {vort.shape}."
     logger.info(msg=msg)
 
@@ -499,18 +501,18 @@ def global_vort(varobj: object) -> numpy.array:
     for lev in range(nlevs):
 
         # Define the wind vector components.
-        (uwnd, vwnd) = _get_lev_uv(varobj=varobj, lev=lev)
-        xuwnd = _reset_nan2zero(vararr=uwnd)
-        xvwnd = _reset_nan2zero(vararr=vwnd)
+        (uwnd, vwnd) = __get_lev_uv__(varobj=varobj, lev=lev)
+        xuwnd = __reset_nan2zero__(vararr=uwnd)
+        xvwnd = __reset_nan2zero__(vararr=vwnd)
 
         # Compute the vorticity and reset the output values
         # accordingly.
         (dataspec, _) = xspharm.getvrtdivspec(ugrid=xuwnd, vgrid=xvwnd)
         vort[lev, :, :] = xspharm.spectogrd(dataspec=dataspec)
-        vort[lev, :, :] = _reset_nan(vararr=vort[lev, :, :], ref_vararr=uwnd)
+        vort[lev, :, :] = __reset_nan__(vararr=vort[lev, :, :], ref_vararr=uwnd)
 
     # Deallocate memory for the spherical harmonic transform object.
-    _cleanup(xspharm=xspharm)
+    __cleanup__(xspharm=xspharm)
 
     return vort
 
@@ -519,7 +521,7 @@ def global_vort(varobj: object) -> numpy.array:
 
 
 def global_wind_part(
-    varobj: object,
+    varobj: SimpleNamespace,
 ) -> Tuple[
     numpy.array, numpy.array, numpy.array, numpy.array, numpy.array, numpy.array
 ]:
@@ -534,28 +536,30 @@ def global_wind_part(
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the zonal and
-        meridional wind components; units are meters per second.
+        A Python SimpleNamespace object containing, at minimum, the
+        zonal and meridional wind components; units are meters per
+        second.
 
     Returns
     -------
 
-    (udiv, vdiv): [numpy.array, numpy.array]
+    (udiv, vdiv): Tuple[numpy.array, numpy.array]
 
-        The components of the divergent component of the global total
-        wind field.
+        Python numpy.array variables containing the components of the
+        divergent component of the global total wind field.
 
-    (uhrm, vhrm): [numpy.array, numpy.array]
+    (uhrm, vhrm): Tuple[numpy.array, numpy.array]
 
-        The components of the harmonic (i.e., residual) component of
-        the global total wind field.
+        Python numpy.array variables containing the components of the
+        harmonic (i.e., residual) component of the global total wind
+        field.
 
-    (uvor, vvort): [numpy.array, numpy.array]
+    (uvor, vvort): Tuple[numpy.array, numpy.array]
 
-        The components of the rotational component of the global total
-        wind field.
+        Python numpy.array variables containing the components of the
+        rotational component of the global total wind field.
 
     References
     ----------
@@ -571,10 +575,8 @@ def global_wind_part(
     (udiv, uhrm, uvor, vdiv, vhrm, vvor) = [
         numpy.zeros(varobj.uwnd.shape) for idx in range(6)
     ]
-
-    xspharm = _init_spharm(array_in=uvor)
+    xspharm = __init_spharm__(array_in=uvor)
     nlevs = uvor.shape[0]
-
     msg = f"Computing global partitioned total wind arrays of dimension {uvor.shape}."
     logger.info(msg=msg)
 
@@ -582,23 +584,22 @@ def global_wind_part(
     for lev in range(nlevs):
 
         # Define the wind vector components.
-        (uwnd, vwnd) = _get_lev_uv(varobj=varobj, lev=lev)
-        xuwnd = _reset_nan2zero(vararr=uwnd)
-        xvwnd = _reset_nan2zero(vararr=vwnd)
-
+        (uwnd, vwnd) = __get_lev_uv__(varobj=varobj, lev=lev)
+        xuwnd = __reset_nan2zero__(vararr=uwnd)
+        xvwnd = __reset_nan2zero__(vararr=vwnd)
         (zspec_save, dspec_save) = xspharm.getvrtdivspec(ugrid=xuwnd, vgrid=xvwnd)
 
         # Compute the divergent component of the total wind field.
         (zspec, dspec) = [numpy.zeros(zspec_save.shape), dspec_save]
         (udiv[lev, :, :], vdiv[lev, :, :]) = xspharm.getuv(vrtspec=zspec, divspec=dspec)
-        udiv[lev, :, :] = _reset_nan(vararr=udiv[lev, :, :], ref_vararr=uwnd)
-        vdiv[lev, :, :] = _reset_nan(vararr=vdiv[lev, :, :], ref_vararr=vwnd)
+        udiv[lev, :, :] = __reset_nan__(vararr=udiv[lev, :, :], ref_vararr=uwnd)
+        vdiv[lev, :, :] = __reset_nan__(vararr=vdiv[lev, :, :], ref_vararr=vwnd)
 
         # Compute the rotational component of the total wind field.
         (zspec, dspec) = [zspec_save, numpy.zeros(dspec_save.shape)]
         (uvor[lev, :, :], vvor[lev, :, :]) = xspharm.getuv(vrtspec=zspec, divspec=dspec)
-        uvor[lev, :, :] = _reset_nan(vararr=uvor[lev, :, :], ref_vararr=uwnd)
-        vvor[lev, :, :] = _reset_nan(vararr=vvor[lev, :, :], ref_vararr=vwnd)
+        uvor[lev, :, :] = __reset_nan__(vararr=uvor[lev, :, :], ref_vararr=uwnd)
+        vvor[lev, :, :] = __reset_nan__(vararr=vvor[lev, :, :], ref_vararr=vwnd)
 
         # Compute the residual (i.e., harmonic) component of the total
         # wind field.
@@ -606,7 +607,7 @@ def global_wind_part(
         vhrm[lev, :, :] = numpy.array(xvwnd[:, :]) - (vvor[lev, :, :] + vdiv[lev, :, :])
 
     # Deallocate memory for the spherical harmonic transform object.
-    _cleanup(xspharm=xspharm)
+    __cleanup__(xspharm=xspharm)
 
     return (udiv, vdiv, uhrm, vhrm, uvor, vvor)
 
@@ -614,7 +615,7 @@ def global_wind_part(
 # ----
 
 
-def wndmag(varobj: object) -> numpy.array:
+def wndmag(varobj: SimpleNamespace) -> numpy.array:
     """
     Description
     -----------
@@ -624,9 +625,9 @@ def wndmag(varobj: object) -> numpy.array:
     Parameters
     ----------
 
-    varobj: object
+    varobj: SimpleNamespace
 
-        A Python object containing, at minimum, the zonal and
+        A Python SimpleNamespace containing, at minimum, the zonal and
         meridional wind components; units are meters per second.
 
     Returns
@@ -634,15 +635,13 @@ def wndmag(varobj: object) -> numpy.array:
 
     magwnd: numpy.array
 
-        A Python array-type variable containing the magnitude of the
+        A Python numpy.array variable containing the magnitude of the
         total wind field.
 
     """
 
-    # Initialize the local variable array.
-    magwnd = numpy.zeros(varobj.uwnd.shape)
-
     # Compute the magnitude of the vector wind field.
+    magwnd = numpy.zeros(varobj.uwnd.shape)
     magwnd = numpy.sqrt(varobj.uwnd * varobj.uwnd + varobj.vwnd * varobj.vwnd)
 
     return magwnd

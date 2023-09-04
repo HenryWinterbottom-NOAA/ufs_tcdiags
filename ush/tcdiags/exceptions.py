@@ -64,11 +64,6 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/geomets module; it is a sub-class of Error.
 
-    GFSReadError(msg)
-
-        This is the base-class for exceptions encountered within the
-        ush/tcdiags/io/gfsread module; it is a sub-class of Error.
-
     InputFieldsError(msg)
 
         This is the base-class for exceptions encounterd within the
@@ -102,6 +97,17 @@ Classes
         ush/tcdiags/metrics/vl1991_metric module; it is a sub-class of
         Error.
 
+    ReadAnalysisError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/io/read_analysis module; it is a sub-class of
+        Error.
+
+    SVDError(msg)
+
+        This is the base-class for exceptions encountered within the
+        ush/tcdiags/analysis/svd module; it is a sub-class of Error.
+
     TCDiagsError(msg)
 
         This is the base-class for exceptions encountered within the
@@ -117,8 +123,6 @@ Classes
         This is the base-class for exceptions encountered within the
         ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of
         Error.
-
-
 
     TropCycWNMSIError(msg)
 
@@ -169,13 +173,14 @@ __all__ = [
     "FFTError",
     "FilterVortexError",
     "GeoMetsError",
-    "GFSReadError",
     "InputFieldsError",
     "InterpProjectionsError",
     "InterpRadialError",
     "InterpVerticalError",
     "IoNcWriteError",
     "MetricsVL1991Error",
+    "ReadAnalysisError",
+    "SVDError",
     "TCDiagsError",
     "TCDiagsIOError",
     "TropCycMPIError",
@@ -273,20 +278,6 @@ class GeoMetsError(Error):
 # ----
 
 
-class GFSReadError(Error):
-    """
-    Description
-    -----------
-
-    This is the base-class for exceptions encountered within the
-    ush/tcdiags/io/gfs module; it is a sub-class of Error.
-
-    """
-
-
-# ----
-
-
 class InputFieldsError(Error):
     """
     Description
@@ -296,6 +287,7 @@ class InputFieldsError(Error):
     ush/tcdiags/io/inputs module; it is a sub-class of Error.
 
     """
+
 
 # ----
 
@@ -310,6 +302,7 @@ class InterpProjectionsError(Error):
 
     """
 
+
 # ----
 
 
@@ -322,6 +315,7 @@ class InterpRadialError(Error):
     ush/tcdiags/interp/radial module; it is a sub-class of Error.
 
     """
+
 
 # ----
 
@@ -336,6 +330,7 @@ class InterpVerticalError(Error):
 
     """
 
+
 # ----
 
 
@@ -349,6 +344,7 @@ class IoNcWriteError(Error):
 
     """
 
+
 # ----
 
 
@@ -360,6 +356,34 @@ class MetricsVL1991Error(Error):
     This is the base-class for exceptions encountered within the
     ush/tcdiags/metrics/vl1999_metric module; it is a sub-class of
     Error.
+
+    """
+
+
+# ----
+
+
+class ReadAnalysisError(Error):
+    """
+    escription
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/io/read_analysis module; it is a sub-class of Error.
+
+    """
+
+
+# ----
+
+
+class SVDError(Error):
+    """
+    Description
+    -----------
+
+    This is the base-class for exceptions encountered within the
+    ush/tcdiags/analysis/svd module; it is a sub-class of Error.
 
     """
 
@@ -404,6 +428,7 @@ class TropCycMPIError(Error):
     ush/tcdiags/metrics/tropcycmpi module; it is a sub-class of Error.
 
     """
+
 
 # ----
 

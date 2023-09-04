@@ -86,10 +86,8 @@ from math import asin, atan2, cos, radians, sin, sqrt
 from typing import Tuple
 
 import numpy
-
-from metpy.units import units
-
 from astropy.constants import R_earth
+from metpy.units import units
 from tcdiags.exceptions import GeoMetsError
 from utils.logger_interface import Logger
 
@@ -100,7 +98,7 @@ __all__ = ["bearing_geoloc", "haversine", "radial_distance"]
 
 # ----
 
-logger = Logger()
+logger = Logger(caller_name=__name__)
 
 # ----
 
@@ -146,14 +144,12 @@ def bearing_geoloc(
 
     """
 
-    # Scale the values accordingly.
+    # Compute the new latitude and longitude geographical location.
     (lat1, lon1, heading) = [
         numpy.radians(loc1[0]),
         numpy.radians(loc1[1]),
         numpy.radians(heading),
     ]
-
-    # Compute the new latitude and longitude geographical location.
     lat2 = numpy.degrees(
         asin(
             sin(lat1) * cos(dist / radius)
@@ -217,25 +213,26 @@ def haversine(loc1: Tuple, loc2: Tuple, radius: float = R_earth.value) -> float:
     # Define the source and destination geographical locations.
     (lat1, lon1) = loc1
     (lat2, lon2) = loc2
-
-    # Convert from degrees to radians.
     (lat1, lon1, lat2, lon2) = list(map(radians, [lat1, lon1, lat2, lon2]))
 
     # Compute the great-circle distance (e.g., haversine).
     dlat = lat2 - lat1
     dlon = lon2 - lon1
-
-    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * \
-        cos(lat2) * sin(dlon / 2.0) ** 2.0
+    dist = sin(dlat / 2.0) ** 2.0 + cos(lat1) * cos(lat2) * sin(dlon / 2.0) ** 2.0
     hvsine = 2.0 * radius * asin(sqrt(dist))
 
     return hvsine
 
+
 # ----
 
 
-def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
-                    numpy.array, radius: float = R_earth.value) -> numpy.array:
+def radial_distance(
+    refloc: Tuple,
+    latgrid: numpy.array,
+    longrid: numpy.array,
+    radius: float = R_earth.value,
+) -> numpy.array:
     """
     Description
     -----------
@@ -254,12 +251,12 @@ def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
 
     latgrid: numpy.array
 
-        A Python 1-dimensional array-type variable containing the
+        A Python numpy.array 1-dimensional variable containing the
         latitude coordinate values; units are degrees.
 
     longrid: numpy.array
 
-        A Python 1-dimensional array-type variable containing the
+        A Python numpy.array 1-dimensional variable containing the
         longitude coordinate values; units are degrees.
 
     Keywords
@@ -275,7 +272,7 @@ def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
 
     raddist: numpy.array
 
-        A Python 1-dimensional array-type variable containing the
+        A Python numpy.array 1-dimensional variable containing the
         radial distances relative to the reference geographical
         location; units are meters.
 
@@ -292,16 +289,19 @@ def radial_distance(refloc: Tuple, latgrid: numpy.array, longrid:
     # Check that the input arrays are a single dimension; proceed
     # accordingly.
     if len(latgrid.shape) > 1 or len(longrid.shape) > 1:
-        msg = ("The input latitude and longitude arrays must be of 1-dimension; "
-               f"received latitude dimension {latgrid.shape} and longitude "
-               f"dimension {longrid.shape} upon entry. Aborting!!!"
-               )
+        msg = (
+            "The input latitude and longitude arrays must be of 1-dimension; "
+            f"received latitude dimension {latgrid.shape} and longitude "
+            f"dimension {longrid.shape} upon entry. Aborting!!!"
+        )
         raise GeoMetsError(msg=msg)
 
     # Compute the radial distance array relative to the reference
     # location.
     raddist = numpy.zeros(numpy.shape(latgrid))
-    raddist = ([haversine(refloc, (latgrid[idx], longrid[idx]),
-                          radius=radius) for idx in range(len(raddist))])
+    raddist = [
+        haversine(refloc, (latgrid[idx], longrid[idx]), radius=radius)
+        for idx in range(len(raddist))
+    ]
 
     return raddist
