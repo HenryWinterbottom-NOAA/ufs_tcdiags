@@ -1,27 +1,16 @@
 # =========================================================================
-
-# Module: ush/tcdiags/vl1991_strflw.py
-
+# File: ush/tcdiags/vl1991_msi.py
 # Author: Henry R. Winterbottom
-
-# Email: henry.winterbottom@noaa.gov
-
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the respective public license published by the
-# Free Software Foundation and included with the repository within
-# which this application is contained.
-
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
+# Date: 05 May 2023
+# Version: 0.0.1
+# License: LGPL v2.1
 # =========================================================================
 
 """
 Module
 ------
 
-   vl1991_strflw.py
+    vl1991_strflw.py
 
 Description
 -----------
@@ -54,7 +43,7 @@ Requirements
 
 - ufs_diags; https://github.com/HenryWinterbottom-NOAA/ufs_diags
 
-- ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
+- ufs_pyutils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
 Author(s)
 ---------
@@ -86,26 +75,26 @@ from types import SimpleNamespace
 from typing import Tuple
 
 import numpy
+from diags.derived.atmos import winds
+from diags.grids.radial_distance import radial_distance
+from diags.interp import vertical
+from diags.transforms import svd
 from tools import parser_interface
-from ufs_diags.derived.atmos import winds
-from ufs_diags.grids.radial_distance import radial_distance
-from ufs_diags.interp import vertical
-from ufs_diags.transforms import svd
 from utils.decorator_interface import privatemethod
 
-from tcdiags.diagnostics import Metrics
+from tcdiags.diagnostics import Diagnostics
 
 # ----
 
 
-class VL1991(Metrics):
+class VL1991(Diagnostics):
     """
     Description
     -----------
 
     This is the base-class object for all tropical cyclone (TC)
     steering flow evaluations presented in Velden and Leslie [1991];
-    it is a sub-class of Metrics.
+    it is a sub-class of Diagnostics.
 
     Parameters
     ----------
@@ -130,7 +119,7 @@ class VL1991(Metrics):
 
     """
 
-    def __init__(self: Metrics, tcdiags_obj: SimpleNamespace):
+    def __init__(self: Diagnostics, tcdiags_obj: SimpleNamespace):
         """
         Description
         -----------
@@ -140,7 +129,7 @@ class VL1991(Metrics):
         """
 
         # Define the base-class attributes.
-        super().__init__(tcdiags_obj=tcdiags_obj, app_obj="tcstrflw")
+        super().__init__(tcdiags_obj=tcdiags_obj, app="tcstrflw")
         self.output_varlist = list(self.options_obj.output_varlist.keys())
         self.tcstrflw_obj = parser_interface.object_define()
         self.plevs = numpy.array(list(self.options_obj.isolevels))
@@ -155,7 +144,7 @@ class VL1991(Metrics):
         }
 
     @privatemethod
-    def compute_diags(self: Metrics, uwnd: numpy.array, vwnd: numpy.array) -> None:
+    def compute_diags(self: Diagnostics, uwnd: numpy.array, vwnd: numpy.array) -> None:
         """
         Description
         -----------
@@ -251,7 +240,7 @@ class VL1991(Metrics):
         ) = winds.global_wind_part(varobj=varobj)
 
     @privatemethod
-    def plev_interp(self: Metrics, varin: numpy.array) -> numpy.array:
+    def plev_interp(self: Diagnostics, varin: numpy.array) -> numpy.array:
         """
         Description
         -----------
@@ -333,7 +322,7 @@ class VL1991(Metrics):
         return varout
 
     @privatemethod
-    def tc_filter(self: Metrics) -> Tuple[numpy.array, numpy.array]:
+    def tc_filter(self: Diagnostics) -> Tuple[numpy.array, numpy.array]:
         """
         Description
         -----------
@@ -383,7 +372,7 @@ class VL1991(Metrics):
         return (uwind, vwind)
 
     @privatemethod
-    def tc_mask(self: Metrics) -> numpy.array:
+    def tc_mask(self: Diagnostics) -> numpy.array:
         """
         Description
         -----------
@@ -445,7 +434,7 @@ class VL1991(Metrics):
 
         return mask
 
-    def run(self: Metrics) -> SimpleNamespace:
+    def run(self: Diagnostics) -> SimpleNamespace:
         """
         Description
         -----------
