@@ -72,19 +72,18 @@ from typing import Dict, Tuple
 
 import numpy
 import xarray
-from metpy.units import units
-from pint import UnitRegistry
-from tools import parser_interface
 from diags.derived.atmos import winds
 from diags.grids.bearing_geoloc import bearing_geoloc
 from diags.interp.ll2ra import ll2ra
 from diags.interp.vertical import interp
 from diags.transforms.fft import forward_fft2d, inverse_fft2d
+from metpy.units import units
+from pint import UnitRegistry
+from tools import parser_interface
 from utils import table_interface
 from utils.decorator_interface import privatemethod
 
 from tcdiags.diagnostics import Diagnostics
-from tcdiags import exceptions
 
 # ----
 
@@ -126,8 +125,8 @@ class VURK2014(Diagnostics):
     )
     NCOUT_ATTRS = {
         "name": "wavenumber spectra for the 10-meter wind field",
-        "description":
-        "Polar projection for the near surface total wind field wave number spectra.",
+        "description": "Polar projection for the near surface total wind "
+        "field wave number spectra.",
     }
 
     def __init__(self: Diagnostics, tcdiags_obj: SimpleNamespace):
@@ -192,7 +191,8 @@ class VURK2014(Diagnostics):
         coords_3d = OrderedDict(
             {
                 "wavenumber": (["wavenumber"], numpy.arange(0, tcinfo_obj.ncoeffs)),
-                **coords_2d}
+                **coords_2d,
+            }
         )
 
         return (coords_2d, coords_3d)
@@ -249,8 +249,7 @@ class VURK2014(Diagnostics):
         ]
         table_obj.table = []
         for item in self.TBL_ATTR_DICT:
-            value = parser_interface.object_getattr(
-                object_in=tcinfo_obj, key=item)
+            value = parser_interface.object_getattr(object_in=tcinfo_obj, key=item)
             table_obj.table.append(
                 [
                     f"{self.TBL_ATTR_DICT[item]}",
@@ -326,8 +325,7 @@ class VURK2014(Diagnostics):
         """
 
         # Compute the 10-meter wind speed MSI attributes.
-        vmax = units.Quantity(numpy.nanmax(
-            tcinfo_obj.wnds10m.varout), self.wnd_units)
+        vmax = units.Quantity(numpy.nanmax(tcinfo_obj.wnds10m.varout), self.wnd_units)
         if vmax is None:
             vmax = sum(
                 numpy.nanmax(
@@ -339,8 +337,7 @@ class VURK2014(Diagnostics):
             )
         tcinfo_obj.vmax = vmax
         wn0p1 = tcinfo_obj.wndspec.wn0 + tcinfo_obj.wndspec.wn1
-        tcinfo_obj.wn0p1_msi = units.Quantity(
-            numpy.nanmax(wn0p1), self.wnd_units)
+        tcinfo_obj.wn0p1_msi = units.Quantity(numpy.nanmax(wn0p1), self.wnd_units)
         tcinfo_obj.wn0_msi = units.Quantity(
             numpy.nanmax(tcinfo_obj.wndspec.wn0), self.wnd_units
         )
@@ -354,11 +351,10 @@ class VURK2014(Diagnostics):
         # Compute the 10-meter wind speed MSI location attributes.
         wn0p1 = numpy.absolute(tcinfo_obj.wndspec.wn0 + tcinfo_obj.wndspec.wn1)
         (ridx, aidx) = numpy.where(
-            wn0p1._magnitude == numpy.max(
-                numpy.absolute(tcinfo_obj.wn0p1_msi._magnitude))
+            wn0p1._magnitude
+            == numpy.max(numpy.absolute(tcinfo_obj.wn0p1_msi._magnitude))
         )
-        tcinfo_obj.rmw_azimuth = numpy.degrees(
-            tcinfo_obj.wnds10m.azimuth[aidx])[0]
+        tcinfo_obj.rmw_azimuth = numpy.degrees(tcinfo_obj.wnds10m.azimuth[aidx])[0]
         tcinfo_obj.rmw_radius = (tcinfo_obj.wnds10m.radial[ridx])[0]
         tcinfo_obj.rmw = units.Quantity(tcinfo_obj.rmw_radius, "meters")
         tcinfo_obj.head_rmw = numpy.degrees(tcinfo_obj.rmw_azimuth)
@@ -374,16 +370,24 @@ class VURK2014(Diagnostics):
         )
         (_, tcinfo_obj.lon_llcrnr) = bearing_geoloc(
             loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
-            heading=270.0, dist=self.options_obj.max_radius)
+            heading=270.0,
+            dist=self.options_obj.max_radius,
+        )
         (_, tcinfo_obj.lon_urcrnr) = bearing_geoloc(
             loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
-            heading=90.0, dist=self.options_obj.max_radius)
+            heading=90.0,
+            dist=self.options_obj.max_radius,
+        )
         (tcinfo_obj.lat_urcrnr, _) = bearing_geoloc(
             loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
-            heading=0.0, dist=self.options_obj.max_radius)
+            heading=0.0,
+            dist=self.options_obj.max_radius,
+        )
         (tcinfo_obj.lat_llcrnr, _) = bearing_geoloc(
             loc1=(tcinfo_obj.lat_deg, tcinfo_obj.lon_deg),
-            heading=180.0, dist=self.options_obj.max_radius)
+            heading=180.0,
+            dist=self.options_obj.max_radius,
+        )
 
         return tcinfo_obj
 
@@ -517,8 +521,7 @@ class VURK2014(Diagnostics):
 
         # Update the spectral analysis attributes accordingly.
         ncoeffs = min(
-            self.options_obj.max_wn, int(
-                tcinfo_obj.wnds10m.varout.shape[1] / 2)
+            self.options_obj.max_wn, int(tcinfo_obj.wnds10m.varout.shape[1] / 2)
         )
         if ncoeffs != self.options_obj.max_wn:
             msg = (
@@ -535,7 +538,9 @@ class VURK2014(Diagnostics):
         return tcinfo_obj
 
     @privatemethod
-    def write_polar_output(self: Diagnostics, tcinfo_obj: SimpleNamespace, tcid: str) -> None:
+    def write_polar_output(
+        self: Diagnostics, tcinfo_obj: SimpleNamespace, tcid: str
+    ) -> None:
         """
         Description
         -----------
@@ -592,8 +597,7 @@ class VURK2014(Diagnostics):
         # Update the netCDF-formatted file global-attributes.
         attrs_dict = {}
         for ncvar in vars(tcinfo_obj).keys():
-            attr_info = parser_interface.object_getattr(
-                object_in=tcinfo_obj, key=ncvar)
+            attr_info = parser_interface.object_getattr(object_in=tcinfo_obj, key=ncvar)
             if not isinstance(attr_info, SimpleNamespace):
                 try:
                     attrs_dict[f"{ncvar}"] = attr_info._magnitude
