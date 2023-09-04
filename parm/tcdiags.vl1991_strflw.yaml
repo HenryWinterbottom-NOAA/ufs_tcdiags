@@ -13,8 +13,8 @@ isolevels:
   - 30000
   - 20000
   - 10000
-distance: 1600000
-ddist: 100000
+distance: 1600000.0
+ddist: 100000.0
 write_output: true
 output_file: ./tcdiags.vl1991_strflw.nc
 output_varlist: !INC /home/ufs_tcdiags/parm/io/tcdiags.vl1991_strflw.yaml

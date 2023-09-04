@@ -42,7 +42,7 @@ longitude:
   flip_lat: true
   ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
   ncvarname: lon
-  scale_add: -360
+  scale_add: -360.0
   name: lon
   units: degree
 latitude:

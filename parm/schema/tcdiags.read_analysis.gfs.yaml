@@ -26,11 +26,11 @@ ncfile:
 scale_mult:
   required: false
   type: float
-  default: 1
+  default: 1.0
 scale_add:
   required: false
   type: float
-  default: 0
+  default: 0.0
 squeeze:
   required: false
   type: bool

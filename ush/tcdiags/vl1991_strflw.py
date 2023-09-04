@@ -200,7 +200,8 @@ class VL1991(Diagnostics):
         # Compute the velocity potential and streamfunction.
         (self.tcstrflw_obj.chi, self.tcstrflw_obj.psi) = [
             varobj.uwnd.assign_attrs(
-                parser_interface.object_getattr(object_in=diagvars_obj, key=varname)
+                parser_interface.object_getattr(
+                    object_in=diagvars_obj, key=varname)
             )
             for varname in ["chi", "psi"]
         ]
@@ -212,7 +213,8 @@ class VL1991(Diagnostics):
         # Compute the vorticity and divergence.
         (self.tcstrflw_obj.divg, self.tcstrflw_obj.vort) = [
             varobj.uwnd.assign_attrs(
-                parser_interface.object_getattr(object_in=diagvars_obj, key=varname)
+                parser_interface.object_getattr(
+                    object_in=diagvars_obj, key=varname)
             )
             for varname in ["divg", "vort"]
         ]
@@ -225,7 +227,8 @@ class VL1991(Diagnostics):
                 object_in=self.tcstrflw_obj,
                 key=varname,
                 value=varobj.uwnd.assign_attrs(
-                    parser_interface.object_getattr(object_in=diagvars_obj, key=varname)
+                    parser_interface.object_getattr(
+                        object_in=diagvars_obj, key=varname)
                 ),
             )
             for varname in ["udiv", "uhrm", "urot", "vdiv", "vhrm", "vrot"]
@@ -469,11 +472,12 @@ class VL1991(Diagnostics):
 
         # Write the results to the specifed netCDF-formatted file
         # path.
-        self.write_output(
-            output_file=self.options_obj.output_file,
-            var_obj=self.tcstrflw_obj,
-            var_list=self.output_varlist,
-            coords_3d=self.tcstrflw_obj.dims,
-        )
+        if self.options_obj.write_output:
+            self.write_output(
+                output_file=self.options_obj.output_file,
+                var_obj=self.tcstrflw_obj,
+                var_list=self.output_varlist,
+                coords_3d=self.tcstrflw_obj.dims,
+            )
 
         return self.tcstrflw_obj

@@ -5,11 +5,11 @@ isolevels:
 distance:
   required: false
   type: float
-  default: 1600000
+  default: 1600000.0
 relax_distance:
   required: false
   type: float
-  default: 2000000
+  default: 2000000.0
 ncoeffs:
   required: false
   type: int
@@ -17,7 +17,7 @@ ncoeffs:
 ddist:
   required: false
   type: float
-  default: 100000
+  default: 100000.0
 output_file:
   required: true
   type: str

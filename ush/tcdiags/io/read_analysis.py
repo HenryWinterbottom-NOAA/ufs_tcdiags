@@ -41,7 +41,7 @@ Classes
 Requirements
 ------------
 
-- ufs_pytils; https: // github.com/HenryWinterbottom-NOAA/ufs_pyutils
+- ufs_pyutils; https: // github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
 Author(s)
 ---------
@@ -285,7 +285,6 @@ class ReadAnalysis:
         # accordingly.
         inputs_obj = parser_interface.object_define()
         for varname in self.varname_list:
-            # Collect the respective variable and scale as necessary.
             varobj = self.build_varobj(varname=varname)
             if varobj.ncfile is not None:
                 varobj = vario.read_ncvar(varname=varname, varobj=varobj)

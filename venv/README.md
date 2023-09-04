@@ -11,7 +11,7 @@ used instead for those applications (see [here](../Docker)).
 The Python virtual environment may be configured and install as
 follows.
 
-~~~
+~~~bash
 user@host:$ /path/to/python -m venv /path/to/virtual_environment
 user@host:$ cd /path/to/virtual_environment
 user@host:$ ./bin/python -m pip install --upgrade pip
@@ -31,7 +31,7 @@ The action below assumes a POSIX bash environment (e.g., shell). For
 activation support for alternative shells, see
 [here](https://tinyurl.com/activate-venv). 
 
-~~~
+~~~bash
 user@host:$ . ./bin/activate
 ~~~
 
@@ -43,7 +43,7 @@ Python virtual environment.
 When finished, exit the Python virtual environment by doing the
 following.
 
-~~~
+~~~bash
 user@host:$ deactivate
 ~~~
 
