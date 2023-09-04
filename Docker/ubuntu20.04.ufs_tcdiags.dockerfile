@@ -20,31 +20,31 @@
 
 # ----
 
-FROM noaaufsrnr/ubuntu20.04.ufs_pyutils:latest
+FROM ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_pyutils:latest
 ARG DEBIAN_FRONTEND=noninteractive
-ENV TZ=Etc/UTC
 ENV UFS_DIAGS_GIT_URL="https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git"
 ENV UFS_DIAGS_GIT_BRANCH="develop"
 ENV UFS_TCDIAGS_GIT_URL="https://www.github.com/HenryWinterbottom-NOAA/ufs_tcdiags.git"
 ENV UFS_TCDIAGS_GIT_BRANCH="develop"
 
-RUN apt-get update -y && \
-    apt-get install -y --no-install-recommends && \
-    apt-get install -y gfortran && \
-    apt-get install -y git-all && \
-    rm -rf /var/lib/apt/lists/*
+ENV TZ=Etc/UTC
+
+RUN $(which apt-get) update -y && \
+    $(which apt-get) install -y --no-install-recommends && \
+    $(which apt-get) install -y gfortran && \
+    $(which apt-get) install -y git-all && \
+    $(which rm) -rf /var/lib/apt/lists/*
 
 RUN $(which pip) install jupyterlab && \
     $(which pip) install notebook && \
-    $(which pip) install wrf-python==1.3.4.1 && \
     $(which pip) install pyspharm==1.0.9 && \
-    $(which pip) install metpy==1.4.0 && \
     $(which pip) install tcpypi && \
-    $(which pip) install geopy==2.3.0
-
-RUN cd /opt && \
+    cd /opt && \
     $(which git) clone --recursive ${UFS_DIAGS_GIT_URL} --branch ${UFS_DIAGS_GIT_BRANCH} && \
+    cd /opt/ufs_diags && \
+    $(which pip) install -r requirements.txt && \
     cd /home && \
     $(which git) clone --recursive ${UFS_TCDIAGS_GIT_URL} --branch ${UFS_TCDIAGS_GIT_BRANCH}
 
 ENV PYTHONPATH=/home/ufs_tcdiags/ush:/opt/ufs_diags/sorc/:${PYTHONPATH}
+EXPOSE 8888

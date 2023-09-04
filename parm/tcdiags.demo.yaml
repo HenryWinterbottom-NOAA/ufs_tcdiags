@@ -1,11 +1,6 @@
-# Define the path to the YAML-formatted file containing the input
-# analysis variable attributes.
-inputs: /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/inputs.gfs.yaml
-
-# Define the path to the YAML-formatted file containing the attributes
-# for the respective TC events to be analyzed.
-tcinfo: /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/tcinfo.demo.yaml
-
-tcpi: /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/tcdiags.be2002_pi.yaml
-
-tcmsi: /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/tcdiags.vurk2014_msi.yaml
+---
+inputs: !ENV ${UFS_TCDIAGS}/parm/inputs.gfs.yaml
+tcinfo: !ENV ${UFS_TCDIAGS}/parm/tcinfo.demo.yaml
+tcpi: !ENV ${UFS_TCDIAGS}/parm/tcdiags.be2002_pi.yaml
+tcmsi: !ENV ${UFS_TCDIAGS}/parm/tcdiags.vurk2014_msi.yaml
+tcstrflw: !ENV ${UFS_TCDIAGS}/parm/tcdiags.vl1991_strflw.yaml

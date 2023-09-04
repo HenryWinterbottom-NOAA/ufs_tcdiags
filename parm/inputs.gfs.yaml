@@ -1,107 +1,100 @@
+---
 io_module: tcdiags.io.read_analysis
 io_class: ReadAnalysis
-schema: /Users/henry.winterbottom/trunk/UFS/ufs_tcdiags/parm/schema/tcdiags.read_analysis.gfs.yaml
-
-# ----
-
-# Define the analysis variable attributes.
+schema: !ENV ${UFS_TCDIAGS}/parm/schema/tcdiags.read_analysis.gfs.yaml
 specific_humidity:
-     flip_lat: True
-     flip_z: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
-     ncvarname: spfh
-     squeeze: True
-     squeeze_axis: 0
-     name: spfh
-     units: "kg/kg"
+  flip_lat: true
+  flip_z: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: spfh
+  squeeze: true
+  squeeze_axis: 0
+  name: spfh
+  units: kg/kg
 uwind:
-     flip_lat: True
-     flip_z: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
-     ncvarname: ugrd
-     squeeze: True
-     squeeze_axis: 0
-     name: uwnd
-     units: mps
+  flip_lat: true
+  flip_z: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: ugrd
+  squeeze: true
+  squeeze_axis: 0
+  name: uwnd
+  units: mps
 vwind:
-     flip_lat: True
-     flip_z: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
-     ncvarname: vgrd
-     squeeze: True
-     squeeze_axis: 0
-     name: vwnd
-     units: mps
+  flip_lat: true
+  flip_z: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: vgrd
+  squeeze: true
+  squeeze_axis: 0
+  name: vwnd
+  units: mps
 temperature:
-     flip_lat: True
-     flip_z: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
-     ncvarname: tmp
-     squeeze: True
-     squeeze_axis: 0
-     name: temp
-     units: K     
+  flip_lat: true
+  flip_z: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: tmp
+  squeeze: true
+  squeeze_axis: 0
+  name: temp
+  units: K
 longitude:
-     flip_lat: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc     
-     ncvarname: lon
-     scale_add: -360.0
-     name: lon
-     units: degree
+  flip_lat: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: lon
+  scale_add: -360
+  name: lon
+  units: degree
 latitude:
-     flip_lat: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc     
-     ncvarname: lat
-     name: lat
-     units: degree
+  flip_lat: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: lat
+  name: lat
+  units: degree
 surface_pressure:
-     flip_lat: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
-     ncvarname: pressfc
-     squeeze: True
-     squeeze_axis: 0
-     name: psfc
-     units: pascals
+  flip_lat: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: pressfc
+  squeeze: true
+  squeeze_axis: 0
+  name: psfc
+  units: pascals
 surface_height:
-     flip_lat: True
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
-     ncvarname: hgtsfc
-     squeeze: True
-     squeeze_axis: 0
-     scale_mult: 0.98
-     name: zsfc
-     units: gpm
-
-# ----
-
-# Define derived variable attributes.
+  flip_lat: true
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  ncvarname: hgtsfc
+  squeeze: true
+  squeeze_axis: 0
+  scale_mult: 0.98
+  name: zsfc
+  units: gpm
 pressure:
-     ncfile:  /Users/henry.winterbottom/work/UFS/ufs_tcdiags/C96_era5anl_2016100100.nc
-     derived: True
-     method: pressure_from_thickness
-     module: ufs_diags.derived.atmos.pressures
-     flip_lat: True
-     flip_z: True
-     squeeze: True
-     squeeze_axis: 0
-     ncvarname: dpres
-     name: pres
-     units: pascals
+  ncfile: !ENV ${UFS_TCDIAGS}/C96_era5anl_2016100100.nc
+  derived: true
+  method: pressure_from_thickness
+  module: diags.derived.atmos.pressures
+  flip_lat: true
+  flip_z: true
+  squeeze: true
+  squeeze_axis: 0
+  ncvarname: dpres
+  name: pres
+  units: pascals
 height:
-     derived: True
-     method: height_from_pressure
-     module: ufs_diags.derived.atmos.heights
-     name: hght
-     units: m
+  derived: true
+  method: height_from_pressure
+  module: diags.derived.atmos.heights
+  name: hght
+  units: m
 sea_level_pressure:
-     derived: True
-     method: pressure_to_sealevel
-     units: pascal
-     name: pslp
-     module: ufs_diags.derived.atmos.pressures
+  derived: true
+  method: pressure_to_sealevel
+  units: pascal
+  name: pslp
+  module: diags.derived.atmos.pressures
 mixing_ratio:
-     derived: True
-     method: spfh_to_mxrt
-     module: ufs_diags.derived.atmos.moisture
-     name: mxrt
-     units: "kg/kg"
+  derived: true
+  method: spfh_to_mxrt
+  module: diags.derived.atmos.moisture
+  name: mxrt
+  units: kg/kg

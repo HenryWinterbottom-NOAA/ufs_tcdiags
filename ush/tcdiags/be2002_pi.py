@@ -33,7 +33,7 @@ Requirements
 
 - tcpyPI; https://github.com/dgilford/tcpyPI
 
-- ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
+- ufs_pyutils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
 References
 ----------
@@ -211,7 +211,8 @@ class BE2002(Diagnostics):
         )
         self.tcpi_obj.pres = units.Quantity(
             numpy.reshape(
-                self.tcdiags_obj.inputs.pressure.values, (self.nlevs, self.ndim)
+                self.tcdiags_obj.inputs.pressure.values, (
+                    self.nlevs, self.ndim)
             ),
             "hectopascal",
         )

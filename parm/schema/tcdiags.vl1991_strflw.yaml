@@ -1,27 +1,26 @@
+---
 isolevels:
-     required: True
-     type: list
+  required: true
+  type: list
 distance:
-     required: False
-     type: float
-     default: 1600000.
+  required: false
+  type: float
+  default: 1600000
 relax_distance:
-     required: False
-     type: float
-     default: 2000000.0
+  required: false
+  type: float
+  default: 2000000
 ncoeffs:
-     required: False
-     type: int
-     default: 10
+  required: false
+  type: int
+  default: 10
 ddist:
-     required: False
-     type: float
-     default: 100000.
+  required: false
+  type: float
+  default: 100000
 output_file:
-     required: True
-     type: str
+  required: true
+  type: str
 output_varlist:
-     required: True
-     type: dict
-
-
+  required: true
+  type: dict
