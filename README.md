@@ -4,60 +4,92 @@
 [![Code style: black](https://img.shields.io/badge/Code%20Style-black-purple.svg)](https://github.com/psf/black)
 [![Documentation Status](https://readthedocs.org/projects/ufs-tcdiags/badge/?version=latest)](https://ufs-tcdiags.readthedocs.io/en/latest/?badge=latest)
 
-[![Dependencies](https://img.shields.io/badge/Dependencies-geopy-orange)](https://github.com/geopy/geopy)
-[![](https://img.shields.io/badge/jupyterlab-orange)](https://jupyter.org/)
-[![](https://img.shields.io/badge/metpy-orange)](https://github.com/Unidata/MetPy)
-[![](https://img.shields.io/badge/notebook-orange)](https://github.com/jupyter/notebook)
-[![](https://img.shields.io/badge/pyspharm-orange)](https://pypi.org/project/pyspharm/)
-[![](https://img.shields.io/badge/tcpypi-orange)](https://github.com/dgilford/tcpyPI)
-[![](https://img.shields.io/badge/ufs__diags-orange)](https://github.com/HenryWinterbottom-NOAA/ufs_diags)
-[![](https://img.shields.io/badge/ufs__pyutils-orange)](https://github.com/HenryWinterbottom-NOAA/ufs_pyutils)
-[![](https://img.shields.io/badge/wrf--python-orange)](https://github.com/NCAR/wrf-python)
-
 [![Python Coding Standards](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml)
-[![Virtual Environment](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/venv.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/venv.yaml)
-[![Container Builds](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/containers.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/containers.yaml)
+[![Container Builds](https://github.com/HenryWinterbottom-NOAA/ufs_diags/actions/workflows/containers.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_diags/actions/workflows/containers.yaml)
 
 # Cloning
 
 This repository utilizes several sub-modules from various sources. To
 obtain the entire system, do as follows.
 
-```shell
+~~~shell
 user@host:$ /path/to/git clone --recursive https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags
-```
+~~~
+
+# Dependencies
+
+The package dependencies and the respective repository and manual
+installation attributes are provided in the table below.
+
+<div align="left">
+
+| Dependency Package | <div align="left">Installation Instructions</div> | 
+| :-------------: | :-------------: |
+| <div align="left">[`basemap`](https://matplotlib.org/basemap/)</div> | <div align="left">`pip install basemap`</div> |
+| <div align="left">[`basemap-data-hires`](https://matplotlib.org/basemap/)</div> | <div align="left">`pip install basemap-data-hires`</div> |
+| <div align="left">[`cmocean`](https://github.com/matplotlib/cmocean)</div> | <div align="left">`pip install cmocean`</div> |
+| <div align="left">[`jupyterlab`](https://jupyter.org)</div> | <div align="left">`pip install jupyterlab`</div> |
+| <div align="left">[`matplotlib`](https://matplotlib.org/)</div> | <div align="left">`pip install matplotlib`</div> | 
+| <div align="left">[`mycolorpy`](https://github.com/binodbhttr/mycolorpy)</div> | <div align="left">`pip install mycolorpy`</div> |
+| <div align="left">[`notebook`](https://github.com/jupyter/notebook)</div> | <div align="left">`pip install notebook`</div> |
+| <div align="left">[`pyahocorasick`](https://github.com/WojciechMula/pyahocorasick) | <div align="left">`pip install pyahocorasick`</div> |
+| <div align="left">[`tcpyPI`](https://github.com/dgilford/tcpyPI)</div> | <div align="left">`pip install tcpypi`</div> |
+| <div align="left">[`ufs_diags`](https://github.com/HenryWinterbottom-NOAA/ufs_diags)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git`</div> |
+
+</div>
+
+# Installing Package Dependencies
+
+In order to install the respective Python packages upon which
+`ufs_tcdiags` is dependent, do as follows.
+
+~~~shell
+user@host:$ cd /path/to/ufs_tcdiags
+user@host:$ /path/to/pip install update
+user@host:$ /path/to/pip install -r /path/to/ufs_tcdiags/requirements.txt
+~~~
+
+For additional information using `pip` and `requirements.txt` type files, see [here](https://pip.pypa.io/en/stable/reference/requirements-file-format/).
 
 # Docker Containers
 
 A Docker container containing the latest supported image can be
 obtained as follows.
 
-```bash
+~~~shell
 user@host:$ /path/to/docker pull ghrc.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
-```
+~~~
 
 The Docker container may then be used as follows.
 
-```bash
-user@host:$ /path/to/docker container run -v /path/to/work:/work -it ghrc.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
+~~~shell
+user@host:$ /path/to/docker container run -it ghrc.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
 user@host:$ cd /home/ufs_tcdiags
-```
+~~~
 
-In the above example, the `/path/to/work:/work` is the local directory
-path (`/path/to/work`) to be bound to the Docker container directory
-`/work`.
+# Running Jupyter Notebooks from Docker
 
-# Virtual Environments
+The Jupyter notebooks may be launched from within the Docker container as follows.
 
-A virtual environment supporting the respective applications can be
-defined as follows.
+~~~shell
+user@host:$ /path/to/docker container run -it ghrc.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
+user@host:$ cd /home/ufs_tcdiags/jupyter/notebooks
+user@host:$ /path/to/jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root <notebook>
+user@host:$ export UFS_TCDIAGS=/home/ufs_tcdiags
+~~~
 
-```bash
-user@host:$ cd /path/to/ufs_tcdiags/venv
-user@host:$ /path/to/python -m venv /path/to/virtual_environment
-user@host:$ cd /path/to/virtual_environment
-user@host:$ 
-```
+This action will produce a local HTML path and associated token key as follows.
+
+~~~shell
+    To access the server, open this file in a browser:
+        file:///root/.local/share/jupyter/runtime/jpserver-21362-open.html
+    Or copy and paste one of these URLs:
+        http://5186640b39b0:8889/tree?token=cd7781184b286fcda2c53fafc7f395cfc2353ae6af7166e5
+        http://127.0.0.1:8889/tree?token=cd7781184b286fcda2c53fafc7f395cfc2353ae6af7166e5
+~~~~
+
+Copy the paste the `http://127.0.0.1:8889` into a web browser and
+execute the respective Jupyter notebook (`<notebook`> above) as usual.
 
 # Forking
 

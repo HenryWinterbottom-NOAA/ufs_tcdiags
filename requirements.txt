@@ -4,15 +4,9 @@
 # Version: 0.0.1
 # License: LGPL v2.1
 
-# Base libraries.
 ufs_pyutils
 git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git
-
-# Computational packages.
 tcpypi
-
-# Plotting packages.
-jupyterlab
 notebook
 cmocean
 matplotlib
