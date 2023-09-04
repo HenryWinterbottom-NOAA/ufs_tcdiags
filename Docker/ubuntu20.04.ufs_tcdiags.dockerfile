@@ -20,10 +20,8 @@
 
 # ----
 
-FROM ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_pyutils:latest
+FROM ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_diags:latest
 ARG DEBIAN_FRONTEND=noninteractive
-ENV UFS_DIAGS_GIT_URL="https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git"
-ENV UFS_DIAGS_GIT_BRANCH="develop"
 ENV UFS_TCDIAGS_GIT_URL="https://www.github.com/HenryWinterbottom-NOAA/ufs_tcdiags.git"
 ENV UFS_TCDIAGS_GIT_BRANCH="develop"
 
@@ -40,9 +38,6 @@ RUN $(which pip) install jupyterlab && \
     $(which pip) install pyspharm==1.0.9 && \
     $(which pip) install tcpypi && \
     cd /opt && \
-    $(which git) clone --recursive ${UFS_DIAGS_GIT_URL} --branch ${UFS_DIAGS_GIT_BRANCH} && \
-    cd /opt/ufs_diags && \
-    $(which pip) install -r requirements.txt && \
     cd /home && \
     $(which git) clone --recursive ${UFS_TCDIAGS_GIT_URL} --branch ${UFS_TCDIAGS_GIT_BRANCH}
 
