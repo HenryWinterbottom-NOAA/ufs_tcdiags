@@ -1,0 +1,11 @@
+---
+app_module: tcdiags.vurk2014_msi
+app_class: VURK2014
+schema: !ENV ${UFS_TCDIAGS}/parm/schema/tcdiags.vurk2014_msi.yaml
+drho: 50000
+dphi: 1
+max_radius: 1200000
+max_wn: 3
+write_output: true
+output_file: ./tcdiags.vurk2014_msi.%s.nc
+output_varlist: !INC /home/ufs_tcdiags/parm/io/tcdiags.vurk2014_msi.yaml

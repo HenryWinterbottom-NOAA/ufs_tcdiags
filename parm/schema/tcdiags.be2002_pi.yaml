@@ -1,0 +1,19 @@
+---
+zmax:
+  required: false
+  type: float
+  default: 10
+mslp_max:
+  required: false
+  type: float
+  default: 2000
+output_file:
+  required: true
+  type: str
+output_varlist:
+  required: true
+  type: dict
+write_output:
+  required: false
+  type: bool
+  default: false

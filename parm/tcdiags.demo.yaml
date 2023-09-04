@@ -1,0 +1,6 @@
+---
+inputs: !ENV ${UFS_TCDIAGS}/parm/inputs.gfs.yaml
+tcinfo: !ENV ${UFS_TCDIAGS}/parm/tcinfo.demo.yaml
+tcpi: !ENV ${UFS_TCDIAGS}/parm/tcdiags.be2002_pi.yaml
+tcmsi: !ENV ${UFS_TCDIAGS}/parm/tcdiags.vurk2014_msi.yaml
+tcstrflw: !ENV ${UFS_TCDIAGS}/parm/tcdiags.vl1991_strflw.yaml

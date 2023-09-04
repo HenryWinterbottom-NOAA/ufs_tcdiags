@@ -1,0 +1,26 @@
+---
+isolevels:
+  required: true
+  type: list
+distance:
+  required: false
+  type: float
+  default: 1600000.0
+relax_distance:
+  required: false
+  type: float
+  default: 2000000.0
+ncoeffs:
+  required: false
+  type: int
+  default: 10
+ddist:
+  required: false
+  type: float
+  default: 100000.0
+output_file:
+  required: true
+  type: str
+output_varlist:
+  required: true
+  type: dict

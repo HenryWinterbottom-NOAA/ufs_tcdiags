@@ -1,0 +1,51 @@
+---
+derived:
+  required: false
+  default: false
+  type: bool
+flip_lat:
+  required: false
+  default: false
+  type: bool
+flip_z:
+  required: false
+  default: false
+  type: bool
+method:
+  required: false
+  type: str
+  default: null
+module:
+  required: false
+  type: str
+  default: null
+ncfile:
+  required: false
+  type: str
+  default: null
+scale_mult:
+  required: false
+  type: float
+  default: 1.0
+scale_add:
+  required: false
+  type: float
+  default: 0.0
+squeeze:
+  required: false
+  type: bool
+  default: false
+squeeze_axis:
+  required: false
+  type: int
+  default: 0
+ncvarname:
+  required: false
+  type: str
+  default: null
+name:
+  required: true
+  type: str
+units:
+  required: true
+  type: str
