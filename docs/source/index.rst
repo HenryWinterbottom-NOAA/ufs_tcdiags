@@ -2,78 +2,60 @@
 UFS Tropical Cyclone Diagnostics
 ################################
 
+^^^^^^^^^^^
+Description
+^^^^^^^^^^^
+
 The Unified Forecast System (UFS) Tropical Cyclone Diagnostics
 package, henceforth ``ufs_tcdiags``, provides applications to compute
 and/or perform analytic and diagnostic evaluations of tropical cyclone
-related attributes.
+(TC) related attributes.
 
-Status: |pycs| |docker| |venv|
-
-Links: `Code Repository <https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags>`_ | `Issues <https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/issues>`_
-
-==========
+^^^^^^^^^^
 Developers
-==========
+^^^^^^^^^^
 
 * Henry R. Winterbottom - henry.winterbottom@noaa.gov
 
-=======
+^^^^^^^
 Cloning
-=======
+^^^^^^^
 
-The ``ufs_tcdiags`` applications require the ``ufs_pyutils``
-<https://github.com/HenryWinterbottom-NOAA/ufs_pyutils>`_ and ``ufs_diags`` <https://github.com/HenryWinterbottom-NOAA/ufs_diags>`_ packages. The
-``ufs_tcdiags`` can be cloned as follows.
+The ``ufs_tcdiags`` repository may be obtained as follows.
 
-.. code-block:: console
+.. code-block:: bash
 
-   user@host:$ git clone https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags
+   user@host:$ /path/to/git clone --recursive https://www.github.com/HenryWinterbottom-NOAA/ufs_tcdiags ./ufs_tcdiags
 
-====================
-Package Dependencies
-====================
-
-* `UFS Python Utilities <https://github.com/HenryWinterbottom-NOAA/ufs_pyutils>`_
-* `UFS Diagnostics <https://github.com/HenryWinterbottom-NOAA/ufs_diags>`_
-
-==============================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Installing Python Dependencies
-==============================
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: console
+Install the necessary Python dependencies as follows.
+
+.. code-block:: bash
 
    user@host:$ /path/to/pip install -r /path/to/ufs_tcdiags/requirements.txt
 
-======================
+^^^^^^^^^^^^^^^^^^^^^^
 Container Environments
-======================
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: console
+A Docker container environment, supporting and within which the
+``ufs_tcdiags`` applications can be executed, may be obtained and
+executed as follows.
 
-   user@host:$ cd Docker
-   user@host:$ /path/to/singularity build ufs_tcdiags.sif ./ubuntu20.04-miniconda_ufs_pyutils.ufs_tcdiags.def
+.. code-block:: bash
+
+   user@host:$ /path/to/docker ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
+   user@host:$ /path/to/docker container run -it ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
    
-============
+^^^^^^^^^^^^
 Applications
-============
+^^^^^^^^^^^^
 
 .. toctree:: 
-   :numbered:
    :maxdepth: 1
 
    tcpi.rst
 
-.. |pycs| image:: https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml/badge.svg
-    :alt: Python Coding Standards
-    :scale: 100%
-    :target: https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml
-
-.. |docker| image:: https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/containers.yaml/badge.svg
-    :alt: Docker Images
-    :scale: 100%
-    :target: https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/containers.yaml
-
-.. |venv| image:: https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/venv.yaml/badge.svg
-    :alt: Python Virtual Environment
-    :scale: 100%
-    :target: https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/venv.yaml

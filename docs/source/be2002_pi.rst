@@ -1,0 +1,259 @@
+Bister and Emanuel (2002)
+=========================
+
+This application computes the tropical cyclone (TC) potential
+intensity (PI) in accordance with that described by `Bister and
+Emanuel (2002) <https://doi.org/10.1029/2001JD000780>`_ using the
+Python package offered by `Gifford
+(2021) <https://doi.org/10.5194/gmd-14-2351-2021>`_.
+
+^^^^^^^^^^^^^
+Configuration
+^^^^^^^^^^^^^
+
+The following table provides and describes the configurable variables
+for the application. Note that if a **Default Value** is missing, the
+respective variable is mandatory.
+
+.. list-table::
+   :widths: auto
+   :header-rows: 1
+
+   * - **Variable**
+     - **Description**
+     - **Default Value**
+   * - ``mslp_max``
+     - The maximum sea-level pressure value; this is used to filter
+       any extreme values computed vi the TC PI application.
+     - 2000 hPa
+   * - ``output_file``
+     - The netCDF-formatted file path to contain the variables
+       specified in ``output_varlist``; only written if
+       ``write_output`` (below) is ``True``.
+     -
+   * - ``output_varlist``
+     - The file path for the YAML-formatted file containing the list
+       of output variables.
+     - 
+   * - ``write_output``
+     - Write the variables specified in ``output_varlist`` to the
+       netCDF-formatted file path described in the TC PI configuration
+       file.
+     - ``False``
+   * - ``zmax``
+     - The maximum elevation for which the respective TC PI computed
+       value is assumed valid; this acts to filter extreme values
+       induced by topography.
+     - 10 meters
+
+The contents of an example TC PI YAML-formatted configuration file
+follows.
+
+.. code-block:: yaml
+		
+   app_module: tcdiags.be2002_pi
+   app_class: BE2002
+   schema: !ENV ${UFS_TCDIAGS}/parm/schema/tcdiags.be2002_pi.yaml
+   zmax: 0
+   mslp_max: 2000
+   write_output: true
+   output_file: ./tcdiags.be2002_pi.nc
+   output_varlist: !INC /home/ufs_tcdiags/parm/io/tcdiags.be2002_pi.yaml
+
+Note that the application assumes that the environment variable
+``UFS_TCDIAGS`` has been defined and points to the top-level directory
+of the ``ufs_tcdiags`` repository clone. Further, the
+``output_varlist`` points to a YAML-formatted file containing the
+variables to be written to ``output_file`` if ``write_output`` is
+``True``. The default file for the application appears as follows.
+
+.. code-block:: yaml
+
+  mxrt:
+    name: mixing ratio
+    units: kg/kg
+    description: Analysis mixing ratio profiles.
+  pmin:
+    name: minimum sea-level potential intensity
+    units: pascal
+    description: Tropical cyclone minimum sea-level pressure potential intensity.
+  pout:
+    name: outflow pressure level
+    units: pascal
+    description: The outflow isobaric elevation for tropical cyclones of maximum
+       potential intensity.
+  pres:
+    name: pressure level
+    units: pascal
+    description: Analysis pressure profiles.
+  pslp:
+    name: sea-level pressure
+    units: pascal
+    description: Analysis pressure reduced to sea-level.
+  temp:
+    name: temperature
+    units: kelvin
+    description: Analysis temperature profiles.
+  tout:
+    name: outflow temperature
+    units: kelvin
+    description: The outflow temperature for tropical cyclones of maximum potential intensity.
+  vmax:
+    name: maximum surface wind speed potential intensity
+    units: meter_per_second
+    description: Tropical cyclone maximum surface wind speed potential intensity.
+  zsfc:
+    name: orography height
+    units: meter
+    description: Analysis orography height.
+
+In the above example, the netCDF variable name is that defined by the
+respective YAML-key (e.g., ``mxrt``). The ``name``, ``units``, and
+``description`` keys are the attributes for the respective variable to
+be written to the netCDF-formatted file path. An example snippet of
+the netCDF-formatted file follows.
+
+.. code-block:: bash
+
+   user@host:$ ncdump -h ./tcdiags.be2002_pi.nc
+
+   dimensions:
+      	   lev = 127 ;
+	   lat = 192 ;
+	   lon = 384 ;
+   variables:
+	   double lev(lev) ;
+		   lev:_FillValue = NaN ;
+	   double lat(lat) ;
+		   lat:_FillValue = NaN ;
+	   double lon(lon) ;
+	    	   lon:_FillValue = NaN ;
+	   float mxrt(lev, lat, lon) ;
+		   mxrt:_FillValue = NaNf ;
+                   mxrt:description = "Analysis mixing ratio profiles." ;
+		   mxrt:name = "mixing ratio" ;
+		   mxrt:units = "kg/kg" ;
+	   double pmin(lat, lon) ;
+	   	   pmin:_FillValue = NaN ;
+		   pmin:description = "Tropical cyclone minimum sea-level pressure potential intensity." ;
+		   pmin:name = "minimum sea-level potential intensity" ;
+		   pmin:units = "pascal" ;
+	   double pout(lat, lon) ;
+	   	   pout:_FillValue = NaN ;
+		   pout:description = "The outflow isobaric elevation for tropical cyclones of maximum potential intensity." ;
+		   pout:name = "outflow pressure level" ;
+		   pout:units = "pascal" ;
+   
+^^^^^^^^^^^^^^^^^^^^^^^
+Running the Application
+^^^^^^^^^^^^^^^^^^^^^^^
+
+The TC PI application can be executed various multiple methods. Each
+is described below.
+
+============
+Command Line
+============
+
+The TC PI application may be executed within an supporting environment
+as follows.
+
+.. code-block:: bash
+
+   user@host:$ export PYTHONPATH="/path/to/ufs_tcdiags/ush":"${PYTHONPATH}"
+   user@host:$ cd /path/to/ufs_tcdiags/scripts
+   user@host:$ ./compute_tcdiags.py --help
+
+   Usage: compute_tcdiags.py [-h] [-tcmsi] [-tcpi] [-tcstrflw] yaml
+
+   Tropical cyclone diagnostics computation(s) application interface.
+
+   Positional Arguments:
+     yaml        YAML-formatted tropical cyclone diagnostics configuration file.
+
+   Optional Arguments:
+     -h, --help  show this help message and exit
+     -tcmsi      YAML-formatted file containing the TC multi-scale intensity application configuration.
+     -tcpi       YAML-formatted file containing the TC potential intensity application configuration.
+     -tcstrflw   YAML-formatted file containing the TC steering application configuration.
+
+   user@host:$ ./compute_tcdiags.py /path/to/ufs_tcdiags/parm/tcdiags.demo.yaml -tcpi
+
+================
+Jupyter Notebook
+================
+   
+The TC PI application can also be executed from within a Jupyter
+notebook as follows.
+
+.. code-block:: bash
+
+   user@host:$ export PYTHONPATH="/path/to/ufs_tcdiags/jupyter":"/path/to/ufs_tcdiags/ush":"${PYTHONPATH}"
+   user@host:$ cd /path/to/ufs_tcdiags/jupyter/notebooks
+   user@host:$ /path/to/jupyter notebook tcdiags.be2002_pi.ipynb
+
+This action behaves as the command line application (above) but is
+executed from within the respective Jupyter notebook.
+
+================
+Docker Container
+================
+
+The TC PI application may be executed within a Docker container
+containing the necessary dependencies as follows.
+
+.. code-block:: bash
+
+   user@host:$ /path/to/docker run -v /path/to/ufs_tcdiags:/home/ufs_tcdiags -it ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
+   user@host:$ export PYTHONPATH="/home/ufs_tcdiags/ush":"${PYTHONPATH}"
+   user@host:$ cd /home/ufs_tcdiags/scripts
+   user@host:$ ./compute_tcdiags.py --help
+
+   Usage: compute_tcdiags.py [-h] [-tcmsi] [-tcpi] [-tcstrflw] yaml
+
+   Tropical cyclone diagnostics computation(s) application interface.
+
+   Positional Arguments:
+     yaml        YAML-formatted tropical cyclone diagnostics configuration file.
+
+   Optional Arguments:
+     -h, --help  show this help message and exit
+     -tcmsi      YAML-formatted file containing the TC multi-scale intensity application configuration.
+     -tcpi       YAML-formatted file containing the TC potential intensity application configuration.
+     -tcstrflw   YAML-formatted file containing the TC steering application configuration.
+
+   user@host:$ ./compute_tcdiags.py /home/ufs_tcdiags/parm/tcdiags.demo.yaml -tcpi
+
+==========================================
+Jupyter Notebook Within a Docker Container
+==========================================
+
+Similar to the Jupyter notebook and Docker container examples above,
+the aforementioned Jupyter notebook can also be launched from within
+the Docker container. This is accomplished as follows.
+
+.. code-block:: bash
+
+   user@host:$ /path/to/docker run -v /path/to/ufs_tcdiags:/home/ufs_tcdiags -it ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
+   user@host:$ export PYTHONPATH="/home/ufs_tcdiags/ush":"/home/ufs_tcdiags/jupyter":"${PYTHONPATH}"
+   user@host:$ cd /path/to/ufs_tcdiags/jupyter/notebooks
+   user@host:$ /path/to/jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root tcdiags.be2002_pi.ipynb
+
+The above action will provide the user a local HTML path and an
+associated token as follows.
+
+.. code-block:: bash
+
+    To access the server, open this file in a browser:
+        file:///root/.local/share/jupyter/runtime/jpserver-21362-open.html
+    Or copy and paste one of these URLs:
+	http://5186640b39b0:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
+        http://127.0.0.1:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
+
+Copy the paste the token attribute beginning with
+``http://127.0.0.1:8889`` into a web browser address bar and execute
+the respective Jupyter notebook as described above.
+
+^^^^^^^
+Results
+^^^^^^^
