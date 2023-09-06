@@ -58,18 +58,18 @@ follows.
 
    app_module: tcdiags.vurk2014_msi
    app_class: VURK2014
-   schema: !ENV ${UFS_TCDIAGS}/parm/schema/tcdiags.vurk2014_msi.yaml
-   drho: 50000
+   schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.vurk2014_msi.yaml
+   drho: 50000.
    dphi: 1
-   max_radius: 1200000
+   max_radius: 1200000.
    max_wn: 3
    write_output: true
    output_file: ./tcdiags.vurk2014_msi.%s.nc
    output_varlist: !INC /home/ufs_tcdiags/parm/io/tcdiags.vurk2014_msi.yaml
 
 Note that the application assumes that the environment variable
-``UFS_TCDIAGS`` has been defined and points to the top-level directory
-of the ``ufs_tcdiags`` repository clone. Further, the
+``TCDIAGS_ROOT`` has been defined and points to the top-level
+directory of the ``ufs_tcdiags`` repository clone. Further, the
 ``output_varlist`` points to a YAML-formatted file containing the
 variables to be written to ``output_file`` if ``write_output`` is
 ``True``. The default file for the application appears as follows.
@@ -292,4 +292,4 @@ component (middle-left); 10-meter wind-speed wave-numbers (0 + 1)
 component (middle-right); 10-meter wind-speed wave-number 2 component
 (bottom-left); and 10-meter wind-speed residual wave-numbers
 (bottom-right). The Jupyter notebook to generate the above can be
-found `here <../../tcdiags.vurk2014_msi.md>`_.
+found `here <jupyter/notebooks/tcdiags.vurk2014_msi.ipynb>`_.
