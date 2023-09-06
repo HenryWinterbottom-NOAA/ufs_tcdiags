@@ -8,5 +8,4 @@ sphinx:
   configuration: docs/source/conf.py
 python:
   install:
-    - method: pip
     - requirements: docs/source/requirements.txt
