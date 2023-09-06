@@ -29,17 +29,14 @@ ENV TZ=Etc/UTC
 
 RUN $(which apt-get) update -y && \
     $(which apt-get) install -y --no-install-recommends && \
-    $(which apt-get) install -y gfortran && \
     $(which apt-get) install -y git-all && \
     $(which rm) -rf /var/lib/apt/lists/*
 
 RUN $(which pip) install jupyterlab && \
     $(which pip) install notebook && \
-    $(which pip) install pyspharm==1.0.9 && \
     $(which pip) install tcpypi && \
-    cd /opt && \
     cd /home && \
     $(which git) clone --recursive ${UFS_TCDIAGS_GIT_URL} --branch ${UFS_TCDIAGS_GIT_BRANCH}
 
-ENV PYTHONPATH=/home/ufs_tcdiags/ush:/opt/ufs_diags/sorc/:${PYTHONPATH}
+ENV PYTHONPATH=/home/ufs_tcdiags/jupyter:/home/ufs_tcdiags/ush:/opt/ufs_diags/:${PYTHONPATH}
 EXPOSE 8888
