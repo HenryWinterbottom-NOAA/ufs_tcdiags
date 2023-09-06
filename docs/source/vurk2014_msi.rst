@@ -292,4 +292,4 @@ component (middle-left); 10-meter wind-speed wave-numbers (0 + 1)
 component (middle-right); 10-meter wind-speed wave-number 2 component
 (bottom-left); and 10-meter wind-speed residual wave-numbers
 (bottom-right). The Jupyter notebook to generate the above can be
-found `here <jupyter/notebooks/tcdiags.vurk2014_msi.ipynb>`_.
+found `here <tcdiags.vurk2014_msi.md>`_.
