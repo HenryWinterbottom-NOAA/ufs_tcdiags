@@ -58,4 +58,5 @@ Applications
    :maxdepth: 1
 
    tcpi.rst
+   tc.rst
 

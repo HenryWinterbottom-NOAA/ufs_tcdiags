@@ -21,11 +21,11 @@ respective variable is mandatory.
 
    * - **Variable**
      - **Description**
-     - **Default Value**
+     - **Default**
    * - ``mslp_max``
-     - The maximum sea-level pressure value; this is used to filter
-       any extreme values computed vi the TC PI application.
-     - 2000 hPa
+     - The maximum sea-level pressure value (hPa); this is used to
+       filter any extreme values computed vi the TC PI application.
+     - 2000
    * - ``output_file``
      - The netCDF-formatted file path to contain the variables
        specified in ``output_varlist``; only written if
@@ -41,10 +41,10 @@ respective variable is mandatory.
        file.
      - ``False``
    * - ``zmax``
-     - The maximum elevation for which the respective TC PI computed
-       value is assumed valid; this acts to filter extreme values
-       induced by topography.
-     - 10 meters
+     - The maximum elevation (meters) for which the respective TC PI
+       computed value is assumed valid; this acts to filter extreme
+       values induced by topography.
+     - 10
 
 The contents of an example TC PI YAML-formatted configuration file
 follows.
@@ -110,7 +110,7 @@ variables to be written to ``output_file`` if ``write_output`` is
 In the above example, the netCDF variable name is that defined by the
 respective YAML-key (e.g., ``mxrt``). The ``name``, ``units``, and
 ``description`` keys are the attributes for the respective variable to
-be written to the netCDF-formatted file path. An example snippet of
+be written to the netCDF-formatted file path. An example snippet from
 the netCDF-formatted file follows.
 
 .. code-block:: bash
@@ -148,12 +148,12 @@ the netCDF-formatted file follows.
 Running the Application
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The TC PI application can be executed various multiple methods. Each
+The TC PI application can be executed using a variety of methods. Each
 is described below.
 
-============
-Command Line
-============
+========
+Terminal
+========
 
 The TC PI application may be executed within an supporting environment
 as follows.
@@ -192,15 +192,15 @@ notebook as follows.
    user@host:$ cd /path/to/ufs_tcdiags/jupyter/notebooks
    user@host:$ /path/to/jupyter notebook tcdiags.be2002_pi.ipynb
 
-This action behaves as the command line application (above) but is
-executed from within the respective Jupyter notebook.
+This action behaves as the terminal instance for the application
+(above) but is executed from within the respective Jupyter notebook.
 
 ================
 Docker Container
 ================
 
-The TC PI application may be executed within a Docker container
-containing the necessary dependencies as follows.
+The TC PI application may be executed within a supporting Docker
+container as follows.
 
 .. code-block:: bash
 
@@ -229,12 +229,12 @@ Jupyter Notebook Within a Docker Container
 ==========================================
 
 Similar to the Jupyter notebook and Docker container examples above,
-the aforementioned Jupyter notebook can also be launched from within
-the Docker container. This is accomplished as follows.
+the Jupyter notebook can also be launched from within the Docker
+container. This can be accomplished as follows.
 
 .. code-block:: bash
 
-   user@host:$ /path/to/docker run -v /path/to/ufs_tcdiags:/home/ufs_tcdiags -it ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
+   user@host:$ /path/to/docker run -v /path/to/ufs_tcdiags:/home/ufs_tcdiags -p 8888:8888 -it ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
    user@host:$ export PYTHONPATH="/home/ufs_tcdiags/ush":"/home/ufs_tcdiags/jupyter":"${PYTHONPATH}"
    user@host:$ cd /path/to/ufs_tcdiags/jupyter/notebooks
    user@host:$ /path/to/jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root tcdiags.be2002_pi.ipynb
@@ -250,10 +250,41 @@ associated token as follows.
 	http://5186640b39b0:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
         http://127.0.0.1:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
 
-Copy the paste the token attribute beginning with
+Copy the paste the token attribute that begins with
 ``http://127.0.0.1:8889`` into a web browser address bar and execute
 the respective Jupyter notebook as described above.
 
-^^^^^^^
-Results
-^^^^^^^
+^^^^^^^^^^^^^^^
+Example Results
+^^^^^^^^^^^^^^^
+
+.. list-table::
+   :widths: auto
+   :header-rows: 0
+
+   * - .. figure:: _static/tcpi.pmin.png
+        :name: pmin
+        :align: center
+   * - .. figure:: _static/tcpi.vmax.png
+        :name: vmax
+        :align: center
+
+The following example is computed from a nominally 1.0-degree `ERA5
+<https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5>`_
+analysis valid 0000 UTC 01 October 2016.
+
+### TODO FIX TABLE OF FIGURES BELOW
+
+
+
+Note that regions relative to
+the respective TCs have not been excluded from the
+calculations.
+		
+Tropical cyclone sea-level pressure (hPa) (top) and 10-meter wind
+speed (mps) (bottom) intensity (bottom). The areas of missing data are
+locations where the Bister and Emanuel (2002) solution does not
+converge.
+
+The above results are produced using the Jupyter notebook
+``jupyter/notebooks/tcdiags.be2002_pi.ipynb``.

@@ -1,8 +1,11 @@
-Tropical Cyclone Potential Intensity
-====================================
+Potential Intensity
+===================
+
+The following are the available tropical cyclone potential intensity
+metrics.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    be2002_pi.rst
 	      
