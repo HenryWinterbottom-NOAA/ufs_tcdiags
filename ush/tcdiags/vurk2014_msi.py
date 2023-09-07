@@ -249,7 +249,8 @@ class VURK2014(Diagnostics):
         ]
         table_obj.table = []
         for item in self.TBL_ATTR_DICT:
-            value = parser_interface.object_getattr(object_in=tcinfo_obj, key=item)
+            value = parser_interface.object_getattr(
+                object_in=tcinfo_obj, key=item)
             table_obj.table.append(
                 [
                     f"{self.TBL_ATTR_DICT[item]}",

@@ -1,7 +1,7 @@
 ---
 app_module: tcdiags.vl1991_strflw
 app_class: VL1991
-schema: !ENV ${UFS_TCDIAGS}/parm/schema/tcdiags.vl1991_strflw.yaml
+schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.vl1991_strflw.yaml
 isolevels:
   - 100000
   - 90000
