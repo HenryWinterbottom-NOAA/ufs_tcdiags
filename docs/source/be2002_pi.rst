@@ -258,6 +258,11 @@ the respective Jupyter notebook as described above.
 Example Results
 ^^^^^^^^^^^^^^^
 
+The following example is computed from a nominally 1.0-degree `ERA5
+<https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5>`_
+analysis valid 0000 UTC 01 October 2016. Note that regions relative to
+the respective TCs have not been excluded from the calculations.
+
 .. list-table::
    :widths: auto
    :header-rows: 0
@@ -268,23 +273,8 @@ Example Results
    * - .. figure:: _static/tcpi.vmax.png
         :name: vmax
         :align: center
-
-The following example is computed from a nominally 1.0-degree `ERA5
-<https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5>`_
-analysis valid 0000 UTC 01 October 2016.
-
-### TODO FIX TABLE OF FIGURES BELOW
-
-
-
-Note that regions relative to
-the respective TCs have not been excluded from the
-calculations.
 		
-Tropical cyclone sea-level pressure (hPa) (top) and 10-meter wind
-speed (mps) (bottom) intensity (bottom). The areas of missing data are
-locations where the Bister and Emanuel (2002) solution does not
-converge.
-
-The above results are produced using the Jupyter notebook
-``jupyter/notebooks/tcdiags.be2002_pi.ipynb``.
+Shown above are the TC sea-level pressure (hPa) (top) and 10-meter
+wind speed (mps) (bottom) intensity (bottom). The areas of missing
+data are locations where the Bister and Emanuel (2002) solution does
+not converge. 

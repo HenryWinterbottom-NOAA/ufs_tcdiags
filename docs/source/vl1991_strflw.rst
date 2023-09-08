@@ -3,8 +3,7 @@ Velden and Leslie (1991)
 
 This application diagnoses the tropical cyclone (TC) relative layer
 mean wind attributes using an application based on `Velden and
-Leslie, (1991)
-<https://doi.org/10.1175/1520-0434(1991)006<0244:TBRBTC>2.0.CO;2>`_.
+Leslie, (1991)<https://doi.org/10.1175/1520-0434(1991)006<0244:TBRBTC>2.0.CO;2>`_.
 
 ^^^^^^^^^^^^^
 Configuration
@@ -226,8 +225,7 @@ the respective Jupyter notebook as described above.
 Example Results
 ^^^^^^^^^^^^^^^
 
-The following example is computed from a nominally 1.0-degree `ERA5
-<https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5>`_
+The following example is computed from a nominally 1.0-degree `ERA5<https://www.ecmwf.int/en/forecasts/dataset/ecmwf-reanalysis-v5>`_
 analysis valid 0000 UTC 01 October 2016.
 
 .. list-table::
@@ -237,16 +235,15 @@ analysis valid 0000 UTC 01 October 2016.
    * - .. figure:: _static/tcstrflw.shallow.png
           :name: tcstrflw.shallow
 	  :align: center
-     - .. figure:: _static/tcstrflw.medium.png
+   *  - .. figure:: _static/tcstrflw.medium.png
           :name: tcstrflw.medium
 	  :align: center
-     - .. figure:: _static/tcstrflw.deep.png
+   *  - .. figure:: _static/tcstrflw.deep.png
           :name: tcstrflw.deep
 	  :align: center
 
 The layer-mean winds with respect to those illustrated in Figure 2 of
-`Velden and Leslie, (1991)
-<https://doi.org/10.1175/1520-0434(1991)006<0244:TBRBTC>2.0.CO;2>`_
-are shown above for the 850- to 500-hPa (left), 850- to 400-hPa
-(center), and 850- to 300-hPa (right). The TC positions valid for 0000
-UTC 01 October 2016 are denoted by the red symbols.
+`Velden and Leslie, (1991)<https://doi.org/10.1175/1520-0434(1991)006<0244:TBRBTC>2.0.CO;2>`_
+are shown above for the 850- to 500-hPa (top), 850- to 400-hPa
+(center), and 850- to 300-hPa (bottom). The TC positions valid for
+0000 UTC 01 October 2016 are denoted by the red symbols.

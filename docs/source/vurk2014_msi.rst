@@ -285,11 +285,10 @@ analysis valid 0000 UTC 01 October 2016.
           :name: tcwnmsi.wnres_wind.14L
           :align: center		  
 
-Tropical cyclone multi-scale intensity attributes for TC AL14 as
-follows: 10-meter wind-speed (top-left); 10-meter wind-speed
+Shown above are the TC multi-scale intensity attributes for TC AL14 as
+follows. 10-meter wind-speed (top-left); 10-meter wind-speed
 wave-number 0 component (top-right); 10-meter wind-speed wave-number 1
 component (middle-left); 10-meter wind-speed wave-numbers (0 + 1)
 component (middle-right); 10-meter wind-speed wave-number 2 component
 (bottom-left); and 10-meter wind-speed residual wave-numbers
-(bottom-right). The Jupyter notebook to generate the above can be
-found `here <tcdiags.vurk2014_msi.md>`_.
+(bottom-right).
