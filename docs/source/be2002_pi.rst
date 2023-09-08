@@ -274,7 +274,7 @@ the respective TCs have not been excluded from the calculations.
         :name: vmax
         :align: center
 		
-Shown above are the TC sea-level pressure (hPa) (top) and 10-meter
-wind speed (mps) (bottom) intensity (bottom). The areas of missing
-data are locations where the Bister and Emanuel (2002) solution does
-not converge. 
+Shown above are (top) the TC sea-level pressure (hPa) and (bottom) the
+10-meter wind speed (mps) intensity. The areas of missing data are
+locations where the Bister and Emanuel (2002) solution does not
+converge.
