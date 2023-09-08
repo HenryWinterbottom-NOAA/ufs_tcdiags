@@ -234,13 +234,7 @@ analysis valid 0000 UTC 01 October 2016.
    :widths: auto
    :header-rows: 0   
 
-   * - .. figure:: _static/tcwnmsi.10m_wind.14L.png
-          :name: tcwnmsi.10m_wind.14L
-          :align: center
-     - .. figure:: _static/tcwnmsi.wn0_wind.14L.png
-          :name: tcwnmsi.wn0_wind.14L
-          :align: center
-     - .. figure:: _static/tcstrflw.shallow.png
+   * - .. figure:: _static/tcstrflw.shallow.png
           :name: tcstrflw.shallow
 	  :align: center
      - .. figure:: _static/tcstrflw.medium.png
