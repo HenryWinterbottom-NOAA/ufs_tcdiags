@@ -33,6 +33,7 @@ installation attributes are provided in the table below.
 | <div align="left">[`mycolorpy`](https://github.com/binodbhttr/mycolorpy)</div> | <div align="left">`pip install mycolorpy`</div> |
 | <div align="left">[`notebook`](https://github.com/jupyter/notebook)</div> | <div align="left">`pip install notebook`</div> |
 | <div align="left">[`pyahocorasick`](https://github.com/WojciechMula/pyahocorasick) | <div align="left">`pip install pyahocorasick`</div> |
+| <div align="left">[`tcmarkers`](https://github.com/abrammer/tc_markers)</div> | <div align="left">`pip install tcmarkers`</div> |
 | <div align="left">[`tcpyPI`](https://github.com/dgilford/tcpyPI)</div> | <div align="left">`pip install tcpypi`</div> |
 | <div align="left">[`ufs_diags`](https://github.com/HenryWinterbottom-NOAA/ufs_diags)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git`</div> |
 
