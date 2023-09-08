@@ -1,7 +1,6 @@
 # File: Docker/ufs_containers.ufs_utils.dockerfile
 # Author: Henry R. Winterbottom
 # Date: 27 August 2023
-# License: LGPL v2.1
 
 # -------------------------
 # * * * W A R N I N G * * *

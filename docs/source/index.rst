@@ -57,6 +57,7 @@ Applications
 .. toctree:: 
    :maxdepth: 1
 
-   tcpi.rst
    tc.rst
+   tcpi.rst
+   metrics.rst
 
