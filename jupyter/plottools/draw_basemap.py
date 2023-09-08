@@ -1,10 +1,6 @@
-# =========================================================================
 # File: jupyter/plottools/draw_basemap.py
 # Author: Henry R. Winterbottom
-# Date: 03 March 2023
-# Version: 0.0.1
-# License: LGPL v2.1
-# =========================================================================
+# Date: 26 August 2023
 
 """
 Module

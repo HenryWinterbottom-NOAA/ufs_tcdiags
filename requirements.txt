@@ -1,6 +1,7 @@
 ufs_pyutils
 git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git
 tcpypi
+jupyterlab
 notebook
 cmocean
 matplotlib
@@ -9,4 +10,4 @@ pyahocorasick
 scipy
 basemap
 basemap-data-hires
-tcmarker
+tcmarkers
