@@ -1,10 +1,6 @@
-# =========================================================================
 # File: ush/tcdiags/vurk2014_msi.py
 # Author: Henry R. Winterbottom
 # Date: 15 June 2023
-# Version: 0.0.1
-# License: LGPL v2.1
-# =========================================================================
 
 """
 Module
@@ -249,7 +245,8 @@ class VURK2014(Diagnostics):
         ]
         table_obj.table = []
         for item in self.TBL_ATTR_DICT:
-            value = parser_interface.object_getattr(object_in=tcinfo_obj, key=item)
+            value = parser_interface.object_getattr(
+                object_in=tcinfo_obj, key=item)
             table_obj.table.append(
                 [
                     f"{self.TBL_ATTR_DICT[item]}",

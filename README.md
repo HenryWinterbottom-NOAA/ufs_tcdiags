@@ -33,6 +33,7 @@ installation attributes are provided in the table below.
 | <div align="left">[`mycolorpy`](https://github.com/binodbhttr/mycolorpy)</div> | <div align="left">`pip install mycolorpy`</div> |
 | <div align="left">[`notebook`](https://github.com/jupyter/notebook)</div> | <div align="left">`pip install notebook`</div> |
 | <div align="left">[`pyahocorasick`](https://github.com/WojciechMula/pyahocorasick) | <div align="left">`pip install pyahocorasick`</div> |
+| <div align="left">[`tcmarkers`](https://github.com/abrammer/tc_markers)</div> | <div align="left">`pip install tcmarkers`</div> |
 | <div align="left">[`tcpyPI`](https://github.com/dgilford/tcpyPI)</div> | <div align="left">`pip install tcpypi`</div> |
 | <div align="left">[`ufs_diags`](https://github.com/HenryWinterbottom-NOAA/ufs_diags)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git`</div> |
 
@@ -78,18 +79,20 @@ user@host:$ /path/to/jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --al
 user@host:$ export UFS_TCDIAGS=/home/ufs_tcdiags
 ~~~
 
-This action will produce a local HTML path and associated token key as follows.
+This action will produce a local HTML path and an associated token as
+follows.
 
 ~~~shell
-    To access the server, open this file in a browser:
-        file:///root/.local/share/jupyter/runtime/jpserver-21362-open.html
-    Or copy and paste one of these URLs:
-        http://5186640b39b0:8889/tree?token=cd7781184b286fcda2c53fafc7f395cfc2353ae6af7166e5
-        http://127.0.0.1:8889/tree?token=cd7781184b286fcda2c53fafc7f395cfc2353ae6af7166e5
+To access the server, open this file in a browser:
+    file:///root/.local/share/jupyter/runtime/jpserver-21362-open.html
+Or copy and paste one of these URLs:
+    http://5186640b39b0:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
+    http://127.0.0.1:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
 ~~~~
 
-Copy the paste the `http://127.0.0.1:8889` into a web browser and
-execute the respective Jupyter notebook (`<notebook`> above) as usual.
+Copy the paste the token attribute beginning with
+``http://127.0.0.1:8889`` into a web browser address bar and execute
+the respective Jupyter notebook(`<notebook`> above) as usual.
 
 # Forking
 

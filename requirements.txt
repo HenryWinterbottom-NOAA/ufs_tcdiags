@@ -1,12 +1,7 @@
-# File: venv/requirements.txt
-# Author: Henry R. Winterbottom
-# Date: 27 August 2023
-# Version: 0.0.1
-# License: LGPL v2.1
-
 ufs_pyutils
 git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git
 tcpypi
+jupyterlab
 notebook
 cmocean
 matplotlib
@@ -15,4 +10,4 @@ pyahocorasick
 scipy
 basemap
 basemap-data-hires
-
+tcmarkers
