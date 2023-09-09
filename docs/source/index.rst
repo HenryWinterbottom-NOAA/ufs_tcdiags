@@ -50,14 +50,12 @@ executed as follows.
    user@host:$ /path/to/docker ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
    user@host:$ /path/to/docker container run -it ghcr.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
    
-^^^^^^^^^^^^
-Applications
-^^^^^^^^^^^^
-
-.. toctree:: 
+.. toctree::
+   :hidden:
    :maxdepth: 1
 
    tc.rst
    tcpi.rst
    metrics.rst
+   references.rst
 
