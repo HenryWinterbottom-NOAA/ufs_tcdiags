@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
 
-# =========================================================================
-# File: scripts/compute_tcdiags.py
-# Author: Henry R. Winterbottom
-# Date: 03 March 2023
-# Version: 0.0.1
-# License: LGPL v2.1
-# =========================================================================
-
 """
 Script
 ------
@@ -40,37 +32,18 @@ Usage
 
     user@host:$ python compute_tcdiags.py --help
 
+    Usage: compute_tcdiags.py [-h] [-tcmsi] [-tcpi] [-tcstrflw] yaml
 
+    Tropical cyclone diagnostics computation(s) application interface.
 
-Parameters
-----------
+    Positional Arguments:
+      yaml        YAML-formatted tropical cyclone diagnostics configuration file.
 
-    yaml_file: str
-
-        A Python string specifying the path to the YAML-formatted
-        configuration file for the tropical cyclone (TC) diagnostics
-        applications.
-
-Keywords
---------
-
-    tcpi: str, optional
-
-        A Python string specifying the path to the YAML-formatted
-        configuration file for the tropical cyclone (TC) potential
-        intensity applications.
-
-    tcmsi: str, optional
-
-        A Python string specifying the path to the YAML-formatted
-        configuration file for the tropical cyclone (TC) multi-scale
-        intensity applications.
-
-    tcstrflw: str, optional
-
-        A Python string specifying the path to the YAML-formatted
-        configuration file for the tropical cyclone (TC) steering flow
-        applications.
+    Optional Arguments:
+      -h, --help  show this help message and exit
+      -tcmsi      YAML-formatted file containing the TC multi-scale intensity application configuration.
+      -tcpi       YAML-formatted file containing the TC potential intensity application configuration.
+      -tcstrflw   YAML-formatted file containing the TC steering application configuration.
 
 Requirements
 ------------
@@ -91,12 +64,6 @@ History
 
 # ----
 
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
-
-# ----
-
 import os
 import time
 from tcdiags.tcdiags import TCDiags
@@ -105,7 +72,6 @@ from utils import cli_interface
 from utils.cli_interface import CLIParser
 from utils.logger_interface import Logger
 from utils.logger_interface import Logger
-
 
 # ----
 
