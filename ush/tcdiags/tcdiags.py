@@ -1,7 +1,3 @@
-# File: ush/tcdiags/tcdiags.py
-# Author: Henry R. Winterbottom
-# Date: 26 August 2023
-
 """
 Module
 ------

@@ -1,7 +1,3 @@
-# File: ush/tcdiags/diagnostics
-# Author: Henry R. Winterbottom
-# Date: 26 August 2023
-
 """
 Module
 ------
@@ -50,12 +46,6 @@ History
 
 # ----
 
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
-
-# ----
-
 from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Dict, Generic, List, Tuple
@@ -70,6 +60,7 @@ from tcdiags.io.nc_write import NCWrite
 
 # ----
 
+# Define all available module properties.
 __all__ = ["Diagnostics"]
 
 # ----

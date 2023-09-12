@@ -1,7 +1,3 @@
-# File: ush/tcdiags/vl1991_msi.py
-# Author: Henry R. Winterbottom
-# Date: 05 May 2023
-
 """
 Module
 ------
@@ -58,12 +54,6 @@ History
 # pylint: disable=expression-not-assigned
 # pylint: disable=invalid-name
 # pylint: disable=protected-access
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 

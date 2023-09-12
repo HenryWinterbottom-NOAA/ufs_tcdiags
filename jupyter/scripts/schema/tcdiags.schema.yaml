@@ -1,9 +1,0 @@
----
-yaml:
-  help: |
-    YAML-formatted tropical cyclone diagnostics configuration file.
-  longname: yaml
-  shortname: y
-  required: true
-  type: str
-  

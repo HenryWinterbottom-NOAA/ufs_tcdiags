@@ -1,7 +1,3 @@
-# File: ush/tcdiags/exceptions.py
-# Author: Henry R. Winterbottom
-# Date: 26 August 2023
-
 """
 Module
 ------
@@ -92,17 +88,11 @@ History
 
 # ----
 
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
-
-# ----
-
 from utils.error_interface import Error
 
 # ----
 
-# Define all available attributes.
+# Define all available module properties.
 __all__ = [
     "FilterVortexError",
     "InputFieldsError",

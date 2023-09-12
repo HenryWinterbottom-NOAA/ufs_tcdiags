@@ -1,7 +1,3 @@
-# File: ush/tcdiags/vurk2014_msi.py
-# Author: Henry R. Winterbottom
-# Date: 15 June 2023
-
 """
 Module
 ------
@@ -53,12 +49,6 @@ History
 # ----
 
 # pylint: disable=protected-access
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
