@@ -54,6 +54,7 @@ executed as follows.
    :hidden:
    :maxdepth: 1
 
+   tcinfo.rst
    tc.rst
    tcpi.rst
    metrics.rst

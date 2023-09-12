@@ -1,0 +1,20 @@
+---
+input_file:
+  help: |
+    An input file, of a supported type, containing the TC information
+    to be formatted.
+  longname: input
+  required: true
+  type: str
+yaml:
+  help: |
+    Path to the YAML-formatted TC information attributes file.
+  longname: yaml
+  shortname: y
+  required: true
+  type: str
+atcf:
+  help: |
+    TC information collected from a ATCF (e.g., TC-vitals) formatted file.
+  longname: atcf
+  action: store_true
