@@ -36,6 +36,7 @@ installation attributes are provided in the table below.
 | <div align="left">[`tcmarkers`](https://github.com/abrammer/tc_markers)</div> | <div align="left">`pip install tcmarkers`</div> |
 | <div align="left">[`tcpyPI`](https://github.com/dgilford/tcpyPI)</div> | <div align="left">`pip install tcpypi`</div> |
 | <div align="left">[`ufs_diags`](https://github.com/HenryWinterbottom-NOAA/ufs_diags)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git`</div> |
+| <div align="left">[`ufs_obs`](https://github.com/HenryWinterbottom-NOAA/ufs_obs)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_obs.git`</div> |
 
 </div>
 
