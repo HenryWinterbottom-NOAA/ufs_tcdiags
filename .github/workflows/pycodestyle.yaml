@@ -28,7 +28,7 @@ jobs:
           path: ufs_tcdiags
       - name: Run pycodestyle application.
         run: >
-          cd "${GITHUB_WORKSPACE}/ufs_tcdiags
+          cd "${GITHUB_WORKSPACE}"/ufs_tcdiags
 
           $(command -v pycodestyle) -v --config "${GITHUB_WORKSPACE}"/ufs_tcdiags/.pycodestyle sorc/tcdiags
 
