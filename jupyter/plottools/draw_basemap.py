@@ -1,7 +1,3 @@
-# File: jupyter/plottools/draw_basemap.py
-# Author: Henry R. Winterbottom
-# Date: 26 August 2023
-
 """
 Module
 ------
@@ -39,18 +35,12 @@ History
 
 # ----
 
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
-
-# ----
-
 import numpy
 from mpl_toolkits.basemap import Basemap
 
 # ----
 
-# Define all available functions.
+# Define all available module properties.
 __all__ = ["draw_basemap"]
 
 # ----

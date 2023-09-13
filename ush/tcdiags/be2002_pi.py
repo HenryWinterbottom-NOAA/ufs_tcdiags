@@ -1,7 +1,3 @@
-# File: ush/tcdiags/be2002_pi.py
-# Author: Henry R. Winterbottom
-# Date: 26 August 2023
-
 """
 Module
 ------
@@ -61,12 +57,6 @@ History
 # pylint: disable=fixme
 # pylint: disable=invalid-name
 # pylint: disable=too-many-instance-attributes
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 

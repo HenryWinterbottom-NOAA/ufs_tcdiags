@@ -1,7 +1,3 @@
-# File: ush/tcdiags/io/vario.py
-# Author: Henry R. Winterbottom
-# Date: 01 May 2023
-
 """
 Module
 ------
@@ -64,12 +60,6 @@ History
 
 # ----
 
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
-
-# ----
-
 from types import SimpleNamespace
 from typing import Tuple, Union
 
@@ -80,7 +70,7 @@ from utils.logger_interface import Logger
 
 # ----
 
-# Define all available functions.
+# Define all available module properties.
 __all__ = [
     "define_units",
     "read_ncvar",
