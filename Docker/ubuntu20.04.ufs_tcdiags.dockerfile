@@ -29,5 +29,5 @@ RUN $(which apt-get) update -y && \
 RUN $(which git) clone --recursive ${UFS_TCDIAGS_GIT_URL} --branch ${UFS_TCDIAGS_GIT_BRANCH} ${TCDIAGS_ROOT} && \
     $(which pip) install -r ${TCDIAGS_ROOT}/requirements.txt
 
-ENV PYTHONPATH=${TCDIAGS_ROOT}/ush:${TCDIAGS_ROOT}/jupyter/ush:/opt/ufs_diags/:${PYTHONPATH}
+ENV PYTHONPATH=${TCDIAGS_ROOT}/sorc:${TCDIAGS_ROOT}/jupyter/ush:/opt/ufs_diags/:${PYTHONPATH}
 EXPOSE 8888
