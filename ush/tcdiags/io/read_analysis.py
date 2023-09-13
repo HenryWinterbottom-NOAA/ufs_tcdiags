@@ -1,7 +1,3 @@
-# File: ush/tcdiags/io/read_analysis.py
-# Author: Henry R. Winterbottom
-# Date: 08 March 2023
-
 """
 Module
 ------
@@ -43,12 +39,6 @@ History
 # ----
 
 # pylint: disable=consider-using-dict-items
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 

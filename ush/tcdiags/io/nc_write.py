@@ -1,7 +1,3 @@
-# File: ush/tcdiags/io/nc_write.py
-# Author: Henry R. Winterbottom
-# Date: 13 March 2023
-
 """
 Module
 ------
@@ -46,12 +42,6 @@ History
 # pylint: disable=too-many-arguments
 # pylint: disable=too-many-locals
 # pylint: disable=unused-argument
-
-# ----
-
-__author__ = "Henry R. Winterbottom"
-__maintainer__ = "Henry R. Winterbottom"
-__email__ = "henry.winterbottom@noaa.gov"
 
 # ----
 
