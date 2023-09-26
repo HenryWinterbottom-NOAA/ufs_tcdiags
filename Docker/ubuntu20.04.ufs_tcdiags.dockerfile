@@ -21,13 +21,13 @@ ENV TCDIAGS_ROOT="/home/ufs_tcdiags"
 
 ENV TZ=Etc/UTC
 
-RUN $(which apt-get) update -y && \
-    $(which apt-get) install -y --no-install-recommends && \
-    $(which apt-get) install -y git-all && \
-    $(which rm) -rf /var/lib/apt/lists/*
+RUN $(command -v apt-get) update -y && \
+    $(command -v apt-get) install -y --no-install-recommends && \
+    $(command -v apt-get) install -y git-all && \
+    $(command -v rm) -rf /var/lib/apt/lists/*
 
-RUN $(which git) clone --recursive ${UFS_TCDIAGS_GIT_URL} --branch ${UFS_TCDIAGS_GIT_BRANCH} ${TCDIAGS_ROOT} && \
-    $(which pip) install -r ${TCDIAGS_ROOT}/requirements.txt
+RUN $(command -v git) clone --recursive "${UFS_TCDIAGS_GIT_URL}" --branch "${UFS_TCDIAGS_GIT_BRANCH}" "${TCDIAGS_ROOT}" && \
+    $(command -v pip) install -r "${TCDIAGS_ROOT}/requirements.txt"
 
 ENV PYTHONPATH=${TCDIAGS_ROOT}/sorc:${TCDIAGS_ROOT}/jupyter/ush:/opt/ufs_diags/:${PYTHONPATH}
 EXPOSE 8888
