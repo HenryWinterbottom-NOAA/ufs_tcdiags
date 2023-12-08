@@ -1,0 +1,81 @@
+---
+io_module: tcdiags.io.read_analysis
+io_class: ReadAnalysis
+schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.read_analysis.mom6.yaml
+pottemp:
+  ncfile: &mom6_ncfile !ENV ${TCDIAGS_ROOT}/mom6.0p5.latlon.nc
+  ncvarname: temp
+  squeeze: true
+  squeeze_axis: 0
+  description: Potential temperatures.
+  unstructured: &grid false
+  name: pottemp
+  units: degC
+  coords: &coords3d
+   - depth
+   - lat
+   - lon
+salinity:
+  ncfile: *mom6_ncfile 
+  ncvarname: so
+  squeeze: true
+  squeeze_axis: 0
+  description: Practical salinities.
+  unstructured: *grid
+  name: salt
+  units: dimensionless
+  coords: *coords3d
+depth_profile:
+  ncfile: *mom6_ncfile
+  ncvarname: z_l
+  name: depth_profile
+  units: meter
+  grid_coord_idx: 0
+longitude:
+  ncfile: *mom6_ncfile
+  ncvarname: lon #geolon
+  scale_add: 0.0
+  description: Longitudes.
+  unstructured: *grid
+  name: lon
+  units: degree
+  unstructured: *grid
+  grid_coord_idx: 2
+  coords: &coords2d
+   - lat
+   - lon
+latitude:
+  ncfile: *mom6_ncfile
+  ncvarname: lat #geolat
+  description: Latitudes.
+  unstructured: *grid
+  name: lat
+  units: degree
+  grid_coord_idx: 1
+  coords: *coords2d
+ssh:
+  ncfile: *mom6_ncfile
+  ncvarname: SSH
+  name: ssh
+  description: Sea-surface heights.
+  unstructured: *grid
+  units: meter
+  coords: *coords2d
+depth:
+  derived: true
+  method: depth_from_profile
+  module: diags.derived.ocean.depths
+  description: Ocean depths.
+  unstructured: *grid
+  name: depth
+  units: meter
+  coords: *coords3d
+seawater_pressure:
+  derived: true
+  method: seawater_from_depth
+  module: diags.derived.ocean.pressures
+  description: Sea-water pressures.
+  name: seawater_pres
+  units: dbar
+  unstructured: *grid
+  coords: *coords3d

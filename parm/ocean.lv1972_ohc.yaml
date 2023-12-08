@@ -1,0 +1,45 @@
+---
+app_module: tcdiags.lv1972_ohc
+app_class: LV1972
+schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.lv1972_ohc.yaml
+write_output: true
+output_file: ./tcdiags.lv1972_ohc.nc
+output_vars:
+  tchp:
+    coords: &coords2d
+      - lat
+      - lon
+    attributes:
+      description: Tropical cyclone heat potential.
+  lats:
+    coords: *coords2d
+    attributes:
+      description: Latitudes.
+  lons:
+    coords: *coords2d
+    attributes:
+      description: Longitudes.
+  isotherm:
+    coords: *coords2d
+    attributes:
+      description: Isotherm depth.
+  asaln:
+    coords: &coords3d
+      - level   
+      - lat
+      - lon
+    attributes:
+      description: Absolute salinity.
+  ctemp:
+    coords: *coords3d
+    attributes:
+      description: Conservative temperature.
+  ohc:
+    coords: *coords3d
+    attributes:
+      description: Ocean heat content.
+  depths:
+    coords: *coords3d
+    attributes:
+      description: Ocean depth.
+

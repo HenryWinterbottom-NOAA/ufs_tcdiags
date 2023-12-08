@@ -55,6 +55,7 @@ executed as follows.
    :maxdepth: 1
 
    tcinfo.rst
+   ohc.rst
    tc.rst
    tcpi.rst
    metrics.rst

@@ -1,0 +1,25 @@
+---
+output_file:
+  required: false
+  default: ./tcdiags.lv1972_ohc.nc
+  type: str
+write_output:
+  required: false
+  type: bool
+  default: false
+isotherm:
+  required: false
+  type: float
+  default: 26.0
+deltaz:
+  required: false
+  type: float
+  default: 5.0
+interp_type:
+  required: false
+  type: str
+  default: linear
+fill_value:
+  required: false
+  type: str
+  default: numpy.nan

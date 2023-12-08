@@ -18,6 +18,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV UFS_TCDIAGS_GIT_URL="https://www.github.com/HenryWinterbottom-NOAA/ufs_tcdiags.git"
 ENV UFS_TCDIAGS_GIT_BRANCH="develop"
 ENV TCDIAGS_ROOT="/home/ufs_tcdiags"
+ENV DIAGS_ROOT="/opt/ufs_diags"
 
 ENV TZ=Etc/UTC
 
@@ -29,5 +30,5 @@ RUN $(command -v apt-get) update -y && \
 RUN $(command -v git) clone --recursive "${UFS_TCDIAGS_GIT_URL}" --branch "${UFS_TCDIAGS_GIT_BRANCH}" "${TCDIAGS_ROOT}" && \
     $(command -v pip) install -r "${TCDIAGS_ROOT}/requirements.txt"
 
-ENV PYTHONPATH=${TCDIAGS_ROOT}/sorc:${TCDIAGS_ROOT}/jupyter/ush:/opt/ufs_diags/:${PYTHONPATH}
+ENV PYTHONPATH="${TCDIAGS_ROOT}/sorc:${TCDIAGS_ROOT}/jupyter/ush:${DIAGS_ROOT}/sorc:${PYTHONPATH}"
 EXPOSE 8888

@@ -1,0 +1,3 @@
+---
+inputs: !ENV ${TCDIAGS_ROOT}/parm/inputs.mom6.yaml
+tcohc: !ENV ${TCDIAGS_ROOT}/parm/ocean.lv1972_ohc.yaml

@@ -222,8 +222,8 @@ def update_grid(
             "are 1-dimensional; converting to gridded values."
         )
         logger.warn(msg=msg)
-
-        (xlon_out, xlat_out) = numpy.meshgrid(xlon_in, xlat_in)
+        (xlon_out, xlat_out) = numpy.meshgrid(xlon_in.magnitude,
+                                              xlat_in.magnitude)*units.degrees
     else:
         msg = (
             "The geographical coordinate arrays are projected to "

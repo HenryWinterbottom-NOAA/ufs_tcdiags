@@ -46,6 +46,8 @@ from importlib import import_module
 from types import SimpleNamespace
 from typing import Generic
 
+import asyncio
+
 from confs.yaml_interface import YAML
 from tcdiags.exceptions import ReadAnalysisError
 from tcdiags.io import vario
@@ -94,8 +96,7 @@ class ReadAnalysis:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(
-            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
         self.variable_range_msg = "Variable %s range values: (%s, %s) %s."
 
         # Collect the variable attributes.
@@ -120,7 +121,6 @@ class ReadAnalysis:
             self.cls_schema = schema_interface.build_schema(
                 schema_def_dict=YAML().read_yaml(yaml_file=self.inputs_obj.schema)
             )
-
         except Exception as errmsg:
             msg = (
                 f"Reading YAML-formatted file {yaml_file} failed with error "
@@ -221,13 +221,12 @@ class ReadAnalysis:
 
         # Compute the specified analysis variables.
         for varname in self.varname_list:
-            varobj = parser_interface.object_getattr(
-                object_in=inputs_obj, key=varname)
+            varobj = parser_interface.object_getattr(object_in=inputs_obj, key=varname)
             if varobj.derived:
                 method_app = parser_interface.object_getattr(
                     import_module(varobj.module), key=f"{varobj.method}", force=False
                 )
-                varobj.values = method_app(varobj=inputs_obj)
+                varobj.values = asyncio.run(method_app(varobj=inputs_obj))
                 varobj.values = vario.define_units(
                     varin=varobj.values, varunits=varobj.units
                 )
