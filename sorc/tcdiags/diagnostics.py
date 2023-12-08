@@ -42,11 +42,13 @@ History
 
 # ----
 
+# pylint: disable=fixme
+# pylint: disable=no-value-for-parameter
+# pylint: disable=too-many-arguments
 # pylint: disable=unused-argument
 
 # ----
 
-from dataclasses import dataclass
 from types import SimpleNamespace
 from typing import Dict, Generic, List, Tuple
 
@@ -56,7 +58,7 @@ from utils import schema_interface
 from utils.decorator_interface import privatemethod
 from utils.logger_interface import Logger
 
-#from tcdiags.io.nc_write import NCWrite # TODO
+from tcdiags.io.nc_write import NCWrite  # TODO
 
 # ----
 
@@ -77,14 +79,14 @@ class Diagnostics:
     Parameters
     ----------
 
-    tcdiags_obj: SimpleNamespace
+    tcdiags_obj: ``SimpleNamespace``
 
         A Python SimpleNamespace object containing all configuration
         attributes for the respective application including inputs
         (i.e., `inputs` and `tcinfo`) as well as the remaining
         (supported) applications.
 
-    app: str
+    app: ``str``
 
         A Python string specifying the respective sub-class
         application; see `TCDiags` class attribute `app_list`.
@@ -92,12 +94,12 @@ class Diagnostics:
     Other Parameters
     ----------------
 
-    args: Tuple
+    args: ``Tuple``
 
         A Python tuple containing additional arguments passed to the
         constructor.
 
-    kwargs: Dict
+    kwargs: ``Dict``
 
         A Python dictionary containing additional key and value pairs
         to be passed to the constructor.
@@ -120,21 +122,22 @@ class Diagnostics:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(
-            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
         self.tcdiags_obj = tcdiags_obj
         cls_schema_file = parser_interface.object_getattr(
-            object_in=self.tcdiags_obj, key=app, force=True).schema
+            object_in=self.tcdiags_obj, key=app, force=True
+        ).schema
         cls_opts = parser_interface.object_todict(
             object_in=parser_interface.object_getattr(
-                object_in=self.tcdiags_obj, key=app, force=True))
-        self.options_obj = self.schema(cls_schema_file=cls_schema_file,
-                                       cls_opts=cls_opts)
+                object_in=self.tcdiags_obj, key=app, force=True
+            )
+        )
+        self.options_obj = self.schema(
+            cls_schema_file=cls_schema_file, cls_opts=cls_opts
+        )
 
     @privatemethod
-    def schema(
-        self: Generic, cls_schema_file: str, cls_opts: Dict
-    ) -> SimpleNamespace:
+    def schema(self: Generic, cls_schema_file: str, cls_opts: Dict) -> SimpleNamespace:
         """
         Description
         -----------
@@ -142,14 +145,14 @@ class Diagnostics:
         This method evaluates the schema corresponding to the
         respective application.
 
-        cls_schema_file: str
+        cls_schema_file: ``str``
 
             A Python string specifying the file path for the
             YAML-formatted file containing the schema attributes for
             the respective application (base-class attribute
             `app_obj`).
 
-        cls_opts: Dict
+        cls_opts: ``Dict``
 
             A Python dictionary containing the configuration defined
             options for the respective application (base-class
@@ -158,7 +161,7 @@ class Diagnostics:
         Returns
         -------
 
-        options_obj: SimpleNamespace
+        options_obj: ``SimpleNamespace``
 
             A Python SimpleNamespace containing the respective
             application configuration.
@@ -168,8 +171,7 @@ class Diagnostics:
         # Evaluate the schema and define the configuration for the
         # respective application.
         schema_def_dict = YAML().read_yaml(yaml_file=cls_schema_file)
-        cls_schema = schema_interface.build_schema(
-            schema_def_dict=schema_def_dict)
+        cls_schema = schema_interface.build_schema(schema_def_dict=schema_def_dict)
         options_obj = parser_interface.dict_toobject(
             in_dict=schema_interface.validate_schema(
                 cls_schema=cls_schema, cls_opts=cls_opts, write_table=True
@@ -179,12 +181,12 @@ class Diagnostics:
         return options_obj
 
     def write_output(
-            self: Generic,
-            output_file: str,
-            var_obj: SimpleNamespace,
-            var_list: List,
-            coords_2d: Dict = None,
-            coords_3d: Dict = None,
+        self: Generic,
+        output_file: str,
+        var_obj: SimpleNamespace,
+        var_list: List,
+        coords_2d: Dict = None,
+        coords_3d: Dict = None,
     ) -> None:
         """
         Description
@@ -197,30 +199,30 @@ class Diagnostics:
         Parameters
         ----------
 
-        output_file: str
+        output_file: ``str``
 
             A Python string defining the path to the output
             netCDF-formatted file.
 
-        var_obj: SimpleNamespace
+        var_obj: ``SimpleNamespace``
 
             A Python SimpleNamespace object containing the quantities
             to be written to the output netCDF-formatted file.
 
-        var_list: List
+        var_list: ``List``
 
             A Python list of output variables.
 
         Keywords
         --------
 
-        coords_2d: Dict, optional
+        coords_2d: ``Dict``, optional
 
             A Python dictionary containing the 2-dimensional
             coordinate and dimension attributes; this is assumes CF
             compliance.
 
-        coords_3d: Dict, optional
+        coords_3d: ``Dict``, optional
 
             A Python dictionary containing the 3-dimensional
             coordinate and dimension attributes; this is assumes CF
@@ -236,6 +238,7 @@ class Diagnostics:
             var_obj=var_obj, var_list=var_list, coords_2d=coords_2d, coords_3d=coords_3d
         )
 
+
 # ----
 
 
@@ -250,14 +253,14 @@ class Metrics(Diagnostics):
     Parameters
     ----------
 
-    tcdiags_obj: SimpleNamespace
+    tcdiags_obj: ``SimpleNamespace``
 
         A Python SimpleNamespace object containing all configuration
         attributes for the respective application including inputs
         (i.e., `inputs` and `tcinfo`) as well as the remaining
         (supported) applications.
 
-    app_obj: SimpleNamespace
+    app_obj: ``SimpleNamespace``
 
         A Python SimpleNamespace object containing the attributes for
         the respective sub-class application.
@@ -265,12 +268,12 @@ class Metrics(Diagnostics):
     Other Parameters
     ----------------
 
-    args: Tuple
+    args: ``Tuple``
 
         A Python tuple containing additional arguments passed to the
         constructor.
 
-    kwargs: Dict
+    kwargs: ``Dict``
 
         A Python dictionary containing additional key and value pairs
         to be passed to the constructor.
@@ -293,6 +296,3 @@ class Metrics(Diagnostics):
 
         # Define the base-class attributes.
         super().__init__(tcdiags_obj=tcdiags_obj)
-
-
-# ----
