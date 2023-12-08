@@ -15,8 +15,8 @@ Classes
 
     BE2002(tcdiags_obj)
 
-        This is the base-class object for all tropical cyclone(TC)
-        potential intensity(PI) computations following Bister and
+        This is the base-class object for all tropical cyclone (TC)
+        potential intensity (PI) computations following Bister and
         Emanuel [2002] and via the software provided by Gifford,
         D. M., [2020]; it is a sub-class of Metrics.
 
@@ -78,8 +78,8 @@ class BE2002(Diagnostics):
     Description
     -----------
 
-    This is the base-class object for all tropical cyclone(TC)
-    potential intensity(PI) computations following Bister and Emanuel
+    This is the base-class object for all tropical cyclone (TC)
+    potential intensity (PI) computations following Bister and Emanuel
     [2002] and via the software provided by Gifford, D. M., [2020]; it
     is a sub-class of Metrics.
 
