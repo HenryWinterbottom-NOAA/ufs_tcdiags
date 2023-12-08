@@ -60,8 +60,6 @@ History
 
 # ----
 
-from pint import UnitRegistry
-
 from types import SimpleNamespace
 from typing import Tuple, Union
 
@@ -225,7 +223,7 @@ def update_grid(
         )
         logger.warn(msg=msg)
         (xlon_out, xlat_out) = numpy.meshgrid(xlon_in.magnitude,
-                                              xlat_in.magnitude)*UnitRegistry().degrees
+                                              xlat_in.magnitude)*units.degrees
     else:
         msg = (
             "The geographical coordinate arrays are projected to "
