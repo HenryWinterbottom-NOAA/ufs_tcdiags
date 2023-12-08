@@ -1,5 +1,4 @@
 ---
----
 app_module: tcdiags.lv1972_ohc
 app_class: LV1972
 schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.lv1972_ohc.yaml
