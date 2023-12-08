@@ -1,24 +1,11 @@
 ---
+---
 app_module: tcdiags.lv1972_ohc
 app_class: LV1972
 schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.lv1972_ohc.yaml
-output_file: test.nc
+write_output: true
+output_file: ./tcdiags.lv1972_ohc.nc
 output_vars:
-  asaln:
-    coords: &coords3d
-      - level   
-      - lat
-      - lon
-    attributes:
-      description: Absolute salinity.
-  ctemp:
-    coords: *coords3d
-    attributes:
-      description: Conservative temperature.
-  ohc:
-    coords: *coords3d
-    attributes:
-      description: Ocean heat content.
   tchp:
     coords: &coords2d
       - lat
@@ -33,22 +20,23 @@ output_vars:
     coords: *coords2d
     attributes:
       description: Longitudes.
+  isotherm:
+    coords: *coords2d
+    attributes:
+      description: Isotherm depth.
+  ctemp:
+    coords: &coords3d
+      - level   
+      - lat
+      - lon
+    attributes:
+      description: Conservative temperature.
+  ohc:
+    coords: *coords3d
+    attributes:
+      description: Ocean heat content.
   depths:
     coords: *coords3d
     attributes:
       description: Ocean depth.
 
-
-# TODO: Units should be written to netCDF-output file regardless of
-# attributes specified above; if specified here, override the value
-# assigned to the object.
-
-
-#  - "asaln"
- # - "ohc"
- # - "tchp"
- # - "isotherm"
- # - "ctemp"
-#  - "depth"
-#  - "lats"
-#  - "lons"
