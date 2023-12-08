@@ -54,6 +54,7 @@ History
 
 import asyncio
 from types import SimpleNamespace
+from typing import Dict, Tuple
 
 import numpy
 from diags.derived.ocean.depths import isodepth
@@ -91,6 +92,19 @@ class LV1972(Diagnostics):
         (supported) applications (see base-class attribute
         `apps_list`).
 
+    Other Parameters
+    ----------------
+
+    args: ``Tuple``
+
+        A Python tuple containing additional arguments passed to the
+        constructor.
+
+    kwargs: ``Dict``
+
+        A Python dictionary containing additional key and value pairs
+        to be passed to the constructor.
+
     References
     ----------
 
@@ -101,7 +115,9 @@ class LV1972(Diagnostics):
 
     """
 
-    def __init__(self: Diagnostics, tcdiags_obj: SimpleNamespace):
+    def __init__(
+        self: Diagnostics, tcdiags_obj: SimpleNamespace, *args: Tuple, **kwargs: Dict
+    ):
         """
         Description
         -----------
@@ -378,7 +394,7 @@ class LV1972(Diagnostics):
 
         return tchp
 
-    def run(self: Diagnostics, *args, **kwargs) -> SimpleNamespace:
+    def run(self: Diagnostics) -> SimpleNamespace:
         """
         Description
         -----------
@@ -387,8 +403,8 @@ class LV1972(Diagnostics):
 
         (1) Computes the TCHP.
 
-        (2) Writes the specified output variables to the specified
-            netCDF-formatted file path.
+        (2) Optionally writes the specified output variables to the
+            specified netCDF-formatted file path.
 
         """
 
@@ -397,6 +413,7 @@ class LV1972(Diagnostics):
         tchp_obj = asyncio.run(self.initialize())
         tchp_obj = asyncio.run(self.setup(tchp_obj=tchp_obj))
         tchp_obj = asyncio.run(self.compute(tchp_obj=tchp_obj))
-        asyncio.run(self.output(varobj=tchp_obj))
+        if self.tcdiags_obj.tcohc.write_output:
+            asyncio.run(self.output(varobj=tchp_obj))
 
         return tchp_obj
