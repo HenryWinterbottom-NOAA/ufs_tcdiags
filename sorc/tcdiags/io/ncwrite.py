@@ -258,16 +258,17 @@ def __xarraylist__(varobj: SimpleNamespace, coords_dict: Dict) -> List[DataArray
         coords = OrderedDict({key: coords_dict[key] for key in varinfo.coords})
         msg = f"Building DataArray object for variable {var}."
         logger.info(msg=msg)
+        attributes = parser_interface.object_getattr(
+            object_in=varinfo, key="attributes", force=True
+        )
+        if attributes is None:
+            attributes = {}
         xarrdsobj = DataArray(
             name=var,
             dims=varinfo.coords,
             coords=coords,
             data=numpy.array(varinfo.values),
-        )
-        attributes = parser_interface.object_getattr(
-            object_in=varinfo, key="attributes", force=True)
-        if attributes is not None:
-            xarrdsobj.assign_attrs(attributes) # TODO: Why is this not working?
+        ).assign_attrs(attributes)
         xarrdslist.append(xarrdsobj.to_dataset(name=var))
 
     return xarrdslist

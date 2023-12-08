@@ -255,14 +255,21 @@ class LV1972(Diagnostics):
                     no_split=True,
                 )
             )
+            if (
+                parser_interface.object_getattr(
+                    object_in=ncvar, key="attributes", force=True
+                )
+                is None
+            ):
+                ncvar.attributes = {}
             ncvar.values = parser_interface.object_getattr(object_in=varobj, key=var)
+            ncvar.attributes["units"] = f"{ncvar.values.units}"
             ncout_obj = parser_interface.object_setattr(
                 object_in=ncout_obj, key=var, value=ncvar
             )
         ncout_obj.grid_coords = ["level", "lat", "lon"]
         ncout_obj.ncoutput = self.tcdiags_obj.tcohc.output_file
 
-        # TODO: If ncvarlist is NoneType, do nothing.
         return ncout_obj
 
     async def setup(self: Diagnostics, tchp_obj: SimpleNamespace) -> SimpleNamespace:
