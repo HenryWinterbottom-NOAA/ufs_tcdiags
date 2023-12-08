@@ -3,7 +3,6 @@ yaml:
   help: |
     YAML-formatted tropical cyclone diagnostics configuration file.
   longname: yaml
-  shortname: y
   required: true
   type: str
 tcmsi:
@@ -17,6 +16,12 @@ tcpi:
     YAML-formatted file containing the TC potential intensity application
     configuration.
   longname: tcpi
+  action: store_true
+tcohc:
+  help: >
+    YAML-formatted file containing the TC relative ocean heat-content  application
+    configuration.
+  longname: tcohc 
   action: store_true
 tcstrflw:
   help: |
