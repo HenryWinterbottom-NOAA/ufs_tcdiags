@@ -1,7 +1,7 @@
 ---
 output_file:
   required: false
-  default: null
+  default: ./tcdiags.lv1972_ohc.nc
   type: str
 write_output:
   required: false

@@ -23,11 +23,15 @@ output_vars:
     coords: *coords2d
     attributes:
       description: Isotherm depth.
-  ctemp:
+  asaln:
     coords: &coords3d
       - level   
       - lat
       - lon
+    attributes:
+      description: Absolute salinity.
+  ctemp:
+    coords: *coords3d
     attributes:
       description: Conservative temperature.
   ohc:
