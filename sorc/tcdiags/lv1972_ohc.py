@@ -71,6 +71,11 @@ from tcdiags.io.ncwrite import ncwrite
 
 # ----
 
+# Define all available module properties.
+__all__ = ["LV1972"]
+
+# ----
+
 
 class LV1972(Diagnostics):
     """
