@@ -93,7 +93,9 @@ class TCDiags:
         self.yaml_obj = YAML().read_yaml(yaml_file=self.yaml_file, return_obj=True)
 
         # Define the available applications.
-        self.apps_list = ["tcmsi", "tcpi", "tcstrflw"]
+        
+        # TODO: Move this to a schema interface.
+        self.apps_list = ["tcmsi", "tcohc", "tcpi", "tcstrflw"]
 
     def config(self: Generic) -> SimpleNamespace:
         """
