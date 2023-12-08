@@ -147,6 +147,9 @@ class LV1972(Diagnostics):
             varin=tchp_obj.ctemp.magnitude,
             isolev=self.tcdiags_obj.tcohc.isotherm,
         )
+        tchp_obj.isotherm = numpy.ma.where(
+            tchp_obj.isotherm <= numpy.nanmax(tchp_obj.isotherm), tchp_obj.isotherm, 0.0
+        )
         tchp_obj.isotherm = units.Quantity(tchp_obj.isotherm, "m")
         isotherm = numpy.array(tchp_obj.isotherm).ravel()
         depths = numpy.reshape(
