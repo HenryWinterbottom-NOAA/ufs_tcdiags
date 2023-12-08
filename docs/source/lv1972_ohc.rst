@@ -4,7 +4,7 @@ Leipper and Volgenau (1972)
 This application diagnoses the Ocean Heat Content (OHC) relative to a
 specified isotherm depth relevant to tropical cyclone (TC) analysis
 and forecasting (e.g., Tropical Cyclone Heat Potential; TCHP). The
-application is based on that described in `Leipper and Volgenau, (1972) <https://doi.org/10.1175/1520-0485(1972)002<0218:HHPOTG>2.0.CO;2>`_.
+application is based on that described in `Leipper and Volgenau, (1972) <https://doi.org/10.1175/1520-0485(1972)002\<0218:HHPOTG\>2.0.CO;2>`_.
 
 ^^^^^^^^^^^^^
 Configuration
