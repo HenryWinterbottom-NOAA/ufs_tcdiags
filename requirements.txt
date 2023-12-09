@@ -1,6 +1,3 @@
-ufs_pyutils
-git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git
-git+https://www.github.com/HenryWinterbottom-NOAA/ufs_obs.git
 tcpypi
 jupyterlab
 notebook
