@@ -20,9 +20,9 @@ export BUILD_PATH=${BUILD_PATH:-"${PWD}"}
 
 echo "Installing in path ${INSTALL_PATH}"
 $(command -v pip) install --upgrade pip
-$(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/ufs_pyutils.git#ufs_pyutils --target "${INSTALL_PATH}/ufs_pyutils"
-$(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git#ufs_diags --target "${INSTALL_PATH}/ufs_diags"
-$(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/ufs_obs.git#ufs_obs --target "${INSTALL_PATH}/ufs_obs"
+$(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/ufs_pyutils.git#egg=ufs_pyutils --target "${INSTALL_PATH}/ufs_pyutils"
+$(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git#egg=ufs_diags --target "${INSTALL_PATH}/ufs_diags"
+$(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/ufs_obs.git#egg=ufs_obs --target "${INSTALL_PATH}/ufs_obs"
 $(command -v pip) install -r "${BUILD_PATH}/requirements.txt"
 
 export PYTHONPATH="${INSTALL_PATH}/ufs_pyutils/sorc:${INSTALL_PATH}/ufs_diags/sorc:${INSTALL_PATH}/ufs_obs/sorc:${PYTHONPATH}"
