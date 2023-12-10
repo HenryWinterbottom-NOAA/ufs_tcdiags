@@ -25,5 +25,5 @@ $(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/u
 $(command -v pip) install -e git+https://www.github.com/HenryWinterbottom-NOAA/ufs_obs.git#egg=ufs_obs --target "${INSTALL_PATH}/ufs_obs"
 $(command -v pip) install -r "${BUILD_PATH}/requirements.txt"
 
-export PYTHONPATH="${INSTALL_PATH}/ufs_pyutils/sorc:${INSTALL_PATH}/ufs_diags/sorc:${INSTALL_PATH}/ufs_obs/sorc:${PYTHONPATH}"
-echo "PYTHONPATH=${PYTHONPATH}" >> "${HOME}/.bashrc"
+#export PYTHONPATH="${INSTALL_PATH}/ufs_pyutils/sorc:${INSTALL_PATH}/ufs_diags/sorc:${INSTALL_PATH}/ufs_obs/sorc:${PYTHONPATH}"
+#echo "PYTHONPATH=${PYTHONPATH}" >> "${HOME}/.bashrc"
