@@ -52,20 +52,21 @@ History
 
 # ----
 
+import asyncio
 from collections import OrderedDict
 from types import SimpleNamespace
 from typing import Dict, Tuple
 
 import numpy
 import xarray
-from diags.derived.atmos import winds
-from diags.grids.bearing_geoloc import bearing_geoloc
-from diags.interp.ll2ra import ll2ra
-from diags.interp.vertical import interp
-from diags.transforms.fft import forward_fft2d, inverse_fft2d
+from derived.atmos import winds
+from grids.bearing_geoloc import bearing_geoloc
+from interp.ll2ra import ll2ra
+from interp.vertical import interp
 from metpy.units import units
 from pint import UnitRegistry
 from tools import parser_interface
+from transforms.fft import forward_fft2d, inverse_fft2d
 from utils import table_interface
 from utils.decorator_interface import privatemethod
 
@@ -235,8 +236,7 @@ class VURK2014(Diagnostics):
         ]
         table_obj.table = []
         for item in self.TBL_ATTR_DICT:
-            value = parser_interface.object_getattr(
-                object_in=tcinfo_obj, key=item)
+            value = parser_interface.object_getattr(object_in=tcinfo_obj, key=item)
             table_obj.table.append(
                 [
                     f"{self.TBL_ATTR_DICT[item]}",
@@ -248,7 +248,7 @@ class VURK2014(Diagnostics):
         self.logger.info(msg="\n\n" + table + "\n\n")
 
     @privatemethod
-    def compute_inputs(self: Diagnostics) -> None:
+    async def compute_inputs(self: Diagnostics) -> None:
         """
         Description
         -----------
@@ -266,7 +266,7 @@ class VURK2014(Diagnostics):
         varobj = parser_interface.object_define()
         varobj.uwnd = self.tcdiags_obj.inputs.uwind.values._magnitude
         varobj.vwnd = self.tcdiags_obj.inputs.vwind.values._magnitude
-        wndmag = winds.wndmag(varobj=varobj)
+        wndmag = await winds.wndmag(varobj=varobj)
 
         # Interpolate to estimate the 10-meter wind field.
         msg = "Interpolating the wind field magnitude to a 10-meter elevation."
@@ -624,7 +624,7 @@ class VURK2014(Diagnostics):
         # Compute the 10-meter wind field.
         self.tcmsi_obj.lats = self.tcdiags_obj.inputs.latitude.values._magnitude
         self.tcmsi_obj.lons = self.tcdiags_obj.inputs.longitude.values._magnitude
-        self.compute_inputs()
+        asyncio.run(self.compute_inputs())
         self.tcmsi_obj.wnds = self.tcmsi_obj.wnds10m.values
         self.tcmsi_obj = parser_interface.object_setattr(
             object_in=self.tcmsi_obj,

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# ----
+
 """
 Script
 ------
@@ -32,17 +34,21 @@ Usage
 
     user@host:$ python compute_tcdiags.py --help
 
-    Usage: compute_tcdiags.py [-h] [-tcmsi] [-tcpi] [-tcstrflw] yaml
+    Usage: compute_tcdiags.py [-h] [-tcmsi] [-tcpi] [-tcohc] [-tcstrflw] yaml
 
-    Tropical cyclone diagnostics computation(s) application interface.
+    Tropical cyclone diagnostics interface.
 
     Positional Arguments:
       yaml        YAML-formatted tropical cyclone diagnostics configuration file.
 
     Optional Arguments:
       -h, --help  show this help message and exit
-      -tcmsi      YAML-formatted file containing the TC multi-scale intensity application configuration.
-      -tcpi       YAML-formatted file containing the TC potential intensity application configuration.
+      -tcmsi      YAML-formatted file containing the TC multi-scale intensity
+                    application configuration.
+      -tcpi       YAML-formatted file containing the TC potential intensity
+                    application configuration.
+      -tcohc      YAML-formatted file containing the TC relative ocean heat-content
+                    application configuration.
       -tcstrflw   YAML-formatted file containing the TC steering application configuration.
 
 Requirements
@@ -64,23 +70,32 @@ History
 
 # ----
 
+# pylint: disable=no-value-for-parameter
+
+# ----
+
 import os
-import time
+from types import SimpleNamespace
+
 from tcdiags.tcdiags import TCDiags
-from tools import fileio_interface, parser_interface
-from utils import cli_interface
-from utils.cli_interface import CLIParser
-from utils.logger_interface import Logger
-from utils.logger_interface import Logger
+from tools import parser_interface
+from utils.decorator_interface import cli_wrapper, script_wrapper
 
 # ----
 
-logger = Logger(caller_name=__name__)
+DESCRIPTION = "Tropical cyclone diagnostics interface."
+SCHEMA_FILE = os.path.join(
+    parser_interface.enviro_get("TCDIAGS_ROOT"),
+    "scripts",
+    "schema",
+    "compute_tcdiags.schema.yaml",
+)
+SCRIPT_NAME = os.path.basename(__file__)
 
-# ----
 
-
-def main() -> None:
+@cli_wrapper(description=DESCRIPTION, schema_file=SCHEMA_FILE, script_name=SCRIPT_NAME)
+@script_wrapper(script_name=SCRIPT_NAME)
+def main(options_obj: SimpleNamespace) -> None:
     """
     Description
     -----------
@@ -90,33 +105,9 @@ def main() -> None:
 
     """
 
-    # Collect the command line arguments.
-    script_name = os.path.basename(__file__)
-    start_time = time.time()
-    msg = f"Beginning application {script_name}."
-    logger.status(msg=msg)
-    parser_interface.enviro_set(
-        envvar="CLI_SCHEMA",
-        value=os.path.join(os.getcwd(), "schema",
-                           "compute_tcdiags.schema.yaml"),
-    )
-    args_objs = CLIParser().build()
-    parser = cli_interface.init(
-        args_objs=args_objs,
-        description="Tropical cyclone diagnostics computation(s) application interface.",
-        prog=os.path.basename(__file__),
-    )
-    options_obj = cli_interface.options(parser=parser)
-
     # Launch the task.
     task = TCDiags(options_obj=options_obj)
     task.run()
-    stop_time = time.time()
-    msg = f"Completed application {script_name}."
-    logger.status(msg=msg)
-    total_time = stop_time - start_time
-    msg = f"Total Elapsed Time: {total_time} seconds."
-    logger.status(msg=msg)
 
 
 # ----

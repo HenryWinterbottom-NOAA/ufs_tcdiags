@@ -57,15 +57,16 @@ History
 
 # ----
 
+import asyncio
 from types import SimpleNamespace
 from typing import Tuple
 
 import numpy
-from diags.derived.atmos import winds
-from diags.grids.radial_distance import radial_distance
-from diags.interp import vertical
-from diags.transforms import svd
+from derived.atmos import winds
+from grids.radial_distance import radial_distance
+from interp import vertical
 from tools import parser_interface
+from transforms import svd
 from utils.decorator_interface import privatemethod
 
 from tcdiags.diagnostics import Diagnostics
@@ -130,7 +131,9 @@ class VL1991(Diagnostics):
         }
 
     @privatemethod
-    def compute_diags(self: Diagnostics, uwnd: numpy.array, vwnd: numpy.array) -> None:
+    async def compute_diags(
+        self: Diagnostics, uwnd: numpy.array, vwnd: numpy.array
+    ) -> None:
         """
         Description
         -----------
@@ -186,26 +189,24 @@ class VL1991(Diagnostics):
         # Compute the velocity potential and streamfunction.
         (self.tcstrflw_obj.chi, self.tcstrflw_obj.psi) = [
             varobj.uwnd.assign_attrs(
-                parser_interface.object_getattr(
-                    object_in=diagvars_obj, key=varname)
+                parser_interface.object_getattr(object_in=diagvars_obj, key=varname)
             )
             for varname in ["chi", "psi"]
         ]
         (
             self.tcstrflw_obj.chi.values,
             self.tcstrflw_obj.psi.values,
-        ) = winds.global_psichi(varobj=varobj)
+        ) = await winds.global_psichi(varobj=varobj)
 
         # Compute the vorticity and divergence.
         (self.tcstrflw_obj.divg, self.tcstrflw_obj.vort) = [
             varobj.uwnd.assign_attrs(
-                parser_interface.object_getattr(
-                    object_in=diagvars_obj, key=varname)
+                parser_interface.object_getattr(object_in=diagvars_obj, key=varname)
             )
             for varname in ["divg", "vort"]
         ]
-        self.tcstrflw_obj.divg.values = winds.global_divg(varobj=varobj)
-        self.tcstrflw_obj.vort.values = winds.global_vort(varobj=varobj)
+        self.tcstrflw_obj.divg.values = await winds.global_divg(varobj=varobj)
+        self.tcstrflw_obj.vort.values = await winds.global_vort(varobj=varobj)
 
         # Compute the components of the total wind field.
         [
@@ -213,8 +214,7 @@ class VL1991(Diagnostics):
                 object_in=self.tcstrflw_obj,
                 key=varname,
                 value=varobj.uwnd.assign_attrs(
-                    parser_interface.object_getattr(
-                        object_in=diagvars_obj, key=varname)
+                    parser_interface.object_getattr(object_in=diagvars_obj, key=varname)
                 ),
             )
             for varname in ["udiv", "uhrm", "urot", "vdiv", "vhrm", "vrot"]
@@ -226,7 +226,7 @@ class VL1991(Diagnostics):
             self.tcstrflw_obj.vhrm.values,
             self.tcstrflw_obj.urot.values,
             self.tcstrflw_obj.vrot.values,
-        ) = winds.global_wind_part(varobj=varobj)
+        ) = await winds.global_wind_part(varobj=varobj)
 
     @privatemethod
     def plev_interp(self: Diagnostics, varin: numpy.array) -> numpy.array:
@@ -454,7 +454,7 @@ class VL1991(Diagnostics):
         (uwnd, vwnd) = self.tc_filter()
 
         # Compute the diagnostic variables.
-        self.compute_diags(uwnd=uwnd, vwnd=vwnd)
+        asyncio.run(self.compute_diags(uwnd=uwnd, vwnd=vwnd))
 
         # Write the results to the specifed netCDF-formatted file
         # path.

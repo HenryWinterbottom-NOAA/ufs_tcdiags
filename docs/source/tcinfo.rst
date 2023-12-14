@@ -2,8 +2,8 @@ Tropical Cyclone Input Files
 ============================
 
 For the respective tropical cyclone (TC) relative and related
-applications the respective TC attributes must be specified and
-written to a YAML-formatted file such that the diagnostic packages can
+applications, the respective TC attributes must be specified and
+written to a YAML-formatted file so that the diagnostic packages can
 utilize the information. A script to generate this file from the
 relevant TC information/observation files is provided and may be
 executed as follows.
@@ -22,8 +22,8 @@ executed as follows.
      yaml        Path to the YAML-formatted TC information attributes file.
 
    Optional Arguments:
-     -h, --help  show this help message and exit
-     -atcf       TC information collected from a ATCF (e.g., TC-vitals) formatted file.
+     -h, --help  Show this help message and exit.
+     -atcf       TC information collected from an ATCF (e.g., TC-vitals) formatted file.
 
 The following TC observation data-formats are supported.
 
@@ -36,8 +36,8 @@ The following TC observation data-formats are supported.
    * - `ATCF <https://www.nrlmry.navy.mil/atcf_web/docs/database/new/abdeck.txt>`_
      - `Automated Tropical Cyclone Forecast <https://journals.ametsoc.org/view/journals/wefo/5/4/1520-0434_1990_005_0653_tatcfs_2_0_co_2.xml>`_
 
-TC attributes may be collected from multiple sources and the resulting
-YAML-formatted files may be concatenated together such that TC
+TC attributes may be collected from multiple sources, and the resulting
+YAML-formatted files may be concatenated together so that TC
 diagnostics may be computed using TC attributes collected from the
 different supported sources.
 
@@ -64,8 +64,8 @@ An example using ATCF-formatted input files is as follows.
      yaml        Path to the YAML-formatted TC information attributes file.
 
    Optional Arguments:
-     -h, --help  show this help message and exit
-     -atcf       TC information collected from a ATCF (e.g., TC-vitals) formatted file.
+     -h, --help  Show this help message and exit.
+     -atcf       TC information collected from an ATCF (e.g., TC-vitals) formatted file.
 
    user@host:$ ./tcinfo_yaml.py /path/to/atcf_input_file /path/to/output/tcinfo_yaml_file -atcf
 
@@ -86,4 +86,4 @@ The resulting YAML-formatted file, i.e.,
     lon_deg: 170.4
   09C:
     lat_deg: 2.7
-    lon_deg: 178.10000000000002
+    lon_deg: 178.1

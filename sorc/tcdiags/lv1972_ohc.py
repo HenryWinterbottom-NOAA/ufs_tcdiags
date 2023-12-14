@@ -57,10 +57,10 @@ from types import SimpleNamespace
 from typing import Dict, Tuple
 
 import numpy
-from diags.derived.ocean.depths import isodepth
-from diags.derived.ocean.heatcontent import total_heat_content
-from diags.derived.ocean.salinity import absolute_from_practical
-from diags.derived.ocean.temperatures import conservative_from_potential
+from derived.ocean.depths import isodepth
+from derived.ocean.heatcontent import total_heat_content
+from derived.ocean.salinity import absolute_from_practical
+from derived.ocean.temperatures import conservative_from_potential
 from metpy.units import units
 from scipy.interpolate import interp1d
 from tools import parser_interface
