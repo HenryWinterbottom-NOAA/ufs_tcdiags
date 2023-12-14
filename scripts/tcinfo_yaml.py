@@ -32,17 +32,21 @@ Functions
 Usage
 -----
 
-   user@host:$ ./tcinfo_yaml.py [-h] [-atcf] input yaml
+   user@host:$ ./tcinfo_yaml.py --help
+
+   Usage: tcinfo_yaml.py [-h] [-atcf] input yaml
 
    Tropical cyclone diagnostics computation(s) application interface.
 
    Positional Arguments:
-     input       An input file, of a supported type, containing the TC information to be formatted.
+     input       An input file, of a supported type, containing the TC
+                   information to be formatted.
      yaml        Path to the YAML-formatted TC information attributes file.
 
    Optional Arguments:
      -h, --help  show this help message and exit
-     -atcf       TC information collected from a ATCF (e.g., TC-vitals) formatted file.
+     -atcf       TC information collected from a ATCF (e.g., TC-vitals)
+                   formatted file.
 
 Requirements
 ------------
@@ -65,16 +69,18 @@ History
 
 # ----
 
+# pylint: disable=no-value-for-parameter
+
+# ----
+
 import os
-import time
 from types import SimpleNamespace
 from typing import Generic
 
+from atcf import ATCF
 from confs.yaml_interface import YAML
 from tools import parser_interface
-from ufs_obs.atcf import ATCF
-from utils import cli_interface
-from utils.cli_interface import CLIParser
+from utils.decorator_interface import cli_wrapper, script_wrapper
 from utils.logger_interface import Logger
 
 # ----
@@ -112,8 +118,7 @@ class TCInfoYAML:
         """
 
         # Define the base-class attributes.
-        self.logger = Logger(
-            caller_name=f"{__name__}.{self.__class__.__name__}")
+        self.logger = Logger(caller_name=f"{__name__}.{self.__class__.__name__}")
         self.options_obj = options_obj
         self.tcinfo_obj = parser_interface.object_define()
         self.atcf = ATCF()
@@ -179,8 +184,19 @@ class TCInfoYAML:
 
 # ----
 
+DESCRIPTION = "Tropical cyclone diagnostics computation(s) application interface."
+SCHEMA_FILE = os.path.join(
+    parser_interface.enviro_get("TCDIAGS_ROOT"),
+    "scripts",
+    "schema",
+    "tcinfo_yaml.schema.yaml",
+)
+SCRIPT_NAME = os.path.basename(__file__)
 
-def main() -> None:
+
+@cli_wrapper(description=DESCRIPTION, schema_file=SCHEMA_FILE, script_name=SCRIPT_NAME)
+@script_wrapper(script_name=SCRIPT_NAME)
+def main(options_obj: SimpleNamespace) -> None:
     """
     Description
     -----------
@@ -190,32 +206,9 @@ def main() -> None:
 
     """
 
-    # Collect the command line arguments.
-    script_name = os.path.basename(__file__)
-    start_time = time.time()
-    msg = f"Beginning application {script_name}."
-    logger.status(msg=msg)
-    parser_interface.enviro_set(
-        envvar="CLI_SCHEMA",
-        value=os.path.join(os.getcwd(), "schema", "tcinfo_yaml.schema.yaml"),
-    )
-    args_objs = CLIParser().build()
-    parser = cli_interface.init(
-        args_objs=args_objs,
-        description="Tropical cyclone diagnostics computation(s) application interface.",
-        prog=os.path.basename(__file__),
-    )
-    options_obj = cli_interface.options(parser=parser)
-
     # Launch the task.
     task = TCInfoYAML(options_obj=options_obj)
     task.run()
-    stop_time = time.time()
-    msg = f"Completed application {script_name}."
-    logger.status(msg=msg)
-    total_time = stop_time - start_time
-    msg = f"Total Elapsed Time: {total_time} seconds."
-    logger.status(msg=msg)
 
 
 # ----
