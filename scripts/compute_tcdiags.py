@@ -2,11 +2,6 @@
 
 # ----
 
-# pylint: disable=line-too-long
-# pylint: disable=no-value-for-parameter
-
-# ----
-
 """
 Script
 ------
@@ -48,9 +43,12 @@ Usage
 
     Optional Arguments:
       -h, --help  show this help message and exit
-      -tcmsi      YAML-formatted file containing the TC multi-scale intensity application configuration.
-      -tcpi       YAML-formatted file containing the TC potential intensity application configuration.
-      -tcohc      YAML-formatted file containing the TC relative ocean heat-content application configuration.
+      -tcmsi      YAML-formatted file containing the TC multi-scale intensity
+                    application configuration.
+      -tcpi       YAML-formatted file containing the TC potential intensity
+                    application configuration.
+      -tcohc      YAML-formatted file containing the TC relative ocean heat-content
+                    application configuration.
       -tcstrflw   YAML-formatted file containing the TC steering application configuration.
 
 Requirements
@@ -69,6 +67,10 @@ History
     2023-03-03: Henry Winterbottom -- Initial implementation.
 
 """
+
+# ----
+
+# pylint: disable=no-value-for-parameter
 
 # ----
 
