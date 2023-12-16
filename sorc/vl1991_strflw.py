@@ -69,7 +69,7 @@ from tools import parser_interface
 from transforms import svd
 from utils.decorator_interface import privatemethod
 
-from tcdiags.diagnostics import Diagnostics
+from diagnostics import Diagnostics
 
 # ----
 

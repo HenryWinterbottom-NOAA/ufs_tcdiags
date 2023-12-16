@@ -66,8 +66,8 @@ from scipy.interpolate import interp1d
 from tools import parser_interface
 from utils.decorator_interface import privatemethod
 
-from tcdiags.diagnostics import Diagnostics
-from tcdiags.io.ncwrite import ncwrite
+from diagnostics import Diagnostics
+from ncio.ncwrite import ncwrite
 
 # ----
 

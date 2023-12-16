@@ -68,7 +68,7 @@ from tcpyPI import pi
 from tools import parser_interface
 from utils.decorator_interface import privatemethod
 
-from tcdiags.diagnostics import Diagnostics
+from diagnostics import Diagnostics
 
 # ----
 
