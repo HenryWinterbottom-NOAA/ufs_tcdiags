@@ -70,7 +70,7 @@ from transforms.fft import forward_fft2d, inverse_fft2d
 from utils import table_interface
 from utils.decorator_interface import privatemethod
 
-from diagnostics import Diagnostics
+from tcdiags.diagnostics import Diagnostics
 
 # ----
 

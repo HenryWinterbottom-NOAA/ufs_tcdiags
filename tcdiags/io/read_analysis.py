@@ -49,8 +49,8 @@ from typing import Generic
 import asyncio
 
 from confs.yaml_interface import YAML
-from exceptions import ReadAnalysisError
-from ncio import vario
+from tcdiags.exceptions import ReadAnalysisError
+from tcdiags.io import vario
 from tools import parser_interface
 from utils import schema_interface
 from utils.decorator_interface import privatemethod

@@ -69,7 +69,12 @@ from tools import parser_interface
 from transforms import svd
 from utils.decorator_interface import privatemethod
 
-from diagnostics import Diagnostics
+from tcdiags.diagnostics import Diagnostics
+
+# ----
+
+# Define all available module properties.
+__all__ = ["VL1991"]
 
 # ----
 

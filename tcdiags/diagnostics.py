@@ -58,7 +58,7 @@ from utils import schema_interface
 from utils.decorator_interface import privatemethod
 from utils.logger_interface import Logger
 
-from ncio.nc_write import NCWrite  # TODO
+from tcdiags.io.nc_write import NCWrite  # TODO
 
 # ----
 

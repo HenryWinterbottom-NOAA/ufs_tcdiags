@@ -50,7 +50,7 @@ from types import SimpleNamespace
 from typing import Dict, List
 
 import numpy
-from exceptions import IoNcWriteError
+from tcdiags.exceptions import IoNcWriteError
 from tools import parser_interface
 from utils.logger_interface import Logger
 from xarray import DataArray, merge

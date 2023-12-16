@@ -50,7 +50,7 @@ from confs.yaml_interface import YAML
 from tools import parser_interface
 from utils.logger_interface import Logger
 
-from exceptions import TCDiagsError
+from tcdiags.exceptions import TCDiagsError
 
 # ----
 
