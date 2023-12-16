@@ -1,5 +1,5 @@
 ---
-io_module: ncio.read_analysis
+io_module: tcdiags.io.read_analysis
 io_class: ReadAnalysis
 schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.read_analysis.gfs.yaml
 specific_humidity:
