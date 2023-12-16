@@ -1,0 +1,17 @@
+---
+app_module: tcdiags.vurk2014_msi
+app_class: VURK2014
+schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.vurk2014_msi.yaml
+drho: 40000
+dphi: 15
+max_radius: 1200000
+max_wn: 3
+write_output: true
+output_file: ./tcdiags.vurk2014_msi.%s.nc
+output_varlist:
+  wnds10m:
+    name: |
+         magnitude of the total 10-meter (near-surface) wind field
+    units: meter_per_second
+    description: |
+         Polar projection for the 10-meter total wind field.
