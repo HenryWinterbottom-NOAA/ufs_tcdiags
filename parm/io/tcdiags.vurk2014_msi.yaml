@@ -1,7 +1,0 @@
----
-wnds10m:
-  name: |
-       magnitude of the total 10-meter (near-surface) wind field
-  units: meter_per_second
-  description: |
-       Polar projection for the 10-meter total wind field.
