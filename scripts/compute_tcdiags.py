@@ -77,7 +77,7 @@ History
 import os
 from types import SimpleNamespace
 
-from tcdiags.tcdiags import TCDiags
+from tcdiags import TCDiags
 from tools import parser_interface
 from utils.decorator_interface import cli_wrapper, script_wrapper
 
