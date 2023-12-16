@@ -1,5 +1,5 @@
 ---
-app_module: tcdiags.be2002_pi
+app_module: be2002_pi
 app_class: BE2002
 schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.be2002_pi.yaml
 zmax: 0

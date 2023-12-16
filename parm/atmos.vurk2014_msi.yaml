@@ -1,5 +1,5 @@
 ---
-app_module: tcdiags.vurk2014_msi
+app_module: vurk2014_msi
 app_class: VURK2014
 schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.vurk2014_msi.yaml
 drho: 40000
