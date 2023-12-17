@@ -1,0 +1,6 @@
+---
+inputs: !ENV ${TCDIAGS_ROOT}/parm/inputs.gfs.yaml
+tcinfo: !ENV ${TCDIAGS_ROOT}/parm/tcinfo.demo.yaml
+tcpi: !ENV ${TCDIAGS_ROOT}/parm/atmos/be2002_pi.yaml
+tcmsi: !ENV ${TCDIAGS_ROOT}/parm/atmos/vurk2014_msi.yaml
+tcstrflw: !ENV ${TCDIAGS_ROOT}/parm/atmos/vl1991_strflw.yaml

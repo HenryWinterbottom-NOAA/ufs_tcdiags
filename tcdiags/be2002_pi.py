@@ -60,6 +60,8 @@ History
 
 # ----
 
+import asyncio
+
 from types import SimpleNamespace
 
 import numpy
@@ -146,7 +148,7 @@ class BE2002(Diagnostics):
         self.ncio = self.write_output
 
     @privatemethod
-    def compute(self: Diagnostics) -> None:
+    async def compute(self: Diagnostics) -> None:
         """
         Description
         -----------
@@ -360,7 +362,7 @@ class BE2002(Diagnostics):
         self.get_inputs()
 
         # Compute the TC MPI following Bister and Emanuel [2002].
-        self.compute()
+        asyncio.run(self.compute())
 
         # Update the units for the respective TC potential intensity
         # metrics.

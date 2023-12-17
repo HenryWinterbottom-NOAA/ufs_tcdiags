@@ -64,7 +64,7 @@ ssh:
 depth:
   derived: true
   method: depth_from_profile
-  module: derived.ocean.depths
+  module: diags.derived.ocean.depths
   description: Ocean depths.
   unstructured: *grid
   name: depth
@@ -73,7 +73,7 @@ depth:
 seawater_pressure:
   derived: true
   method: seawater_from_depth
-  module: derived.ocean.pressures
+  module: diags.derived.ocean.pressures
   description: Sea-water pressures.
   name: seawater_pres
   units: dbar

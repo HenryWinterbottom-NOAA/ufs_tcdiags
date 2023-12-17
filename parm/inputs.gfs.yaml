@@ -72,7 +72,7 @@ pressure:
   ncfile: *gfs_ncfile
   derived: true
   method: pressure_from_thickness
-  module: derived.atmos.pressures
+  module: diags.derived.atmos.pressures
   flip_lat: true
   flip_z: true
   squeeze: true
@@ -83,7 +83,7 @@ pressure:
 height:
   derived: true
   method: height_from_pressure
-  module: derived.atmos.heights
+  module: diags.derived.atmos.heights
   name: hght
   units: m
 sea_level_pressure:
@@ -91,10 +91,10 @@ sea_level_pressure:
   method: pressure_to_sealevel
   units: pascal
   name: pslp
-  module: derived.atmos.pressures
+  module: diags.derived.atmos.pressures
 mixing_ratio:
   derived: true
   method: spfh_to_mxrt
-  module: derived.atmos.moisture
+  module: diags.derived.atmos.moisture
   name: mxrt
   units: kg/kg

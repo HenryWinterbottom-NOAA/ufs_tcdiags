@@ -30,7 +30,7 @@ jobs:
         run: >
           cd "${GITHUB_WORKSPACE}"/ufs_tcdiags
 
-          $(command -v pycodestyle) -v --config "${GITHUB_WORKSPACE}/ufs_tcdiags/.pycodestyle" sorc/tcdiags
+          $(command -v pycodestyle) -v --config "${GITHUB_WORKSPACE}/ufs_tcdiags/.pycodestyle" tcdiags
 
           $(command -v pycodestyle) -v --config "${GITHUB_WORKSPACE}/ufs_tcdiags/.pycodestyle" scripts
 
