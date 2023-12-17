@@ -59,14 +59,14 @@ from typing import Dict, Tuple
 
 import numpy
 import xarray
-from derived.atmos import winds
-from grids.bearing_geoloc import bearing_geoloc
-from interp.ll2ra import ll2ra
-from interp.vertical import interp
+from diags.derived.atmos import winds
+from diags.grids.bearing_geoloc import bearing_geoloc
+from diags.interp.ll2ra import ll2ra
+from diags.interp.vertical import interp
 from metpy.units import units
 from pint import UnitRegistry
 from tools import parser_interface
-from transforms.fft import forward_fft2d, inverse_fft2d
+from diags.transforms.fft import forward_fft2d, inverse_fft2d
 from utils import table_interface
 from utils.decorator_interface import privatemethod
 
