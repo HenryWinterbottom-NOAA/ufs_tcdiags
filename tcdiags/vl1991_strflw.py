@@ -62,11 +62,11 @@ from types import SimpleNamespace
 from typing import Tuple
 
 import numpy
-from derived.atmos import winds
-from grids.radial_distance import radial_distance
-from interp import vertical
+from diags.derived.atmos import winds
+from diags.grids.radial_distance import radial_distance
+from diags.interp import vertical
 from tools import parser_interface
-from transforms import svd
+from diags.transforms import svd
 from utils.decorator_interface import privatemethod
 
 from tcdiags.diagnostics import Diagnostics
