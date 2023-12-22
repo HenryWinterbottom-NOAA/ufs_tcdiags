@@ -155,10 +155,12 @@ def __decmap__(basemap_obj: SimpleNamespace) -> SimpleNamespace:
                 kwargs[item] = eval(pltattr_dict[item])
             except (TypeError, NameError, ValueError):
                 pass
-        parser_interface.object_getattr(object_in=basemap_obj.Basemap, key=pltattr)(
-            **kwargs
-        )
-
+        basemap_obj = parser_interface.object_setattr(
+            object_in=basemap_obj, key=pltattr, value=
+            parser_interface.object_getattr(object_in=basemap_obj.Basemap, key=pltattr)(
+            **kwargs)
+            )
+        
     return basemap_obj
 
 
@@ -191,7 +193,7 @@ def basemapper(func: Callable) -> Callable:
     """
 
     @functools.wraps(func)
-    def wrapped_function(self: Callable, *args: Tuple, **kwargs: Dict):
+    def wrapped_function(*args: Tuple, **kwargs: Dict) -> Basemap:
         """
         Description
         -----------
@@ -215,7 +217,7 @@ def basemapper(func: Callable) -> Callable:
         """
 
         # Build the decorated basemap object.
-        basemap_obj = func(self, *args, **kwargs)
+        basemap_obj = func(*args, **kwargs)
         basemap_obj.Basemap = __bldmap__(basemap_dict=basemap_obj.basemap)
         basemap_obj = __decmap__(basemap_obj=basemap_obj)
 
