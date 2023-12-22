@@ -75,12 +75,12 @@ class Plot(ABC):
     Other Parameters
     ----------------
 
-    args: Tuple
+    args: ``Tuple``
 
         A Python tuple containing additional arguments passed to the
         constructor.
 
-    kwargs: Dict
+    kwargs: ``Dict``
 
         A Python dictionary containing additional key and value pairs
         to be passed to the constructor.
