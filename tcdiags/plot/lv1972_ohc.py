@@ -114,7 +114,6 @@ class LV1972(Maps):
 
         # Define the basemap attributes for the respective map-type
         # plots.
-        super().basemap()
         basemap_obj = parser_interface.dict_toobject(
             in_dict=parser_interface.object_getattr(
                 object_in=self.tcdiags_obj.tcohc, key="plot", force=None
@@ -142,6 +141,7 @@ class LV1972(Maps):
         """
 
         # Plot the configuration specified figures.
+        super().plot(plt_obj=plt_obj)
         figures = parser_interface.dict_key_value(
             dict_in=self.tcdiags_obj.tcohc.plot,
             key="figures",
