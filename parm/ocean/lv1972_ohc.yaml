@@ -1,45 +1,106 @@
 ---
 app_module: tcdiags.lv1972_ohc
 app_class: LV1972
-schema: !ENV ${TCDIAGS_ROOT}/parm/schema/tcdiags.lv1972_ohc.yaml
-write_output: true
+schema: ${TCDIAGS_ROOT}/parm/schema/tcdiags.lv1972_ohc.yaml
 output_file: ./tcdiags.lv1972_ohc.nc
 output_vars:
   tchp:
-    coords: &coords2d
+    coords:
       - lat
       - lon
     attributes:
       description: Tropical cyclone heat potential.
   lats:
-    coords: *coords2d
+    coords:
+      - lat
+      - lon
     attributes:
       description: Latitudes.
   lons:
-    coords: *coords2d
+    coords:
+      - lat
+      - lon
     attributes:
       description: Longitudes.
   isotherm:
-    coords: *coords2d
+    coords:
+      - lat
+      - lon
     attributes:
       description: Isotherm depth.
   asaln:
-    coords: &coords3d
-      - level   
+    coords:
+      - level
       - lat
       - lon
     attributes:
       description: Absolute salinity.
   ctemp:
-    coords: *coords3d
+    coords:
+      - level
+      - lat
+      - lon
     attributes:
       description: Conservative temperature.
   ohc:
-    coords: *coords3d
+    coords:
+      - level
+      - lat
+      - lon
     attributes:
       description: Ocean heat content.
   depths:
-    coords: *coords3d
+    coords:
+      - level
+      - lat
+      - lon
     attributes:
       description: Ocean depth.
-
+plot:
+  plot_module: tcdiags.plot.lv1972_ohc
+  plot_class: LV1972
+  basemap:
+    resolution: h
+    projection: cyl
+  plotting:
+    drawlsmask:
+      res: h
+      land_color: black
+      ocean_color: gray
+    drawparallels:
+      circles: numpy.arange(-90., 90.01, 30.0)
+      labels:
+        - true
+        - false
+        - false
+        - false
+      color: black
+      linewidth: 0.1
+      dashes:
+        - 1
+        - 0
+    drawmeridians:
+      meridians: numpy.arange(-180., 180.01, 60.0)
+      labels:
+        - false
+        - false
+        - false
+        - true
+      color: black
+      linewidth: 0.1
+      dashes:
+        - 1
+        - 0
+  figures:
+    isotherm_depth:
+      module: &module plots.lv1972_ohc
+      func: lv1972_ohc_isodpth
+    tchp:
+      module: *module
+      func: lv1972_ohc_tchp
+    sst:
+      module: *module
+      func: lv1972_ohc_sst
+    ohc:
+      module: *module
+      func: lv1972_ohc_ohc
