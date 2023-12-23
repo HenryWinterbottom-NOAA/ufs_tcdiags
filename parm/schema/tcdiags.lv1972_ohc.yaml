@@ -1,25 +1,35 @@
 ---
 output_file:
+  help: >
+    The filename path for the netCDF-formatted file containing the output
+    variables.
   required: false
   default: ./tcdiags.lv1972_ohc.nc
   type: str
-write_output:
-  required: false
-  type: bool
-  default: false
 isotherm:
+  help: >
+    The isotherm relative to which to compute the tropical cyclone heat
+    potential.
   required: false
   type: float
-  default: 26.0
+  default: 26.
 deltaz:
+  help: >
+    The vertical (z) increment about which to integrate to compute the
+    tropical cyclone heat potential.
   required: false
   type: float
-  default: 5.0
+  default: 5.
 interp_type:
+  help: >
+    The interpolation type used to compute the depth of the specified isotherm
+    relative to which to compute the tropical cyclone heat potential.
   required: false
   type: str
   default: linear
 fill_value:
+  help: |
+    The value assigned to missing datum values.
   required: false
   type: str
   default: numpy.nan
