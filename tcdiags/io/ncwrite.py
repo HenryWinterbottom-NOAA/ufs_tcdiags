@@ -332,6 +332,8 @@ def ncwrite(func: Callable) -> Callable:
             coords_dict = __getcoords__(ncio_obj=ncio_obj)
             varobj = __getvarobj__(ncio_obj=ncio_obj)
             xarrlist = __xarraylist__(varobj=varobj, coords_dict=coords_dict)
+            msg = f"Writing netCDF-formatted file {ncio_obj.ncoutput}."
+            logger.info(msg=msg)
             __write__(xarrlist=xarrlist, ncoutput=ncio_obj.ncoutput)
         else:
             msg = (
