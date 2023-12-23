@@ -32,9 +32,10 @@ Functions
 Usage
 -----
 
-    user@host:$ python compute_tcdiags.py --help
+    user@host:$ ./compute_tcdiags.py --help
 
-    Usage: compute_tcdiags.py [-h] [-tcmsi] [-tcpi] [-tcohc] [-tcstrflw] yaml
+    Usage: compute_tcdiags.py [-h] [-plot] [-output] [-tcmsi] [-tcpi] [-tcohc]
+             [-tcstrflw] yaml
 
     Tropical cyclone diagnostics interface.
 
@@ -43,6 +44,10 @@ Usage
 
     Optional Arguments:
       -h, --help  show this help message and exit
+
+      -plot       Plot the specified figures for the respective applications.
+      -output     Write netCDF-formatted files containing the diagnostic and derived
+                    quantities for the respective applications.
       -tcmsi      YAML-formatted file containing the TC multi-scale intensity
                     application configuration.
       -tcpi       YAML-formatted file containing the TC potential intensity
