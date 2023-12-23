@@ -45,6 +45,14 @@ Requirements
 
 - ufs_pytils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
+References
+----------
+
+    Leipper, D. F., and D. Volgenau. "Hurricane heat potential of the
+    Gulf of Mexico". J. Phys. Oceanpgr. 2, 218–224.
+
+    DOI: https://doi.org/10.1175/1520-0485(1972)002<0218:HHPOTG>2.0.CO;2
+
 Author(s)
 ---------
 
