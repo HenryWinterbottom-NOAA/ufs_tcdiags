@@ -18,10 +18,14 @@ Classes
 
         This is the base-class object for all tropical cyclone (TC)
         heat-potential computations following Liepper and Volgenau
-        [1972]; it is a sub-class of ``Diagnostics``.
+        [1972]; it is a sub-class of Diagnostics.
 
 Requirements
 ------------
+
+- metpy; https://github.com/Unidata/MetPy
+
+- ufs_diags; https://github.com/HenryWinterbottom-NOAA/ufs_diags
 
 - ufs_pyutils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
 
@@ -30,6 +34,8 @@ References
 
     Leipper, D. F., and D. Volgenau. "Hurricane heat potential of the
     Gulf of Mexico". J. Phys. Oceanpgr. 2, 218–224.
+
+    DOI: https://doi.org/10.1175/1520-0485(1972)002<0218:HHPOTG>2.0.CO;2
 
 Author(s)
 ---------
@@ -68,6 +74,7 @@ from utils.decorator_interface import privatemethod
 
 from tcdiags.diagnostics import Diagnostics
 from tcdiags.io.ncwrite import ncwrite
+from tcdiags.io.plot import plot
 
 # ----
 
@@ -84,7 +91,7 @@ class LV1972(Diagnostics):
 
     This is the base-class object for all tropical cyclone (TC)
     heat-potential computations following Liepper and Volgenau [1972];
-    it is a sub-class of ``Diagnostics``.
+    it is a sub-class of Diagnostics.
 
     Parameters
     ----------
@@ -293,6 +300,32 @@ class LV1972(Diagnostics):
 
         return ncout_obj
 
+    @plot
+    async def plot(self: Diagnostics, varobj: SimpleNamespace) -> None:
+        """
+        Description
+        -----------
+
+        This method plots the specified figures.
+
+        Parameters
+        ----------
+
+        varobj: ``SimpleNamespace``
+
+            A Python SimpleNamespace object containing the variable
+            attributes from which to create the specified figures."
+
+        """
+
+        # Plot the specified figures.
+        app_obj = parser_interface.object_define()
+        app_obj.tcdiags_obj = self.tcdiags_obj
+        app_obj.plot_dict = self.tcdiags_obj.tcohc.plot
+        app_obj.varobj = varobj
+
+        return app_obj
+
     async def setup(self: Diagnostics, tchp_obj: SimpleNamespace) -> SimpleNamespace:
         """
         Description
@@ -399,7 +432,9 @@ class LV1972(Diagnostics):
 
         return tchp
 
-    def run(self: Diagnostics) -> SimpleNamespace:
+    def run(
+        self: Diagnostics, plot_output: bool, write_output: bool
+    ) -> SimpleNamespace:
         """
         Description
         -----------
@@ -408,7 +443,9 @@ class LV1972(Diagnostics):
 
         (1) Computes the TCHP.
 
-        (2) Optionally writes the specified output variables to the
+        (2) Optionally plots the specified output variables.
+
+        (3) Optionally writes the specified output variables to the
             specified netCDF-formatted file path.
 
         """
@@ -418,7 +455,9 @@ class LV1972(Diagnostics):
         tchp_obj = asyncio.run(self.initialize())
         tchp_obj = asyncio.run(self.setup(tchp_obj=tchp_obj))
         tchp_obj = asyncio.run(self.compute(tchp_obj=tchp_obj))
-        if self.tcdiags_obj.tcohc.write_output:
+        if plot_output:
+            asyncio.run(self.plot(varobj=tchp_obj))
+        if write_output:
             asyncio.run(self.output(varobj=tchp_obj))
 
         return tchp_obj
