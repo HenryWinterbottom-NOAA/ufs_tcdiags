@@ -32,6 +32,8 @@ References
     Leipper, D. F., and D. Volgenau. "Hurricane heat potential of the
     Gulf of Mexico". J. Phys. Oceanpgr. 2, 218–224.
 
+    DOI: https://doi.org/10.1175/1520-0485(1972)002<0218:HHPOTG>2.0.CO;2
+
 Author(s)
 ---------
 
@@ -45,7 +47,6 @@ History
 """
 
 # ----
-
 
 from types import SimpleNamespace
 
@@ -169,7 +170,7 @@ class LV1972(Maps):
             kwargs = {"ohc_obj": plt_obj, "basemap_obj": basemap_obj}
             func(**kwargs)
 
-    def run(self: Maps, ohc_obj: SimpleNamespace) -> None:
+    def run(self: Maps, app_obj: SimpleNamespace) -> None:
         """
         Description
         -----------
@@ -181,11 +182,12 @@ class LV1972(Maps):
         Parameters
         ----------
 
-        ohc_obj: ``SimpleNamespace``
+        app_obj: ``SimpleNamespace``
 
             A Python SimpleNamespace object containing the OHC
-            attributes.
+            application attributes.
 
         """
 
-        self.plot(plt_obj=ohc_obj)
+        # Plot the specified figures.
+        self.plot(plt_obj=app_obj)
