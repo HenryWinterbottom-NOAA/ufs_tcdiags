@@ -5,6 +5,17 @@ yaml:
   longname: yaml
   required: true
   type: str
+plot:
+  help: |
+    Plot the specified figures for the respective applications.
+  longname: plot
+  action: store_true
+output:
+  help: >
+    Write netCDF-formatted files containing the diagnostic and derived
+    quantities for the respective applications.
+  longname: output
+  action: store_true
 tcmsi:
   help: >
     YAML-formatted file containing the TC multi-scale intensity application
@@ -19,9 +30,9 @@ tcpi:
   action: store_true
 tcohc:
   help: >
-    YAML-formatted file containing the TC relative ocean heat-content  application
-    configuration.
-  longname: tcohc 
+    YAML-formatted file containing the TC relative ocean
+    heat-content  application configuration.
+  longname: tcohc
   action: store_true
 tcstrflw:
   help: |
