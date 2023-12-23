@@ -227,7 +227,10 @@ class TCDiags:
                         key=tcdiag_obj.app_class,
                         force=True,
                     )
-                    tcdiag_app_obj = app_class(tcdiags_obj=tcdiags_obj).run()
+                    tcdiag_app_obj = app_class(tcdiags_obj=tcdiags_obj).run(
+                        plot_output=self.options_obj.plot,
+                        write_output=self.options_obj.output,
+                    )
                     app_obj = parser_interface.object_setattr(
                         object_in=app_obj, key=app, value=tcdiag_app_obj
                     )
