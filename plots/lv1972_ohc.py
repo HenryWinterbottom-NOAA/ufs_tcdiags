@@ -76,9 +76,9 @@ import functools
 from types import SimpleNamespace
 from typing import Callable, Dict, Tuple
 
-from cmocean.cm import deep, haline, thermal
 import matplotlib.pyplot as plt
 import numpy
+from cmocean.cm import deep, haline, thermal
 from tcdiags.plot.plotter import plotter
 
 # ----
