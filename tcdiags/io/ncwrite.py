@@ -34,7 +34,7 @@ Functions
 
     ncwrite(func)
 
-        This function is a wrapper function for build and writing
+        This function is a wrapper function for building and writing
         netCDF-formatted files.
 
 Requirements
@@ -282,7 +282,7 @@ def ncwrite(func: Callable) -> Callable:
     Description
     -----------
 
-    This function is a wrapper function for build and writing
+    This function is a wrapper function for building and writing
     netCDF-formatted files.
 
     Parameters
