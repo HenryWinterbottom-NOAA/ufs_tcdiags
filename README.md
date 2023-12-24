@@ -7,6 +7,18 @@
 [![Python Coding Standards](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_tcdiags/actions/workflows/pycodestyle.yaml)
 [![Container Builds](https://github.com/HenryWinterbottom-NOAA/ufs_diags/actions/workflows/containers.yaml/badge.svg)](https://github.com/HenryWinterbottom-NOAA/ufs_diags/actions/workflows/containers.yaml)
 
+# Overview
+
+This repository contains application programming interfaces (API) and
+tools for tropical cyclone (TC) analysis and forecast diagnostics
+related to Unified Forecast System (UFS) applications.
+
+- **Authors:** [Henry R. Winterbottom](mailto:henry.winterbottom@noaa.gov)
+- **Maintainers:** Henry R. Winterbottom
+- **Version:** 0.0.1
+- **License:** LGPL v2.1
+- **Copyright**: Henry R. Winterbottom
+
 # Cloning
 
 This repository utilizes several sub-modules from various sources. To
@@ -37,6 +49,7 @@ installation attributes are provided in the table below.
 | <div align="left">[`tcpyPI`](https://github.com/dgilford/tcpyPI)</div> | <div align="left">`pip install tcpypi`</div> |
 | <div align="left">[`ufs_diags`](https://github.com/HenryWinterbottom-NOAA/ufs_diags)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_diags.git`</div> |
 | <div align="left">[`ufs_obs`](https://github.com/HenryWinterbottom-NOAA/ufs_obs)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_obs.git`</div> |
+| <div align="left">[`ufs_obs`](https://github.com/HenryWinterbottom-NOAA/ufs_pyutils)</div> | <div align="left">`pip install git+https://www.github.com/HenryWinterbottom-NOAA/ufs_pyutils.git`</div> |
 
 </div>
 
@@ -62,38 +75,11 @@ obtained as follows.
 user@host:$ /path/to/docker pull ghrc.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
 ~~~
 
-The Docker container may then be used as follows.
+To execute within the Docker container, do as follows.
 
 ~~~shell
 user@host:$ /path/to/docker container run -it ghrc.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
-user@host:$ cd /home/ufs_tcdiags
 ~~~
-
-# Running Jupyter Notebooks from Docker
-
-The Jupyter notebooks may be launched from within the Docker container as follows.
-
-~~~shell
-user@host:$ /path/to/docker container run -it ghrc.io/henrywinterbottom-noaa/ubuntu20.04.ufs_tcdiags:latest
-user@host:$ cd /home/ufs_tcdiags/jupyter/notebooks
-user@host:$ /path/to/jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root <notebook>
-user@host:$ export UFS_TCDIAGS=/home/ufs_tcdiags
-~~~
-
-This action will produce a local HTML path and an associated token as
-follows.
-
-~~~shell
-To access the server, open this file in a browser:
-    file:///root/.local/share/jupyter/runtime/jpserver-21362-open.html
-Or copy and paste one of these URLs:
-    http://5186640b39b0:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
-    http://127.0.0.1:8889/tree?token=abcdefghijklmnopqrstuvwxwy0123456789ABCDEFGHIJKL
-~~~~
-
-Copy the paste the token attribute beginning with
-``http://127.0.0.1:8889`` into a web browser address bar and execute
-the respective Jupyter notebook(`<notebook`> above) as usual.
 
 # Forking
 
