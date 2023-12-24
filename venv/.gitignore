@@ -1,0 +1,9 @@
+LICENSE
+bin
+dependencies
+etc
+include
+lib
+pyvenv.cfg
+setup.sh
+share
