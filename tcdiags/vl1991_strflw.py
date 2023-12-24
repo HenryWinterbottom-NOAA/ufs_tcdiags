@@ -18,7 +18,7 @@ Classes
 
         This is the base-class object for all tropical cyclone (TC)
         steering flow evaluations presented in Velden and Leslie
-        [1991]; it is a sub-class of Metrics.
+        (1991); it is a sub-class of Metrics.
 
 References
 ----------
@@ -85,7 +85,7 @@ class VL1991(Diagnostics):
     -----------
 
     This is the base-class object for all tropical cyclone (TC)
-    steering flow evaluations presented in Velden and Leslie [1991];
+    steering flow evaluations presented in Velden and Leslie (1991);
     it is a sub-class of Diagnostics.
 
     Parameters
