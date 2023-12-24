@@ -46,6 +46,11 @@ from tools import parser_interface
 
 # ----
 
+# Define all available module properties
+__all__ = ["plot"]
+
+# ----
+
 
 def plot(func: Callable) -> Callable:
     """
