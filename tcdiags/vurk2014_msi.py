@@ -22,6 +22,8 @@ Classes
 Requirements
 ------------
 
+- metpy; https://github.com/Unidata/MetPy
+
 - ufs_diags; https://github.com/HenryWinterbottom-NOAA/ufs_diags
 
 - ufs_pyutils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
@@ -29,10 +31,12 @@ Requirements
 References
 ----------
 
-    Vukicevic, T., E., Uhlhorn, P. Reasor, and B. Klotz, A novel
+    Vukicevic, T., E. Uhlhorn, P. Reasor, and B. Klotz. "A novel
     multiscale intensity metric for evaluation of tropical cyclone
-    intensity forecasts, J. Atmos. Sci., 71 (4), 1292-13-4,
-    2014. doi:10.1175/JAS-D-13-0153.1
+    intensity forecasts". Journal of the Atmospheric Sciences 71.4
+    (2014): 1292-1304.
+
+    DOI: https://doi.org/10.1175/JAS-D-13-0153.1
 
 Author(s)
 ---------
