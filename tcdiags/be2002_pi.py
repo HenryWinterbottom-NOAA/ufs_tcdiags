@@ -23,6 +23,8 @@ Classes
 Requirements
 ------------
 
+- metpy; https://github.com/Unidata/MetPy
+
 - tcpyPI; https://github.com/dgilford/tcpyPI
 
 - ufs_pyutils; https://github.com/HenryWinterbottom-NOAA/ufs_pyutils
@@ -35,9 +37,13 @@ References
     interdecadal variability". Journal of Geophysical Research 107
     (2002): 4801.
 
+    DOI: https://doi.org/10.1029/2001JD000780
+
     Gifford, D. M., "pyPI (v1.3): Tropical cyclone potential intensity
     calculations in Python". Geoscientific Model Development 14
     (2020): 2351-2369.
+
+    DOI: https://doi.org/10.5194/gmd-14-2351-2021
 
 Author(s)
 ---------
