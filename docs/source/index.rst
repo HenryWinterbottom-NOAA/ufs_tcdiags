@@ -72,6 +72,7 @@ executed as follows.
 
    apps.rst
    tcinfo.rst
+   configuration.rst
    ohc.rst
    tc.rst
    tcpi.rst
